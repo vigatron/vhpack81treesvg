@@ -215,8 +215,11 @@ class VHTree {
     std::string col_sblue       = "#E0E0FF";
     std::string col_mblue       = "#C0C0FF";
     std::string col_dblue       = "#0000B0";
-    
-    std::string gray     = "#303030";
+
+    std::string col_sgray       = "#E0E0E0";
+    std::string col_mgray       = "#C0C0C0";
+    std::string col_lgray       = "#A0A0A0";
+    std::string col_gray        = "#303030";
 
     // -------------------------------------------------------------------------------------------------
 
@@ -241,6 +244,19 @@ class VHTree {
         return svg_line("svg", txt, false); }
 
     // r.push_back("<line x1=\"0\" y1=\"0\" x2=\"24\" y2=\"24\" stroke=\"black\" stroke-width=\"2\"/>");
+
+    // -------------------------------------------------------------------------------------------------
+
+    std::string svg_line(int x1, int y1, int x2, int y2, int wdt, std::string col ) {
+        std::string txt = "";
+        txt += svg_param("x1", x1);
+        txt += svg_param("y1", y1);
+        txt += svg_param("x2", x2);
+        txt += svg_param("y2", y2);
+        if(wdt) txt += svg_param("stroke-width", wdt);
+        if(!col.empty()) txt += svg_param("stroke", col);
+        return svg_line("line", txt); }
+
     // -------------------------------------------------------------------------------------------------
 
     std::string svg_circ(int cx, int cy, int r, int wdt, std::string colf, std::string colb ) {
@@ -325,7 +341,7 @@ class VHTree {
             svg_rect(qx, qy, qua_w, qua_w,  th, colf, colb ) :
             svg_circ(cx, cy, cir_d/2,       th, colf, colb);
 
-        std::string txt_idx = svg_text(tx, ty, std::to_string(idx), font, fontw, gray );
+        std::string txt_idx = svg_text(tx, ty, std::to_string(idx), font, fontw, col_gray );
 
         r.push_back( fig );
         r.push_back( txt_idx );
@@ -356,6 +372,15 @@ class VHTree {
             r.insert(r.end(), tmp.begin(), tmp.end()); }
         return r; }
 
+    std::vector<std::string> draw_tstlink(int idx1, int idx2) {
+        std::vector<std::string> r;
+        int x1 = gfxpos_x[idx1];
+        int y1 = gfxpos_y[idx1];
+        int x2 = gfxpos_x[idx2];
+        int y2 = gfxpos_y[idx2];
+        r.push_back( svg_line(x1, y1, x2, y2, 6, col_mgray) );
+        return r; }
+
     // -------------------------------------------------------------------------------------------------
 
     std::vector<std::string> savetosvgi() {
@@ -367,9 +392,14 @@ class VHTree {
         svg_layerh   = svg_height / (svg_depthmax + 1);
 
         r.push_back( svg_wnd() );
-        tmp = draw_background(); r.insert(r.end(), tmp.begin(), tmp.end() );
-        tmp = draw_layerselms(); r.insert(r.end(), tmp.begin(), tmp.end() );
+        tmp = draw_background();    r.insert(r.end(), tmp.begin(), tmp.end() );
+
+        tmp = draw_layerselms();    r.insert(r.end(), tmp.begin(), tmp.end() );
+
+        tmp = draw_tstlink(16, 15); r.insert(r.end(), tmp.begin(), tmp.end() );
+        tmp = draw_tstlink(16,  8); r.insert(r.end(), tmp.begin(), tmp.end() );
+        tmp = draw_tstlink(15, 13); r.insert(r.end(), tmp.begin(), tmp.end() );
+
         r.push_back("</svg>");
-        return r;
-    }
+        return r; }
 };
