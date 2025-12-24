@@ -15,9 +15,9 @@ class VHTree {
 
         VHTree() { }
         VHTree                                  ( std::string str)                      { fromstr(str); }
-        void                        set         ( const std::vector<snode> & vect)      { nds = vect; }
-        void                        fromstr     (std::string scode)                     { nds = fromstri(scode); }
-        const std::vector<snode> &  nodes       ()                                      { return nds; }
+        void                        set         ( const std::vector<snode> & vect)      { scode = vect; }
+        void                        fromstr     (std::string strscode)                  { scode = fromstri(strscode); }
+        const std::vector<snode> &  nodes       ()                                      { return scode; }
 
         void build() {
 
@@ -31,16 +31,16 @@ class VHTree {
             asm("nop");
         }
 
-        int cntall() { return nds[0].id; }
+        int cntall() { return scode[0].id; }
 
         void dump() {
             int i=0;
-            for( const snode & n : nds) { printf("#%d  %2d:%d\n", i++, n.id, n.tt); }
+            for( const snode & n : scode) { printf("#%d  %2d:%d\n", i++, n.id, n.tt); }
             int minid = find_min_id();
             printf("cnt = %d\n", minid); }
 
         void dumplr() {
-            for( const snode & n : nds) { 
+            for( const snode & n : scode) { 
                 printf("%2d:%d L=%2d R=%2d\n", n.id, n.tt, left[n.id], righ[n.id]); } }
 
         void dumpnodes() {
@@ -61,6 +61,8 @@ class VHTree {
                 if( lay[i] == ll ) r.push_back(i); }
             return r; }
 
+        const std::vector<int> & seqlay(int lay) { return seqlays[lay]; }
+
         enum enNodeType {
             eNodeF = 0,     // F Fin
             eNodeL = 1,     // L Left
@@ -77,22 +79,20 @@ class VHTree {
             // Create and open a text file for writing
             std::ofstream output_file(fname); 
 
+                // Write each string followed by a newline
                 if (output_file.is_open()) {
                     for (const std::string& line : content) {
-                        // Write each string followed by a newline
-                        output_file << line << std::endl;
-                    }
-                    // Close the file
-                    output_file.close();
+                        output_file << line << std::endl; }
+                    output_file.close(); // Close the file
                     std::cout << "Data successfully saved to " << fname << std::endl;
-                } else {
-                    std::cerr << "Error: Unable to open file for writing " << fname << std::endl;
-                }
-        }
+                } else { 
+                    std::cerr << "Error: Unable to open file for writing " << fname << std::endl; } }
 
     private:
 
-        std::vector<snode> nds;
+        std::vector<snode> scode;
+        
+        std::vector<int> seqlays[16];       // 2D array layers sequence
 
         int left[256];
         int righ[256];
@@ -134,61 +134,66 @@ class VHTree {
             return r; }
 
         int find_min_id() {
-            int minval    = nds[0].id;
-            for( int i=1; i < nds.size();i++) {
-                if(nds[i].id < minval) minval = nds[i].id; }
+            int minval    = scode[0].id;
+            for( int i=1; i < scode.size();i++) {
+                if(scode[i].id < minval) minval = scode[i].id; }
             return minval; }
 
         int _numi;
-        int inum() { return _numi++; }
+        int inum() { 
+            int curnum = _numi++;
+            return curnum; }
 
-        void LinkLeft(int idx, int nidx, int curlay) {
+        void LinkLeft(int idx, int parent, int curlay) {
+            left    [parent]    = idx;
+            lay     [idx]       = curlay + 1;
+            up      [idx]       = parent;
+            seqlays [lay[idx]].push_back(idx); }
 
-        }
+        void LinkRigh(int idx, int parent, int curlay) {
+            righ    [parent]    = idx;
+            lay     [idx]       = curlay + 1;
+            up      [idx]       = parent;
+            seqlays [lay[idx]].push_back(idx); }
 
         // -----------------------------------------------------------------------------
         int recurse(int i, int layn) {
 
-            int tid = nds[i].id;
-            int tt  = nds[i].tt;
+            int tid = scode[i].id;
+            int tt  = scode[i].tt;
             int r   = i;
 
-            if(!i) {
-                _numi = 0;
-                lay[tid] = 0; }
+            if(!i) { _numi = 0; lay[tid] = 0; seqlays[layn].push_back(tid); }
 
             printf("ENTERING #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
 
-            if(tid == 12) {
-                asm("nop"); }
+            // if(tid == 12) {
+            //     asm("nop"); }
 
             switch(tt) {
-                case eNodeL:    {
-                    // LinkLeft(tid, nds[i+1].id, layn);
-                    left [tid] = nds[i+1].id;   lay[ left[tid] ] = layn + 1;
+                case eNodeL: {
+                    LinkLeft(scode[i+1].id, tid, layn);
                     r = recurse(r+1, layn+1);
-                    righ [tid] = inum();        lay[ righ[tid] ] = layn + 1;
+                    LinkRigh(inum(), tid, layn);
                     } break;
-                case eNodeR:    {
-                    righ [tid] = nds[i+1].id;   lay[ righ[tid] ] = layn + 1;
+                case eNodeR: {
+                    LinkLeft(inum(), tid, layn);
+                    LinkRigh(scode[i+1].id, tid, layn);
                     r = recurse(i+1, layn+1);
-                    left [tid] = inum();        lay[ left[tid] ] = layn + 1;
                 } break;
-                case eNodeB:    {
-                    left [tid] = nds[i+1].id;   lay[ left[tid] ] = layn + 1;
+                case eNodeB: {
+                    LinkLeft(scode[i+1].id, tid, layn);
                     r = recurse(i+1, layn+1);
-                    righ [tid] = nds[r+1].id;   lay[ righ[tid] ] = layn + 1;
+                    LinkRigh(scode[r+1].id, tid, layn);
                     r = recurse(r+1, layn+1);
                     } break;
-                default:        { 
-                    left [tid] = inum();        lay[ left[tid] ] = layn + 1;
-                    righ [tid] = inum();        lay[ righ[tid] ] = layn + 1;
-                    } break;
-            }
+                default: {
+                    LinkLeft(inum(), tid, layn);
+                    LinkRigh(inum(), tid, layn);
+                    } break; }
 
             printf("EXITING  #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
-            return r;
-        }
+            return r; }
 
     // -------------------------------------------------------------------------------------------------
     // SVG Related
@@ -331,12 +336,14 @@ class VHTree {
 
     std::vector<std::string> draw_layerelms(int ll) {
         std::vector<std::string> r;
-        std::vector<int> layids = findbylay(ll);
+        // std::vector<int> layids = findbylay(ll);
+        std::vector<int> layids = seqlay(ll);
         int gfxstpx = svg_width / (layids.size() + 1);
         for(int i=0; i<layids.size();i++) {
-            gfxpos_x[layids[i]] = (i+1) * gfxstpx;
-            gfxpos_y[layids[i]] = (ll * svg_layerh) + (svg_layerh>>1);
-            std::vector<std::string> tmp = draw_elm(layids[i]);
+            int idx = layids[i]; // FIX !
+            gfxpos_x[idx] = (i+1) * gfxstpx;
+            gfxpos_y[idx] = (ll * svg_layerh) + (svg_layerh>>1);
+            std::vector<std::string> tmp = draw_elm(idx);
             r.insert(r.end(), tmp.begin(), tmp.end()); }
         return r; }
 
