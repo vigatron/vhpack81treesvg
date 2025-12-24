@@ -27,6 +27,9 @@ int main(int argc, char * argv[]) {
     tcd.dump();
     tcd.build();
     tcd.dumplr();
+    tcd.dumpnodes();
+
+    tcd.savetosvg("pic.svg");
 
     return 0;
 }
