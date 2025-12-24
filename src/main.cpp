@@ -26,6 +26,7 @@ int main(int argc, char * argv[]) {
 
     tcd.dump();
     tcd.build();
+    tcd.dumplr();
 
     return 0;
 }

@@ -18,14 +18,29 @@ class VHTree {
         const std::vector<snode> & nodes() { return nds; }
 
         void build() {
-            for(int i=0; i<255; i++) { left [i] = 0xFFFF; righ [i] = 0xFFFF; up [i] = 0xFFFF; }
-            recurse(0); }
+
+            for(int i=0; i<255; i++) {
+                left [i] = 0xFFFF;
+                righ [i] = 0xFFFF;
+                up   [i] = 0xFFFF;
+                lay  [i] = 0xFFFF;
+            }
+
+            recurse(0, 0);
+            asm("nop");
+        }
 
         void dump() {
             int i=0;
-            for( const snode & n : nds) { printf("#%d  %d:%d\n", i++, n.id, n.tt); }
+            for( const snode & n : nds) { printf("#%d  %2d:%d\n", i++, n.id, n.tt); }
             int minid = find_min_id();
             printf("cnt = %d\n", minid); }
+
+        void dumplr() {
+            for( const snode & n : nds) { 
+                printf("%2d:%d L=%2d R=%2d\n", n.id, n.tt, left[n.id], righ[n.id]);
+            }
+        }
 
         enum enNodeType {
             eNodeF = 0,     // F Fin
@@ -42,6 +57,7 @@ class VHTree {
         int left[256];
         int righ[256];
         int up  [256];
+        int lay [256];
 
         std::vector<snode> fromstri(std::string scode) {
 
@@ -80,45 +96,46 @@ class VHTree {
                 if(nds[i].id < minval) minval = nds[i].id; }
             return minval; }
 
-        int recurse(int i) {
+        int _numi;
+        int inum() { return _numi++; }
+
+        int recurse(int i, int layn) {
+
+            if(!i) _numi = 0;
 
             int tid = nds[i].id;
             int tt  = nds[i].tt;
             int r   = i;
 
-            printf("ENTERING #%2d ( %d:%d ) \n", i, tid, tt);
+            printf("ENTERING #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
 
             if(tid == 12) {
                 asm("nop"); }
 
             switch(tt) {
                 case eNodeL:    {
-                    int jinl = nds[i+1].id;
-                    left [tid] = jinl;
-                    r = recurse(r+1);
-                    righ [tid] = 0xAAAA;
+                    left [tid] = nds[i+1].id;
+                    r = recurse(r+1, layn+1);
+                    righ [tid] = inum();
                     } break;
                 case eNodeR:    {
-                    left [tid] = 0xAAAA;
-                    int jinr = nds[i+1].id;
-                    righ [tid] = jinr;
-                    r = recurse(i+1);
+                    righ [tid] = nds[i+1].id;
+                    r = recurse(i+1, layn+1);
+                    left [tid] = inum();
                 } break;
                 case eNodeB:    {
-                    int jinl = nds[i+1].id;
-                    left [tid] = jinl;
-                    r = recurse(i+1);
-                    int jinr = nds[r+1].id;
-                    righ [tid] = jinr;
-                    r = recurse(r+1);
+                    left [tid] = nds[i+1].id;
+                    r = recurse(i+1, layn+1);
+                    righ [tid] = nds[r+1].id;
+                    r = recurse(r+1, layn+1);
                     } break;
                 default:        { 
-                    left [tid] = 0xAAAA;
-                    righ [tid] = 0xAAAA; 
+                    left [tid] = inum();
+                    righ [tid] = inum(); 
                     } break;
             }
 
-            printf("EXITING  #%2d ( %d:%d ) \n", i, tid, tt);
+            printf("EXITING  #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
             return r;
         }
 
