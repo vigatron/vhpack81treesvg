@@ -20,8 +20,8 @@ using namespace std;
 
 int main(int argc, char * argv[]) {
 
-    // string strscode  = "[16:1][15:3][13:3][11:2][9:0][12:1][10:0][14:0]";
-    string strscode  = "[18:3][16:0][17:2][15:3][13:3][10:0][11:0][14:1][12:0]";
+    string strscode  = "[16:1][15:3][13:3][11:2][9:0][12:1][10:0][14:0]";
+    // string strscode  = "[18:3][16:0][17:2][15:3][13:3][10:0][11:0][14:1][12:0]";
 
     VHTree         tcd(strscode);
 
