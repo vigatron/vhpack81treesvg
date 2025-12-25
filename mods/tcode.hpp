@@ -216,37 +216,39 @@ class VHTree {
     // -------------------------------------------------------------------------------------------------
     // SVG Related
     // -------------------------------------------------------------------------------------------------
-    int     svg_width  = 2000;
-    int     svg_height = 1200;
+    int     svg_width       = 2000;
+    int     svg_height      = 1200;
+    int     svg_height_cut  = svg_height * 6 / 8;
 
-    int     svg_node_xdist = 60;
-    int     svg_elm_rad    = 40;
-    int     svg_elm_fntsz  = 20;
+    int     svg_elm_width   = 24;
+    int     svg_elm_fntsz   = 10;
+
+    int     svg_node_xdist = svg_elm_width;
+    int     svg_node_spacr = svg_node_xdist;
+    int     svg_lnkwidth   = 2;
 
     int     svg_depthmax;
 
     int     gfxpos_x[256];
     int     gfxpos_y[256];
 
-    int     gfx_nodew[256]; // Ширина ветки
+    int     gfx_nodewl[256]; // Ширина левой  ветки
+    int     gfx_nodewr[256]; // Ширина правой ветки
 
     // -------------------------------------------------------------------------------------------------
     // SVG Calculations
     // -------------------------------------------------------------------------------------------------
 
-    int gfxdef_cut_height() { return svg_height / 2; }
-
     int svgcalc_layer_height    ()          {
-        int activeh = svg_height - gfxdef_cut_height();
+        int activeh = svg_height - svg_height_cut;
         return activeh / (svg_depthmax + 1); }
 
     int svgcalc_layer_posy(int layn)  {
-        int posy = gfxdef_cut_height()/2 + layn * svgcalc_layer_height();
+        int posy = svg_height_cut/2 + layn * svgcalc_layer_height();
         return posy; }
 
     int svgcalc_layer_centerposy(int layn) {
-        return svgcalc_layer_posy(layn) + svgcalc_layer_height()/2;
-    }
+        return svgcalc_layer_posy(layn) + svgcalc_layer_height()/2; }
 
     std::string col_white       = "#FFFFFF";
 
@@ -306,7 +308,7 @@ class VHTree {
         std::string txt = "";
         txt += svg_param("cx", cx);
         txt += svg_param("cy", cy);
-        txt += svg_param("r",  r);
+        txt += svg_param( "r",  r);
         if(wdt) txt += svg_param("stroke-width", wdt);
         if(!colf.empty()) txt += svg_param("stroke", colf);
         if(!colb.empty()) txt += svg_param("fill", colb);
@@ -376,71 +378,48 @@ class VHTree {
     void svgcalc_w(int idx, int * retwl, int * retwr) {
 
         int idxl = left[idx];
-        if( idxl >= _cntlow) {
-            int wl, wr;
-            svgcalc_w(left[idx], &wl, &wr);
-            gfx_nodew[idxl] = wl + wr;
-        } else {
-            gfx_nodew[idxl] = svg_node_xdist;
-        }
-        * retwl = gfx_nodew[idxl];
-
         int idxr = righ[idx];
-        if(righ[idx] >= _cntlow) {
-            int wl, wr;
-            svgcalc_w(righ[idx], &wl, &wr);
-            gfx_nodew[idxr]  = wl + wr;
+        int wl, wr;
+
+        if( idxl < _cntlow) {
+            int ws = svg_node_xdist + svg_node_spacr;
+            gfx_nodewl[idx ] = ws;
+            gfx_nodewl[idxl] = ws / 2;
+            gfx_nodewr[idxl] = ws / 2;
         } else {
-            gfx_nodew[idxr] = svg_node_xdist;
+            svgcalc_w(idxl, &wl, &wr);
+            gfx_nodewl[idx] = wl + wr;
         }
-        * retwr = gfx_nodew[idxr];
+
+        if( idxr < _cntlow) {
+            int ws = svg_node_xdist + svg_node_spacr;
+            gfx_nodewr[idx ] = ws;
+            gfx_nodewl[idxr] = ws / 2;
+            gfx_nodewr[idxr] = ws / 2;
+        } else {
+            svgcalc_w(idxr, &wl, &wr);
+            gfx_nodewr[idx]  = wl + wr;
+        }
+
+        *retwl = gfx_nodewl[idx];
+        *retwr = gfx_nodewr[idx];
+        printf("W%2d  (L:%d R:%d) S:%d\n", idx, *retwl, *retwr, *retwl + *retwr);
 
     }
-
 
     // -------------------------------------------------------------------------------------------------
 
-    void svgcalc_set_coords(int idx, int cx) {
+    void svgcalc_set_coords(int idx, int nodex) {
 
-        int idxl = left[idx];
-        int idxr = righ[idx];
- 
-        if( idxl >= _cntlow) {
-            svgcalc_set_coords( idxl, cx - gfx_nodew[idxl]/2 );
-        } else {
-            gfxpos_x[idxl] = cx - gfx_nodew[idxl];
-            gfxpos_y[idxl] = svgcalc_layer_centerposy(lay[idxl]);
-        }
-
-        if(righ[idx] >= _cntlow) {
-            svgcalc_set_coords( idxr, cx + gfx_nodew[idxr]/2 );
-        } else {
-            gfxpos_x[idxr] = cx + gfx_nodew[idxr];
-            gfxpos_y[idxr] = svgcalc_layer_centerposy(lay[idxr]);
-        }
-
-        gfxpos_x[idx] = cx;
+        gfxpos_x[idx] = nodex;
         gfxpos_y[idx] = svgcalc_layer_centerposy(lay[idx]);
 
-        // int cntinlay = 0;
-        // for(int i=0;i<=cntall();i++)
-        //     if(lay[i] == lay[idx]) cntinlay++;
-        // printf("objs_in_layer #%d = %d\n", lay[idx], cntinlay);
-
-
-        // int dist = 200 - (lay[idx]*10);
-
-        // if(idx==13) {
-        //     asm("nop");
-        // }
-
-        // // Node or sym ?
-        // if(idx >= _cntlow) { 
-        //     if( ( left[idx] < _cntlow) && ( righ[idx] < _cntlow )) dist = 50;
-        //     svgcalc_gfx_coords(left[idx], cx - dist);
-        //     svgcalc_gfx_coords(righ[idx], cx + dist); }
-
-    }
+        if(idx >= _cntlow) {
+            int lnodex = nodex - gfx_nodewr[ left[idx] ];
+            svgcalc_set_coords( left[idx], lnodex );
+            int rnodex = nodex + gfx_nodewl[ righ[idx] ];
+            svgcalc_set_coords( righ[idx], rnodex );
+        } }
 
     // -------------------------------------------------------------------------------------------------
 
@@ -450,7 +429,7 @@ class VHTree {
         int y1 = gfxpos_y[idx1];
         int x2 = gfxpos_x[idx2];
         int y2 = gfxpos_y[idx2];
-        r.push_back( svg_line(x1, y1, x2, y2, 6, col_mgray) );
+        r.push_back( svg_line(x1, y1, x2, y2, svg_lnkwidth, col_mgray) );
         return r; }
 
     // -------------------------------------------------------------------------------------------------
@@ -470,41 +449,53 @@ class VHTree {
         std::vector<std::string> r;
         int elms = find_min_id();
 
-        bool fine = idx < elms;
-
-        int qua_w = svg_elm_rad * 0.8;
-       
-        int fontw = svg_elm_fntsz * 3 / 4;
-        int fonth = svg_elm_fntsz * 4 / 7;
+        bool flagsym = idx < elms;
 
         int cx = gfxpos_x[idx];
         int cy = gfxpos_y[idx];
 
-        int qx = gfxpos_x[idx] - qua_w/2;
-        int qy = gfxpos_y[idx] - qua_w/2;
+        int qx = gfxpos_x[idx] - svg_elm_width/2;
+        int qy = gfxpos_y[idx] - svg_elm_width/2;
+        int th = 1.5;
 
+        int fontw = svg_elm_fntsz * 3 / 4;
+        int fonth = svg_elm_fntsz * 4 / 7;
         int tx = gfxpos_x[idx] - ((idx>9) ? (fontw * 3 / 5) : (fontw / 4));
         int ty = gfxpos_y[idx] + (fonth / 2);
 
-        int th = 4;
 
-        std::string colf = fine ? col_dblue : col_dgreen;
-        std::string colb = fine ? col_sblue : col_lgreen;
+        std::string colf = flagsym ? col_dblue : col_dgreen;
+        std::string colb = flagsym ? col_sblue : col_lgreen;
 
         std::string font = "sans-serif";
 
-        if(!fine) {
-            r.push_back(svg_circ(cx, cy, svg_elm_rad * 6 / 10, th*2/3, colf, "white")); }
 
-        std::string fig = fine ?
-            svg_rect(qx, qy, qua_w, qua_w,  th, colf, colb ) :
-            svg_circ(cx, cy, svg_elm_rad/2,       th, colf, colb);
+        // Debug staff : Rectangle [WL|WR]
+        bool show_wl_range = false;
+        if(show_wl_range) {
+            int sx = gfxpos_x[idx] - gfx_nodewl[idx];
+            int ww = gfx_nodewl[idx] + gfx_nodewr[idx];
+            r.push_back( svg_rect(sx, qy, ww, svg_elm_width, 1, "black", "orange" ) );
+        }
 
-        std::string txt_idx = svg_text(tx, ty, std::to_string(idx), font, fontw, col_gray );
+        if(!flagsym) {
+            r.push_back(svg_circ(cx, cy, svg_elm_width*5/8, th*3/8, colf, "white")); }
+
+        std::string fig = flagsym ?
+            svg_rect(qx, qy, svg_elm_width, svg_elm_width,      th, colf, colb ) :
+            svg_circ(cx, cy, svg_elm_width/2,   th, colf, colb);
         r.push_back( fig );
 
-
+        std::string txt_idx = svg_text(tx, ty, std::to_string(idx), font, fontw, col_gray );
         r.push_back( txt_idx );
+
+        // Props print
+        bool show_props = false;
+        if(show_props) {
+            r.push_back( svg_text(tx, ty - 30, std::to_string(gfxpos_x[idx]), font, 10, "black" ) );
+            std::string wlwr = std::to_string(gfx_nodewl[idx]) + ":" + std::to_string(gfx_nodewr[idx]);
+            r.push_back( svg_text(tx, ty - 20, wlwr, font, 10, "black" ) );
+        }
 
         return r; }
 
@@ -541,6 +532,9 @@ class VHTree {
         tmp = draw_background();        r.insert(r.end(), tmp.begin(), tmp.end() );
         tmp = draw_links(scode[0].id);  r.insert(r.end(), tmp.begin(), tmp.end() ); // recurse
         tmp = draw_elems(scode[0].id);  r.insert(r.end(), tmp.begin(), tmp.end() ); // recurse
+
+        r.push_back( svg_rect( 0, 0, svg_elm_width,   svg_elm_width, 1, col_gray, "none" ));
+        r.push_back( svg_circ(10,10, svg_elm_width/2,                1, col_gray, "none" ));
 
         r.push_back("</svg>");
         return r; }
