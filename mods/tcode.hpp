@@ -15,22 +15,19 @@ class VHTree {
 
         VHTree() { }
         VHTree                                  ( std::string str)                      { fromstr(str); }
-        void                        set         ( const std::vector<stnode> & vect)      { scode = vect; }
-        void                        fromstr     (std::string strscode)                  { scode = fromstri(strscode); }
-        const std::vector<stnode> &  nodes       ()                                      { return scode; }
+        void                            set     ( const std::vector<stnode> & vect)     { scode = vect; }
+        void                            fromstr (std::string strscode)                  { scode = fromstri(strscode); }
+        const std::vector<stnode> &     nodes   ( )                                     { return scode; }
+
+        void clrnode(int i) {
+            left [i] = 0xFFFF; righ [i] = 0xFFFF; up [i] = 0xFFFF; lay [i] = 0xFFFF; }
 
         void build() {
-
-            for(int i=0; i<255; i++) {
-                left [i] = 0xFFFF;
-                righ [i] = 0xFFFF;
-                up   [i] = 0xFFFF;
-                lay  [i] = 0xFFFF; }
-
+            for(int i=0; i<255; i++) { clrnode(i); }
+            _cntlow = find_min_id();
             recurse1pass(0, 0);
             attachelms();
-            asm("nop");
-        }
+            asm("nop"); }
 
         int cntall() { return scode[0].id; }
 
@@ -93,17 +90,15 @@ class VHTree {
 
 
         std::vector<stnode>      scode;             // Binary tree scode
-        std::vector<stattach>    sattach;          // Link elms
+        std::vector<stattach>    sattach;           // Link elms
         std::vector<int>         seqlays[16];       // 2D array layers sequence
 
         int left[256];
         int righ[256];
         int up  [256];
         int lay [256];
+        int _cntlow;
 
-        // SVG related
-        int gfxpos_x[256];
-        int gfxpos_y[256];
 
         std::vector<stnode> fromstri(std::string scode) {
 
@@ -141,11 +136,6 @@ class VHTree {
             for( int i=1; i < scode.size();i++) {
                 if(scode[i].id < minval) minval = scode[i].id; }
             return minval; }
-
-        // int _numi;
-        // int inum() { 
-        //     int curnum = _numi++;
-        //     return curnum; }
 
         void LinkLeft(int idx, int parent, int curlay) {
             left    [parent]    = idx;
@@ -226,11 +216,13 @@ class VHTree {
     // SVG Related
     // -------------------------------------------------------------------------------------------------
     int     svg_width  = 2000;
-    int     svg_height = 1500;
+    int     svg_height = 1200;
 
     int     svg_depthmax;
     int     svg_layerh;
 
+    int     gfxpos_x[256];
+    int     gfxpos_y[256];
 
     std::string yellowl         = "#FFFFE0";
     std::string yellowll        = "#FFFFF0";
@@ -333,16 +325,64 @@ class VHTree {
 
     // -------------------------------------------------------------------------------------------------
 
+    void svg_recalc_gfx_coords(int idx, int cx) {
+
+        // int cntinlay = 0;
+        // for(int i=0;i<=cntall();i++)
+        //     if(lay[i] == lay[idx]) cntinlay++;
+        // printf("objs_in_layer #%d = %d\n", lay[idx], cntinlay);
+        
+        gfxpos_x[idx] = cx;
+        gfxpos_y[idx] = lay[idx] * svg_layerh + (svg_layerh>>1);
+
+        int dist = 200 - (lay[idx]*10);
+
+        if(idx==13) {
+            asm("nop");
+        }
+
+        // Node or sym ?
+        if(idx >= _cntlow) { 
+            if( ( left[idx] < _cntlow) && ( righ[idx] < _cntlow )) dist = 50;
+            svg_recalc_gfx_coords(left[idx], cx - dist);
+            svg_recalc_gfx_coords(righ[idx], cx + dist); }
+
+    }
+
+    // -------------------------------------------------------------------------------------------------
+
+    std::vector<std::string> draw_link(int idx1, int idx2) {
+        std::vector<std::string> r;
+        int x1 = gfxpos_x[idx1];
+        int y1 = gfxpos_y[idx1];
+        int x2 = gfxpos_x[idx2];
+        int y2 = gfxpos_y[idx2];
+        r.push_back( svg_line(x1, y1, x2, y2, 6, col_mgray) );
+        return r; }
+
+    // -------------------------------------------------------------------------------------------------
+    std::vector<std::string> draw_links(int idx) {
+        std::vector<std::string> r;
+        std::vector<std::string> tmp;
+        if(idx >= _cntlow ) {
+            tmp = draw_link(idx, left[idx]); r.insert(r.end(), tmp.begin(), tmp.end());
+            tmp = draw_link(idx, righ[idx]); r.insert(r.end(), tmp.begin(), tmp.end());
+            tmp = draw_links(left[idx]);     r.insert(r.end(), tmp.begin(), tmp.end());
+            tmp = draw_links(righ[idx]);     r.insert(r.end(), tmp.begin(), tmp.end()); }
+        return r; }
+
+    // -------------------------------------------------------------------------------------------------
+
     std::vector<std::string> draw_elm(int idx) {
         std::vector<std::string> r;
         int elms = find_min_id();
 
         bool fine = idx < elms;
 
-        int cir_d = 120;
+        int cir_d = 80;
         int qua_w = cir_d * 0.8;
         
-        int fntsz = 70;
+        int fntsz = 40;
         int fontw = fntsz * 3 / 4;
         int fonth = fntsz * 4 / 7;
 
@@ -375,35 +415,27 @@ class VHTree {
 
     // -------------------------------------------------------------------------------------------------
 
-    std::vector<std::string> draw_layerelms(int ll) {
-        std::vector<std::string> r;
-        // std::vector<int> layids = findbylay(ll);
-        std::vector<int> layids = seqlay(ll);
-        int gfxstpx = svg_width / (layids.size() + 1);
-        for(int i=0; i<layids.size();i++) {
-            int idx = layids[i]; // FIX !
-            gfxpos_x[idx] = (i+1) * gfxstpx;
-            gfxpos_y[idx] = (ll * svg_layerh) + (svg_layerh>>1);
-            std::vector<std::string> tmp = draw_elm(idx);
-            r.insert(r.end(), tmp.begin(), tmp.end()); }
-        return r; }
+    // std::vector<std::string> draw_layerelms(int ll) {
+    //     std::vector<std::string> r;
+    //     // std::vector<int> layids = findbylay(ll);
+    //     std::vector<int> layids = seqlay(ll);
+    //     int gfxstpx = svg_width / (layids.size() + 1);
+    //     for(int i=0; i<layids.size();i++) {
+    //         int idx = layids[i]; // FIX !
+    //         std::vector<std::string> tmp = draw_elm(idx);
+    //         r.insert(r.end(), tmp.begin(), tmp.end()); }
+    //     return r; }
 
-    // -------------------------------------------------------------------------------------------------
-
-    std::vector<std::string> draw_layerselms() {
+    std::vector<std::string> draw_elems(int idx) {
         std::vector<std::string> r;
-        for(int ll=0; ll <= svg_depthmax; ll++) {
-            std::vector<std::string> tmp = draw_layerelms(ll);
-            r.insert(r.end(), tmp.begin(), tmp.end()); }
-        return r; }
+        std::vector<std::string> tmp;
+        
+        tmp = draw_elm(idx); r.insert(r.end(), tmp.begin(), tmp.end());
 
-    std::vector<std::string> draw_tstlink(int idx1, int idx2) {
-        std::vector<std::string> r;
-        int x1 = gfxpos_x[idx1];
-        int y1 = gfxpos_y[idx1];
-        int x2 = gfxpos_x[idx2];
-        int y2 = gfxpos_y[idx2];
-        r.push_back( svg_line(x1, y1, x2, y2, 6, col_mgray) );
+        if(idx >= _cntlow ) {
+            tmp = draw_elems(left[idx]);    r.insert(r.end(), tmp.begin(), tmp.end());
+            tmp = draw_elems(righ[idx]);    r.insert(r.end(), tmp.begin(), tmp.end()); }
+
         return r; }
 
     // -------------------------------------------------------------------------------------------------
@@ -415,16 +447,28 @@ class VHTree {
 
         svg_depthmax = scandepth();
         svg_layerh   = svg_height / (svg_depthmax + 1);
+        svg_recalc_gfx_coords(scode[0].id, svg_width / 2); // recurse, start from root
 
         r.push_back( svg_wnd() );
-        tmp = draw_background();    r.insert(r.end(), tmp.begin(), tmp.end() );
-
-        tmp = draw_layerselms();    r.insert(r.end(), tmp.begin(), tmp.end() );
-
-        tmp = draw_tstlink(16, 15); r.insert(r.end(), tmp.begin(), tmp.end() );
-        tmp = draw_tstlink(16,  8); r.insert(r.end(), tmp.begin(), tmp.end() );
-        tmp = draw_tstlink(15, 13); r.insert(r.end(), tmp.begin(), tmp.end() );
+        tmp = draw_background();        r.insert(r.end(), tmp.begin(), tmp.end() );
+        tmp = draw_links(scode[0].id);  r.insert(r.end(), tmp.begin(), tmp.end() ); // recurse
+        tmp = draw_elems(scode[0].id);  r.insert(r.end(), tmp.begin(), tmp.end() ); // recurse
 
         r.push_back("</svg>");
         return r; }
 };
+
+    // -------------------------------------------------------------------------------------------------
+
+    // std::vector<std::string> draw_elms() {
+    //     std::vector<std::string> r;
+    //     for(int ll=0; ll <= svg_depthmax; ll++) {
+    //         std::vector<std::string> tmp = draw_layerelms(ll);
+    //         r.insert(r.end(), tmp.begin(), tmp.end()); }
+    //     return r; }
+
+    // -------------------------------------------------------------------------------------------------
+
+    // std::vector<std::string> draw_alllinks() {
+    //     std::vector<std::string> r;
+    //     return r; }
