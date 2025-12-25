@@ -265,7 +265,7 @@ class VHTree {
     int     svg_height_cut  = svg_height * 6 / 8;
 
     int     svg_elm_width   = 26;
-    int     svg_elm_fntsz   = 10;
+    int     svg_elm_fntsz   = 12;
 
     int     svg_node_xdist = svg_elm_width;
     int     svg_node_spacr = svg_node_xdist;
@@ -303,13 +303,18 @@ class VHTree {
 
     std::string yellowl         = "#FFFFE0";
     std::string yellowll        = "#FFFFF0";
+    std::string col_myell       = "#FFFFD0";
+    std::string col_nyell       = "#FFFFA0";
 
     std::string col_lgreen      = "#E0FFE0";
+    std::string col_mgreen      = "#90C090";
+    std::string col_ngreen      = "#80AF80";
     std::string col_dgreen      = "#00AF00";
 
     std::string col_lblue       = "#F0F0FF";
     std::string col_sblue       = "#E0E0FF";
     std::string col_mblue       = "#C0C0FF";
+    std::string col_nblue       = "#8080FF";
     std::string col_dblue       = "#0000B0";
 
     std::string col_sgray       = "#E0E0E0";
@@ -407,10 +412,12 @@ class VHTree {
 
         r.push_back( svg_rect(0, 0, svg_width, svg_height, 0, col_white, col_white ) );
 
+        int w = gfx_ramka_x2 - gfx_ramka_x1;
+
         for(int ll=0; ll <= svg_depthmax; ll++) {
             int layposy = svgcalc_layer_posy(ll);
             std::string color = (ll & 1) ? yellowll : yellowl;
-            std::string fig   = svg_rect(0, svgcalc_layer_posy(ll), svg_width, svgcalc_layer_height(), 0, color, color );
+            std::string fig   = svg_rect(gfx_ramka_x1, svgcalc_layer_posy(ll), w, svgcalc_layer_height(), 0, color, color );
             r.push_back( fig ); }
         return r; }
 
@@ -499,7 +506,7 @@ class VHTree {
         int y1 = gfxpos_y[idx1];
         int x2 = gfxpos_x[idx2];
         int y2 = gfxpos_y[idx2];
-        r.push_back( svg_line(x1, y1, x2, y2, svg_lnkwidth, col_mgray) );
+        r.push_back( svg_line(x1, y1, x2, y2, svg_lnkwidth, col_mgreen) );
         return r; }
 
     // -------------------------------------------------------------------------------------------------
@@ -533,7 +540,7 @@ class VHTree {
         int tx = gfxpos_x[idx] - ((idx>9) ? (fontw * 3 / 5) : (fontw / 4));
         int ty = gfxpos_y[idx] + (fonth / 2);
 
-        std::string colf = flagsym ? col_dblue : col_dgreen;
+        std::string colf = flagsym ? col_mblue : col_dgreen;
         std::string colb = flagsym ? col_sblue : col_lgreen;
 
         // Debug staff : Rectangle [WL|WR]
@@ -583,27 +590,34 @@ class VHTree {
 
     void draw_layers() {
         for(int i=0; i <= svg_depthmax; i++) {
-            int cx = gfx_ramka_x1 + 15;
+            int cx = gfx_ramka_x1 + 18;
             int cy = svgcalc_layer_posy(i) + svgcalc_layer_height()/2;
-            svgcontent_append ( svg_text(cx, cy, "L #" + std::to_string(i), fntSans, 8, col_lgray) );
+            svgcontent_append ( svg_circ(cx + 4, cy-2, svg_elm_width/2, 1, col_nyell, col_myell) );
+            svgcontent_append ( svg_text(cx, cy, "L" + std::to_string(i), fntSans, 9, col_lgray) );
         }
+    }
+
+    // -------------------------------------------------------------------------------------------------
+
+    void draw_scode() {
+        
+        std::string str = astext() + " : " + asbin(); // SCode : TCode form
+        int w = (gfx_ramka_x2 - gfx_ramka_x1)/2;
+        int dd = 4;
+        svgcontent_append ( svg_rect(gfx_ramka_x1 + dd, gfx_ramka_y1 + dd, w - dd*2, 46, 1, col_lblue, col_lblue, 8));
+        svgcontent_append ( svg_text(gfx_ramka_x1 + 18, gfx_ramka_y1 + 32, str, fntSans, 16, col_nblue ) );
     }
 
     // -------------------------------------------------------------------------------------------------
 
     void draw_ramka() {
 
-
         int w = gfx_ramka_x2 - gfx_ramka_x1;
         int h = gfx_ramka_y2 - gfx_ramka_y1;
 
-        svgcontent_append ( svg_rect(gfx_ramka_x1, gfx_ramka_y1, w, h, 2, col_dblue, "none", 10 ) );
-        svgcontent_append ( svg_text(gfx_ramka_x1  +  10, gfx_ramka_y1 - 10, "Визуализатор деревьев", fntSans, 15, col_dblue) );
-        svgcontent_append ( svg_text(gfx_ramka_x2 - 140, gfx_ramka_y1 - 10, "V1.00 V01G04A81 (C) 2025", fntSans, 10, col_dblue) );
-
-        // SCode form
-        svgcontent_append ( svg_text(gfx_ramka_x1 + 24, gfx_ramka_y1 + 26, astext(),   fntSans, 12, col_dblue) );
-        svgcontent_append ( svg_text(gfx_ramka_x1 + 24, gfx_ramka_y1 + 40, asbin(),    fntSans, 12, col_dblue) );
+        svgcontent_append ( svg_rect(gfx_ramka_x1, gfx_ramka_y1, w, h, 1.5, col_nblue, "none", 12 ) );
+        svgcontent_append ( svg_text(gfx_ramka_x1 +  10, gfx_ramka_y1 - 10, "Визуализатор деревьев Хаффмана", fntSans, 15, col_lgray) );
+        svgcontent_append ( svg_text(gfx_ramka_x2 - 140, gfx_ramka_y1 - 10, "V1.00 V01G04A81 (C) 2025", fntSans, 10, col_lgray) );
 
     }
 
@@ -628,6 +642,7 @@ class VHTree {
         svgcontent_append( draw_elems( cntall() ) ); // recurse
 
         draw_layers();
+        draw_scode();
         draw_ramka();
 
         // r.push_back( svg_rect( 0, 0, svg_elm_width,   svg_elm_width, 1, col_gray, "none" ));
