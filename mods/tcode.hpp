@@ -6,8 +6,8 @@
 #include <fstream>
 
 
-struct snode { int id; int tt; };
-
+struct stnode    { int id; int tt; };
+struct stattach  { int idx; int tt; int lay; };
 
 class VHTree {
 
@@ -15,9 +15,9 @@ class VHTree {
 
         VHTree() { }
         VHTree                                  ( std::string str)                      { fromstr(str); }
-        void                        set         ( const std::vector<snode> & vect)      { scode = vect; }
+        void                        set         ( const std::vector<stnode> & vect)      { scode = vect; }
         void                        fromstr     (std::string strscode)                  { scode = fromstri(strscode); }
-        const std::vector<snode> &  nodes       ()                                      { return scode; }
+        const std::vector<stnode> &  nodes       ()                                      { return scode; }
 
         void build() {
 
@@ -27,7 +27,8 @@ class VHTree {
                 up   [i] = 0xFFFF;
                 lay  [i] = 0xFFFF; }
 
-            recurse(0, 0);
+            recurse1pass(0, 0);
+            attachelms();
             asm("nop");
         }
 
@@ -35,12 +36,12 @@ class VHTree {
 
         void dump() {
             int i=0;
-            for( const snode & n : scode) { printf("#%d  %2d:%d\n", i++, n.id, n.tt); }
+            for( const stnode & n : scode) { printf("#%d  %2d:%d\n", i++, n.id, n.tt); }
             int minid = find_min_id();
             printf("cnt = %d\n", minid); }
 
         void dumplr() {
-            for( const snode & n : scode) { 
+            for( const stnode & n : scode) { 
                 printf("%2d:%d L=%2d R=%2d\n", n.id, n.tt, left[n.id], righ[n.id]); } }
 
         void dumpnodes() {
@@ -90,24 +91,26 @@ class VHTree {
 
     private:
 
-        std::vector<snode> scode;
-        
-        std::vector<int> seqlays[16];       // 2D array layers sequence
+
+        std::vector<stnode>      scode;             // Binary tree scode
+        std::vector<stattach>    sattach;          // Link elms
+        std::vector<int>         seqlays[16];       // 2D array layers sequence
 
         int left[256];
         int righ[256];
         int up  [256];
         int lay [256];
 
+        // SVG related
         int gfxpos_x[256];
         int gfxpos_y[256];
 
-        std::vector<snode> fromstri(std::string scode) {
+        std::vector<stnode> fromstri(std::string scode) {
 
             std::vector<int>     lbo; // [
             std::vector<int>     lsp; // :
             std::vector<int>     lbc; // ]
-            std::vector<snode>   r;
+            std::vector<stnode>   r;
 
             for(int i=0;i<scode.size();i++) {
                 char s = scode[i];
@@ -128,7 +131,7 @@ class VHTree {
             for(int i=0; i< lbo.size();i++) {
                 std::string sid = scode.substr(lbo[i]+1, lsp[i] - lbo[i] - 1);
                 std::string sit = scode.substr(lsp[i]+1, lbc[i] - lsp[i] - 1);
-                snode nn = { .id = std::stoi(sid), .tt = std::stoi(sit) };
+                stnode nn = { .id = std::stoi(sid), .tt = std::stoi(sit) };
                 r.push_back(nn); }
 
             return r; }
@@ -139,33 +142,46 @@ class VHTree {
                 if(scode[i].id < minval) minval = scode[i].id; }
             return minval; }
 
-        int _numi;
-        int inum() { 
-            int curnum = _numi++;
-            return curnum; }
+        // int _numi;
+        // int inum() { 
+        //     int curnum = _numi++;
+        //     return curnum; }
 
         void LinkLeft(int idx, int parent, int curlay) {
             left    [parent]    = idx;
             lay     [idx]       = curlay + 1;
             up      [idx]       = parent;
-            seqlays [lay[idx]].push_back(idx); }
+            // seqlays [lay[idx]].push_back(idx);
+            printf("LinkLeft #%d <- %d L%d\n", idx, parent, curlay);
+        }
 
         void LinkRigh(int idx, int parent, int curlay) {
             righ    [parent]    = idx;
             lay     [idx]       = curlay + 1;
             up      [idx]       = parent;
-            seqlays [lay[idx]].push_back(idx); }
+            // seqlays [lay[idx]].push_back(idx);
+            printf("LinkRigh #%d <- %d L%d\n", idx, parent, curlay);
+        }
 
         // -----------------------------------------------------------------------------
-        int recurse(int i, int layn) {
+
+        void pushattach(int idx, int tt, int lay) {
+            stattach s = { .idx = idx, .tt = tt, .lay=lay };
+            sattach.push_back(s); }
+
+        // -----------------------------------------------------------------------------
+        int recurse1pass(int i, int layn) {
 
             int tid = scode[i].id;
             int tt  = scode[i].tt;
             int r   = i;
 
-            if(!i) { _numi = 0; lay[tid] = 0; seqlays[layn].push_back(tid); }
+            if(!i) {
+                lay[tid] = 0;
+                // seqlays[layn].push_back(tid);
+            }
 
-            printf("ENTERING #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
+            printf("Pass1 Enter >   #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
 
             // if(tid == 12) {
             //     asm("nop"); }
@@ -173,27 +189,38 @@ class VHTree {
             switch(tt) {
                 case eNodeL: {
                     LinkLeft(scode[i+1].id, tid, layn);
-                    r = recurse(r+1, layn+1);
-                    LinkRigh(inum(), tid, layn);
+                    r = recurse1pass(r+1, layn+1);
+                    pushattach(tid, tt, layn);
                     } break;
                 case eNodeR: {
-                    LinkLeft(inum(), tid, layn);
                     LinkRigh(scode[i+1].id, tid, layn);
-                    r = recurse(i+1, layn+1);
+                    r = recurse1pass(i+1, layn+1);
+                    pushattach(tid, tt, layn);
                 } break;
                 case eNodeB: {
                     LinkLeft(scode[i+1].id, tid, layn);
-                    r = recurse(i+1, layn+1);
+                    r = recurse1pass(i+1, layn+1);
                     LinkRigh(scode[r+1].id, tid, layn);
-                    r = recurse(r+1, layn+1);
+                    r = recurse1pass(r+1, layn+1);
                     } break;
                 default: {
-                    LinkLeft(inum(), tid, layn);
-                    LinkRigh(inum(), tid, layn);
+                    pushattach(tid, tt, layn);
                     } break; }
 
-            printf("EXITING  #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
+            printf("Pass1 Exit  <   #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
             return r; }
+
+        // -----------------------------------------------------------------------------
+
+        void attachelms() {
+            int maxdepth = scandepth() + 1;
+            int nidx = 0;
+            for(int i = maxdepth ; i >= 0 ; i--) {
+                for(const stattach & item : sattach) {
+                    if(item.lay == i) {
+                        if((item.tt == eNodeR) || (item.tt == eNodeF)) { LinkLeft(nidx, item.idx, item.lay); nidx++; }
+                        if((item.tt == eNodeL) || (item.tt == eNodeF)) { LinkRigh(nidx, item.idx, item.lay); nidx++; }
+                    } } } }
 
     // -------------------------------------------------------------------------------------------------
     // SVG Related
@@ -242,8 +269,6 @@ class VHTree {
         txt += svg_param("height", svg_height );
         txt += svg_param("xmlns", "http://www.w3.org/2000/svg");
         return svg_line("svg", txt, false); }
-
-    // r.push_back("<line x1=\"0\" y1=\"0\" x2=\"24\" y2=\"24\" stroke=\"black\" stroke-width=\"2\"/>");
 
     // -------------------------------------------------------------------------------------------------
 

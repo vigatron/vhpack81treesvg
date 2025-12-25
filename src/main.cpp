@@ -30,7 +30,7 @@ int main(int argc, char * argv[]) {
     tcd.dumplr();
     tcd.dumpnodes();
 
-    tcd.savetosvg("pic.svg");
+    // tcd.savetosvg("pic.svg");
 
     return 0;
 }
