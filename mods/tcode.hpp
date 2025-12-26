@@ -47,14 +47,14 @@ class VHTree {
                 unsigned char b = item.tt;
                 
                 switch(msk) {
-                    case 0x80: v |= b << 7; break;
-                    // case 0x40: v |= b << 6; break;
-                    case 0x20: v |= b << 5; break;
-                    // case 0x10: v |= b << 4; break;
-                    case 0x08: v |= b << 3; break;
-                    // case 0x04: v |= b << 2; break;
-                    case 0x02: v |= b << 1; break;
-                    // case 0x01: v |= b << 0; break;
+                    case 0x80: v |= b << 6; break;
+                    case 0x40: v |= b << 5; break;
+                    case 0x20: v |= b << 4; break;
+                    case 0x10: v |= b << 3; break;
+                    case 0x08: v |= b << 2; break;
+                    case 0x04: v |= b << 1; break;
+                    case 0x02: v |= b << 0; break;
+                    case 0x01: v |= b << 0; break;
                     default: break; }
 
                 msk >>= 2;
@@ -601,7 +601,7 @@ class VHTree {
 
     void draw_scode() {
         
-        std::string str = astext() + " : " + asbin(); // SCode : TCode form
+        std::string str = asbin() + " : " + astext(); // TCode : SCode
         int w = (gfx_ramka_x2 - gfx_ramka_x1)/2;
         int dd = 4;
         svgcontent_append ( svg_rect(gfx_ramka_x1 + dd, gfx_ramka_y1 + dd, w - dd*2, 46, 1, col_lblue, col_lblue, 8));

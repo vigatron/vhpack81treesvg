@@ -1,0 +1,91 @@
+<svg width="2000" height="1200" xmlns="http://www.w3.org/2000/svg" >
+<rect x="0" y="0" width="2000" height="1200" stroke="#FFFFFF" fill="#FFFFFF" />
+<rect x="842" y="450" width="628" height="50" stroke="#FFFFE0" fill="#FFFFE0" />
+<rect x="842" y="500" width="628" height="50" stroke="#FFFFF0" fill="#FFFFF0" />
+<rect x="842" y="550" width="628" height="50" stroke="#FFFFE0" fill="#FFFFE0" />
+<rect x="842" y="600" width="628" height="50" stroke="#FFFFF0" fill="#FFFFF0" />
+<rect x="842" y="650" width="628" height="50" stroke="#FFFFE0" fill="#FFFFE0" />
+<rect x="842" y="700" width="628" height="50" stroke="#FFFFF0" fill="#FFFFF0" />
+<line x1="1000" y1="475" x2="948" y2="525" stroke-width="2" stroke="#90C090" />
+<line x1="1000" y1="475" x2="1052" y2="525" stroke-width="2" stroke="#90C090" />
+<line x1="948" y1="525" x2="922" y2="575" stroke-width="2" stroke="#90C090" />
+<line x1="948" y1="525" x2="974" y2="575" stroke-width="2" stroke="#90C090" />
+<line x1="1052" y1="525" x2="1026" y2="575" stroke-width="2" stroke="#90C090" />
+<line x1="1052" y1="525" x2="1260" y2="575" stroke-width="2" stroke="#90C090" />
+<line x1="1260" y1="575" x2="1156" y2="625" stroke-width="2" stroke="#90C090" />
+<line x1="1260" y1="575" x2="1364" y2="625" stroke-width="2" stroke="#90C090" />
+<line x1="1156" y1="625" x2="1104" y2="675" stroke-width="2" stroke="#90C090" />
+<line x1="1156" y1="625" x2="1208" y2="675" stroke-width="2" stroke="#90C090" />
+<line x1="1104" y1="675" x2="1078" y2="725" stroke-width="2" stroke="#90C090" />
+<line x1="1104" y1="675" x2="1130" y2="725" stroke-width="2" stroke="#90C090" />
+<line x1="1208" y1="675" x2="1182" y2="725" stroke-width="2" stroke="#90C090" />
+<line x1="1208" y1="675" x2="1234" y2="725" stroke-width="2" stroke="#90C090" />
+<line x1="1364" y1="625" x2="1312" y2="675" stroke-width="2" stroke="#90C090" />
+<line x1="1364" y1="625" x2="1390" y2="675" stroke-width="2" stroke="#90C090" />
+<line x1="1312" y1="675" x2="1286" y2="725" stroke-width="2" stroke="#90C090" />
+<line x1="1312" y1="675" x2="1338" y2="725" stroke-width="2" stroke="#90C090" />
+<circle cx="1000" cy="475" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1000" cy="475" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="995" y="478" font-family="sans-serif" font-size="9px" fill="#303030" >18</text>
+<circle cx="948" cy="525" r="16" stroke="#00AF00" fill="white" />
+<circle cx="948" cy="525" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="943" y="528" font-family="sans-serif" font-size="9px" fill="#303030" >16</text>
+<rect x="909" y="562" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="920" y="578" font-family="sans-serif" font-size="9px" fill="#303030" >7</text>
+<rect x="961" y="562" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="972" y="578" font-family="sans-serif" font-size="9px" fill="#303030" >8</text>
+<circle cx="1052" cy="525" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1052" cy="525" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1047" y="528" font-family="sans-serif" font-size="9px" fill="#303030" >17</text>
+<rect x="1013" y="562" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1024" y="578" font-family="sans-serif" font-size="9px" fill="#303030" >9</text>
+<circle cx="1260" cy="575" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1260" cy="575" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1255" y="578" font-family="sans-serif" font-size="9px" fill="#303030" >15</text>
+<circle cx="1156" cy="625" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1156" cy="625" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1151" y="628" font-family="sans-serif" font-size="9px" fill="#303030" >13</text>
+<circle cx="1104" cy="675" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1104" cy="675" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1099" y="678" font-family="sans-serif" font-size="9px" fill="#303030" >10</text>
+<rect x="1065" y="712" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1076" y="728" font-family="sans-serif" font-size="9px" fill="#303030" >0</text>
+<rect x="1117" y="712" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1128" y="728" font-family="sans-serif" font-size="9px" fill="#303030" >1</text>
+<circle cx="1208" cy="675" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1208" cy="675" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1203" y="678" font-family="sans-serif" font-size="9px" fill="#303030" >11</text>
+<rect x="1169" y="712" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1180" y="728" font-family="sans-serif" font-size="9px" fill="#303030" >2</text>
+<rect x="1221" y="712" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1232" y="728" font-family="sans-serif" font-size="9px" fill="#303030" >3</text>
+<circle cx="1364" cy="625" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1364" cy="625" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1359" y="628" font-family="sans-serif" font-size="9px" fill="#303030" >14</text>
+<circle cx="1312" cy="675" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1312" cy="675" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1307" y="678" font-family="sans-serif" font-size="9px" fill="#303030" >12</text>
+<rect x="1273" y="712" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1284" y="728" font-family="sans-serif" font-size="9px" fill="#303030" >4</text>
+<rect x="1325" y="712" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1336" y="728" font-family="sans-serif" font-size="9px" fill="#303030" >5</text>
+<rect x="1377" y="662" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1388" y="678" font-family="sans-serif" font-size="9px" fill="#303030" >6</text>
+<circle cx="864" cy="473" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="860" y="475" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L0</text>
+<circle cx="864" cy="523" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="860" y="525" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L1</text>
+<circle cx="864" cy="573" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="860" y="575" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L2</text>
+<circle cx="864" cy="623" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="860" y="625" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L3</text>
+<circle cx="864" cy="673" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="860" y="675" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L4</text>
+<circle cx="864" cy="723" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="860" y="725" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L5</text>
+<rect x="846" y="399" width="306" height="46" rx="8" ry="8" stroke-width="1" stroke="#F0F0FF" fill="#F0F0FF" />
+<text x="860" y="427" font-family="sans-serif" font-size="16px" fill="#8080FF" >8CBC10 : 8302330010</text>
+<rect x="842" y="395" width="628" height="410" rx="12" ry="12" stroke-width="1" stroke="#8080FF" fill="none" />
+<text x="852" y="385" font-family="sans-serif" font-size="15px" fill="#A0A0A0" >Визуализатор деревьев Хаффмана</text>
+<text x="1330" y="385" font-family="sans-serif" font-size="10px" fill="#A0A0A0" >V1.00 V01G04A81 (C) 2025</text>
+</svg>

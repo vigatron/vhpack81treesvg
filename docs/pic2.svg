@@ -1,0 +1,70 @@
+<svg width="2000" height="1200" xmlns="http://www.w3.org/2000/svg" >
+<rect x="0" y="0" width="2000" height="1200" stroke="#FFFFFF" fill="#FFFFFF" />
+<rect x="894" y="450" width="472" height="50" stroke="#FFFFE0" fill="#FFFFE0" />
+<rect x="894" y="500" width="472" height="50" stroke="#FFFFF0" fill="#FFFFF0" />
+<rect x="894" y="550" width="472" height="50" stroke="#FFFFE0" fill="#FFFFE0" />
+<rect x="894" y="600" width="472" height="50" stroke="#FFFFF0" fill="#FFFFF0" />
+<rect x="894" y="650" width="472" height="50" stroke="#FFFFE0" fill="#FFFFE0" />
+<rect x="894" y="700" width="472" height="50" stroke="#FFFFF0" fill="#FFFFF0" />
+<line x1="1000" y1="475" x2="974" y2="525" stroke-width="2" stroke="#90C090" />
+<line x1="1000" y1="475" x2="1260" y2="525" stroke-width="2" stroke="#90C090" />
+<line x1="1260" y1="525" x2="1156" y2="575" stroke-width="2" stroke="#90C090" />
+<line x1="1260" y1="525" x2="1286" y2="575" stroke-width="2" stroke="#90C090" />
+<line x1="1156" y1="575" x2="1052" y2="625" stroke-width="2" stroke="#90C090" />
+<line x1="1156" y1="575" x2="1208" y2="625" stroke-width="2" stroke="#90C090" />
+<line x1="1052" y1="625" x2="1026" y2="675" stroke-width="2" stroke="#90C090" />
+<line x1="1052" y1="625" x2="1104" y2="675" stroke-width="2" stroke="#90C090" />
+<line x1="1104" y1="675" x2="1078" y2="725" stroke-width="2" stroke="#90C090" />
+<line x1="1104" y1="675" x2="1130" y2="725" stroke-width="2" stroke="#90C090" />
+<line x1="1208" y1="625" x2="1182" y2="675" stroke-width="2" stroke="#90C090" />
+<line x1="1208" y1="625" x2="1234" y2="675" stroke-width="2" stroke="#90C090" />
+<circle cx="1000" cy="475" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1000" cy="475" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="995" y="478" font-family="sans-serif" font-size="9px" fill="#303030" >12</text>
+<rect x="961" y="512" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="972" y="528" font-family="sans-serif" font-size="9px" fill="#303030" >6</text>
+<circle cx="1260" cy="525" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1260" cy="525" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1255" y="528" font-family="sans-serif" font-size="9px" fill="#303030" >11</text>
+<circle cx="1156" cy="575" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1156" cy="575" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1151" y="578" font-family="sans-serif" font-size="9px" fill="#303030" >10</text>
+<circle cx="1052" cy="625" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1052" cy="625" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1050" y="628" font-family="sans-serif" font-size="9px" fill="#303030" >8</text>
+<rect x="1013" y="662" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1024" y="678" font-family="sans-serif" font-size="9px" fill="#303030" >2</text>
+<circle cx="1104" cy="675" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1104" cy="675" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1102" y="678" font-family="sans-serif" font-size="9px" fill="#303030" >7</text>
+<rect x="1065" y="712" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1076" y="728" font-family="sans-serif" font-size="9px" fill="#303030" >0</text>
+<rect x="1117" y="712" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1128" y="728" font-family="sans-serif" font-size="9px" fill="#303030" >1</text>
+<circle cx="1208" cy="625" r="16" stroke="#00AF00" fill="white" />
+<circle cx="1208" cy="625" r="13" stroke-width="1" stroke="#00AF00" fill="#E0FFE0" />
+<text x="1206" y="628" font-family="sans-serif" font-size="9px" fill="#303030" >9</text>
+<rect x="1169" y="662" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1180" y="678" font-family="sans-serif" font-size="9px" fill="#303030" >3</text>
+<rect x="1221" y="662" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1232" y="678" font-family="sans-serif" font-size="9px" fill="#303030" >4</text>
+<rect x="1273" y="562" width="26" height="26" rx="5" ry="5" stroke-width="1" stroke="#C0C0FF" fill="#E0E0FF" />
+<text x="1284" y="578" font-family="sans-serif" font-size="9px" fill="#303030" >5</text>
+<circle cx="916" cy="473" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="912" y="475" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L0</text>
+<circle cx="916" cy="523" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="912" y="525" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L1</text>
+<circle cx="916" cy="573" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="912" y="575" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L2</text>
+<circle cx="916" cy="623" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="912" y="625" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L3</text>
+<circle cx="916" cy="673" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="912" y="675" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L4</text>
+<circle cx="916" cy="723" r="13" stroke-width="1" stroke="#FFFFA0" fill="#FFFFD0" />
+<text x="912" y="725" font-family="sans-serif" font-size="9px" fill="#A0A0A0" >L5</text>
+<rect x="898" y="399" width="228" height="46" rx="8" ry="8" stroke-width="1" stroke="#F0F0FF" fill="#F0F0FF" />
+<text x="912" y="427" font-family="sans-serif" font-size="16px" fill="#8080FF" >59E0 : 5213200</text>
+<rect x="894" y="395" width="472" height="410" rx="12" ry="12" stroke-width="1" stroke="#8080FF" fill="none" />
+<text x="904" y="385" font-family="sans-serif" font-size="15px" fill="#A0A0A0" >Визуализатор деревьев Хаффмана</text>
+<text x="1226" y="385" font-family="sans-serif" font-size="10px" fill="#A0A0A0" >V1.00 V01G04A81 (C) 2025</text>
+</svg>
