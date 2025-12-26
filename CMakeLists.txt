@@ -10,6 +10,7 @@ set(PRJNAME pack81treesvg)
 include_directories(. .. mods misc)
 
 file( GLOB_RECURSE source_list_mods 
+    src/*.cpp  src/*.hpp
     mods/*.cpp mods/*.hpp
     misc/*.cpp misc/*.hpp )
 
