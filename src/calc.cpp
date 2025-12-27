@@ -82,18 +82,18 @@ void svgcalc_w(int idx, int * retwl, int * retwr) {
     printf("W%2d  (L:%d R:%d) S:%d\n", idx, *retwl, *retwr, *retwl + *retwr); }
 
 
-void svgcalc_set_coords(int idx, int nodex) {
+void svgcalc_set_coords(int idx, int cx) {
 
-    oparams.gfxpos_x[idx] = nodex;
+    oparams.gfxpos_x[idx] = cx;
     oparams.gfxpos_y[idx] = svgcalc_layer_centerposy( tree.getlay(idx));
 
     if( tree.isnode( idx ) ) {
         int idxl = tree.getleft(idx);
-        int lnodex = nodex - oparams.gfx_nodewr[ idxl ];
+        int lnodex = cx - oparams.gfx_nodewr[ idxl ];
         svgcalc_set_coords( idxl, lnodex );
 
         int idxr = tree.getrigh(idx);
-        int rnodex = nodex + oparams.gfx_nodewl[ idxr ];
+        int rnodex = cx + oparams.gfx_nodewl[ idxr ];
         svgcalc_set_coords( idxr, rnodex ); } }
 
 

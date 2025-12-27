@@ -17,7 +17,9 @@ class VHTree {
         VHTree() { }
         VHTree                                  ( std::string str)                      { fromstr(str); }
         void                            set     ( const std::vector<stnode> & vect)     { scode = vect; }
-        void                            fromstr (std::string strscode)                  { scode = fromstri(strscode); }
+        void                            fromstr ( std::string strscode)                 { scode = fromstri(strscode); }
+        void                            fromscd ( std::vector<unsigned char> & arr )    { scode = fromscdi(arr); }
+        void                            fromtcd ( std::vector<unsigned char> & arr )    { scode = fromtcdi(arr); }
         const std::vector<stnode> &     nodes   ( )                                     { return scode; }
 
         int                             cntall      ()          { return scode[0].id;    }
@@ -37,7 +39,11 @@ class VHTree {
 
         std::string astext() {
             std::string r;
-            r.push_back(szhex[ scode.size() - 1]);
+
+            int ss = scode.size();
+            r += szhex[ (scode.size() >> 4) & 0xF ];
+            r += szhex[ (scode.size() >> 0) & 0xF ];
+
             for(const stnode & item :scode) {
                 r += '0' + item.tt; }
             return r; }
@@ -140,6 +146,8 @@ class VHTree {
         int     _cntlow;
         int     _depthmax;
 
+        // -----------------------------------------------------------------------------
+
         std::vector<stnode> fromstri(std::string scode) {
 
             std::vector<int>     lbo; // [
@@ -170,6 +178,20 @@ class VHTree {
                 r.push_back(nn); }
 
             return r; }
+
+        // -----------------------------------------------------------------------------
+
+        std::vector<stnode> fromscdi ( std::vector<unsigned char> & arr ) {
+            std::vector<stnode> r;
+            return r; }
+
+        // -----------------------------------------------------------------------------
+
+        std::vector<stnode> fromtcdi ( std::vector<unsigned char> & arr ) {
+            std::vector<stnode> r;
+            return r; }
+
+        // -----------------------------------------------------------------------------
 
         int find_min_id() {
             int minval    = scode[0].id;

@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 
+
 class VHSVG {
 
     public:
@@ -109,6 +110,5 @@ class VHSVG {
     private:
 
         std::vector<std::string>    svg_content;
-
 
 };

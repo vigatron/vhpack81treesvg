@@ -36,13 +36,13 @@ class TreeGenParamsIn {
 
     public:
 
-        int     svg_width       = 2000;
-        int     svg_height      = 1200;
-        int     svg_height_cut  = svg_height * 6 / 8;
+        int     svg_width       = 2000 * 4;
+        int     svg_height      = 1200 * 4;
+        int     svg_height_cut  = svg_height * 7 / 8;
         int     svg_elm_width   = 26;
         int     svg_elm_fntsz   = 12;
         int     svg_node_xdist  = svg_elm_width;
-        int     svg_node_spacr  = svg_node_xdist;
+        int     svg_node_spacr  = svg_node_xdist; //  / 2;
         int     svg_lnkwidth    = 2;
 
         std::string fntSans         = "sans-serif";
