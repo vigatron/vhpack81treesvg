@@ -8,9 +8,6 @@ using namespace std;
 
 // -------------------------------------------------------------------------------------------------
 
-// r.push_back( svg_rect( 0, 0, svg_elm_width,   svg_elm_width, 1, col_gray, "none" ));
-// r.push_back( svg_circ(10,10, svg_elm_width/2,                1, col_gray, "none" ));
-
 
 int main(int argc, char * argv[]) {
 
@@ -55,8 +52,13 @@ int main(int argc, char * argv[]) {
 
     // string strscode  = "[8:1][7:3][5:0][6:0]";
     // string strscode  = "[16:1][15:3][13:3][9:0][10:0][14:3][11:0][12:0]";
+    // tree.fromstr(dbkeys[1]);
 
-    tree.fromstr(dbkeys[10]);
+    string  strtcode = "0464";
+    TCode   tcode(strtcode);
+    tcode.dmpinfo();
+    tree.fromtcode(tcode);
+
     tree.dump();
     tree.build();
     tree.dumplr();
@@ -69,3 +71,6 @@ int main(int argc, char * argv[]) {
 
     return 0;
 }
+
+// r.push_back( svg_rect( 0, 0, svg_elm_width,   svg_elm_width, 1, col_gray, "none" ));
+// r.push_back( svg_circ(10,10, svg_elm_width/2,                1, col_gray, "none" ));
