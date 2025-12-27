@@ -5,6 +5,9 @@
 #include <iostream>
 #include <fstream>
 
+#include "colors.hpp"
+#include "iparams.hpp"
+#include "oparams.hpp"
 
 class VHSVG {
 
