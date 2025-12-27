@@ -1,7 +1,7 @@
 #include "global.hpp"
 
 VHTree              tree;
-TreeGenParamsIn     inparams;
+TreeGenParamsIn     iparams;
 TreeGenParamsOut    oparams;
 VHSVG               svg;
 
