@@ -7,11 +7,12 @@
 // -------------------------------------------------------------------------------------------------
 
 int svgcalc_layer_height    ()          {
-    int activeh = inparams.svg_height - inparams.svg_height_cut;
-    return activeh / (tree.depthmax() + 1); }
+    return oparams.gfx_ramka_height / (tree.depthmax() + 1); }
+
+int svgcalc_centery() { return inparams.svg_height /2; }
 
 int svgcalc_layer_posy(int layn)  {
-    int posy = inparams.svg_height_cut/2 + layn * svgcalc_layer_height();
+    int posy =  svgcalc_centery() - oparams.gfx_ramka_height/2 + oparams.gfx_ramka_height/2 + layn * svgcalc_layer_height();
     return posy; }
 
 int svgcalc_layer_centerposy(int layn) {
@@ -37,6 +38,11 @@ void svgcalc_ramka() {
         if( oparams.gfxpos_x[i] > maxright   ) { maxright = oparams.gfxpos_x[i]; }
         if( oparams.gfxpos_y[i] < mintop     ) { mintop   = oparams.gfxpos_y[i]; }
         if( oparams.gfxpos_y[i] > maxbot     ) { maxbot   = oparams.gfxpos_y[i]; } }
+
+
+    while( (maxright - minleft) < 400 ) {
+        minleft     -= 10;
+        maxright    += 10; }
 
     int dx = 80;
 
@@ -99,6 +105,9 @@ void svgcalc_set_coords(int idx, int cx) {
 
 void CalculateTreeGfx() {
     
+    // recalculate vertical cut area + header & footer
+    oparams.gfx_ramka_height = inparams.svg_def_line_height * (tree.depthmax() + 2);
+
     // recurse calculate nodes widths pxls ( L & R )
     int wl, wr;
     svgcalc_w( tree.rootidx(), & wl, & wr);

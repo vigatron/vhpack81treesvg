@@ -38,7 +38,7 @@ class TreeGenParamsIn {
 
         int     svg_width       = 2000 * 4;
         int     svg_height      = 1200 * 4;
-        int     svg_height_cut  = svg_height * 7 / 8;
+        int     svg_def_line_height = 30;
         int     svg_elm_width   = 26;
         int     svg_elm_fntsz   = 12;
         int     svg_node_xdist  = svg_elm_width;
@@ -52,6 +52,8 @@ class TreeGenParamsIn {
 class TreeGenParamsOut {
 
     public:
+
+        int     gfx_ramka_height; // Recalculated
 
         int     gfx_ramka_x1;
         int     gfx_ramka_x2;

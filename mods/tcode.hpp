@@ -47,18 +47,18 @@ class TCode {
         uint8_t hextoi(uint8_t v) {
             uint8_t s = toupper(v);
             if((s>='0')&&(s<='9')) return(s-'0');
-            else if((s>='A')&&(s<='F')) return(10 + ('F' -s));
+            else if((s>='A')&&(s<='F')) return(10 + (s - 'A'));
             return 0; }
 
         void unpacknodes() {
             int pos = 0;
             nodes.clear();
-            _sizenodes = packedcode.size() ? packedcode[0] : 0;
+            _sizenodes = packedcode.size() ? (packedcode[0] + 1) : 0;
             for(int i=1; i < packedcode.size(); i++) {
-                if(pos < _sizenodes) { uint8_t val1 = (packedcode[i] >> 6) & 3; nodes.push_back(val1); pos++; }
-                if(pos < _sizenodes) { uint8_t val2 = (packedcode[i] >> 4) & 3; nodes.push_back(val2); pos++; }
-                if(pos < _sizenodes) { uint8_t val3 = (packedcode[i] >> 2) & 3; nodes.push_back(val3); pos++; }
-                if(pos < _sizenodes) { uint8_t val4 = (packedcode[i] >> 0) & 3; nodes.push_back(val4); pos++; } } }
+                if(pos < _sizenodes) { uint8_t val = (packedcode[i] >> 6) & 3; nodes.push_back(val); pos++; }
+                if(pos < _sizenodes) { uint8_t val = (packedcode[i] >> 4) & 3; nodes.push_back(val); pos++; }
+                if(pos < _sizenodes) { uint8_t val = (packedcode[i] >> 2) & 3; nodes.push_back(val); pos++; }
+                if(pos < _sizenodes) { uint8_t val = (packedcode[i] >> 0) & 3; nodes.push_back(val); pos++; } } }
 
         const uint8_t nodeweight[4] = { 2, 1, 1, 0 };
         void calcsyms() { _sizesyms = 0; for(int i=0;i<nodes.size();i++) { _sizesyms += nodeweight[ nodes[i] & 3 ]; } }

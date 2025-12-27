@@ -134,6 +134,26 @@ void draw_elm(int idx) {
 
 // -------------------------------------------------------------------------------------------------
 
+void draw_bitpath_sym(int idx) {
+    int         ww          = (oparams.gfx_ramka_x2 - oparams.gfx_ramka_x1) / 2;
+    int         hh          = 14;
+    int         symsincol   = 8;
+    int         coln        = idx / symsincol;
+    int         rown        = idx % symsincol;
+    int         symx        = oparams.gfx_ramka_x1 + 40 + (coln * ww);
+    int         symy        = oparams.gfx_ramka_y2 + 40 + (rown * hh);
+    string      strsymn     = "#" + std::to_string(idx) + ":";
+    string      bitpath     = tree.bitpath(idx);
+
+    string color = colors::gray;
+    svg.text( symx      , symy, strsymn, inparams.fntSans, 10, color);
+    svg.text( symx + 40 , symy, bitpath, inparams.fntSans, 10, color);
+}
+
+void draw_bitpaths() { for(int i=0; i < tree.cntsyms();i++) { draw_bitpath_sym(i); } }
+
+// -------------------------------------------------------------------------------------------------
+
 void draw_elems(int idx) {
     draw_elm(idx);
     if( tree.isnode(idx) ) {
@@ -148,4 +168,5 @@ void RenderTreeGfx() {
     draw_layers();
     draw_scode();
     draw_ramka();
+    draw_bitpaths();
     svg.end(); }

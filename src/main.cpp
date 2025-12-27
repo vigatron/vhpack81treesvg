@@ -54,7 +54,9 @@ int main(int argc, char * argv[]) {
     // string strscode  = "[16:1][15:3][13:3][9:0][10:0][14:3][11:0][12:0]";
     // tree.fromstr(dbkeys[1]);
 
-    string  strtcode = "0464";
+    // C5 = 1100 0101
+    // 40 = 0100 0000
+    string  strtcode = "05C540"; // 301110        "0464";  
     TCode   tcode(strtcode);
     tcode.dmpinfo();
     tree.fromtcode(tcode);

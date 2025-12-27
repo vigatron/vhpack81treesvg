@@ -1,10 +1,6 @@
 #pragma once
 
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
-
+#include "vhplatform.hpp"
 #include "tcode.hpp"
 #include "svg.hpp"
 
@@ -16,15 +12,40 @@ class VHTree {
     public:
 
         VHTree() { }
-        // VHTree( std::string str) { fromstr(str); }
 
-        void fromtcode   ( const TCode & code)   {
+        void fromtcode ( const TCode & code) {
             scode.clear();
             for(int i=0; i<code.sizenodes(); i++) {
-                stnode nn = { .id = code.sizeall() - i, .tt = code[i] };
+                stnode nn = { .id = code.sizeall() - 1 - i, .tt = code[i] };
                 scode.push_back(nn); } }
 
-        void                            fromstr     ( std::string strscode) { scode = fromstri(strscode); }
+        void fromstr ( std::string strscode) {
+            std::vector<int>     lbo; // [
+            std::vector<int>     lsp; // :
+            std::vector<int>     lbc; // ]
+            std::vector<stnode>   r;
+
+            for(int i=0;i<strscode.size();i++) {
+                char s = strscode[i];
+                if(s == '[') lbo.push_back(i);
+                else if(s == ':') lsp.push_back(i);
+                else if(s == ']') lbc.push_back(i);
+                else if( ! std::isdigit(s)) { i=strscode.size(); return;} }
+
+            // Check syntax pass 1 cnt
+            if( ( lbo.size() != lsp.size() ) || ( lsp.size() != lbc.size() ) )
+                return;
+
+            // Check syntax pass 2 order
+            for(int i=0; i< lbo.size();i++) {
+                if( ! ( (lsp[i] - 1) - (lbo[i]) >= 1 ) ) return;
+                if( ! ( (lbc[i] - 1) - (lsp[i]) >= 1 ) ) return; }
+
+            for(int i=0; i< lbo.size();i++) {
+                std::string sid = strscode.substr(lbo[i]+1, lsp[i] - lbo[i] - 1);
+                std::string sit = strscode.substr(lsp[i]+1, lbc[i] - lsp[i] - 1);
+                stnode nn = { .id = std::stoi(sid), .tt = std::stoi(sit) };
+                r.push_back(nn); } }
 
         void                            set         ( const std::vector<stnode> & vect)     { scode = vect; }
         void                            fromscd     ( std::vector<unsigned char> & arr )    { scode = fromscdi(arr); }
@@ -48,28 +69,26 @@ class VHTree {
 
         std::string astext() {
             std::string r;
-
             int ss = scode.size();
-            r += szhex[ (scode.size() >> 4) & 0xF ];
-            r += szhex[ (scode.size() >> 0) & 0xF ];
-
-            for(const stnode & item :scode) {
-                r += '0' + item.tt; }
+            r += szhex[ ((scode.size() - 1) >> 4) & 0xF ];
+            r += szhex[ ((scode.size() - 1) >> 0) & 0xF ];
+            for(const stnode & item :scode) { r += '0' + item.tt; }
             return r; }
 
         std::string bintohex( const std::vector<unsigned char> & arr ) {
             std::string r;
-            for( const unsigned char s : arr) {
-                r.push_back(szhex[ (s>>4) & 0xF ]);
-                r.push_back(szhex[ (s>>0) & 0xF ]); }
+            for( const unsigned char s : arr) { 
+                r.push_back(szhex[ (s>>4) & 0xF ]); r.push_back(szhex[ (s>>0) & 0xF ]); }
             return r; }
 
         std::string asbin() {
             std::vector<unsigned char> r;
-            unsigned char v = (scode.size() - 1) << 4;
-            unsigned char msk = 8;
+            r.push_back( scode.size() - 1 );
+            unsigned char v   = 0;
+            unsigned char msk = 0x80;
 
-            for(const stnode & item :scode) {
+            for(int i=0; i< scode.size(); i++ ) {
+                const stnode & item = scode[i];
                 unsigned char b = item.tt;
                 
                 switch(msk) {
@@ -84,10 +103,7 @@ class VHTree {
                     default: break; }
 
                 msk >>= 2;
-                if(!msk) {
-                    msk = 0x80;
-                    r.push_back(v);
-                    v = 0; } }
+                if(!msk) { msk = 0x80; r.push_back(v); v = 0; } }
             
             if(msk != 0x80) r.push_back(v);
             return bintohex(r); }
@@ -97,14 +113,24 @@ class VHTree {
             _cntlow = find_min_id();
             recurse1pass(0, 0);
             attachelms();
+            // rotatenodes();
             _depthmax = scandepth();
+            
             asm("nop"); }
+
+        void rotatenodes() {
+            for(int i = 0; i <= scode.size(); i++) {
+                if(scode[i].tt == 2) {
+                    scode[i].tt = 1;
+                    int swpidx = scode[i].id;
+                    swaplr(swpidx); } } }
+
+        void swaplr(int idx) { int tmp = left[idx]; left[idx] = righ[idx]; righ[idx] = tmp; }
 
         void dump() {
             int i=0;
             for( const stnode & n : scode) { printf("#%d  %2d:%d\n", i++, n.id, n.tt); }
-            int minid = find_min_id();
-            printf("cnt = %d\n", minid); }
+            int minid = find_min_id(); printf("cnt = %d\n", minid); }
 
         void dumplr() {
             for( const stnode & n : scode) { 
@@ -141,6 +167,15 @@ class VHTree {
             for( const std::string & s : content) {
                 printf("%s\n", s.c_str() ); } }
 
+        std::string bitpath(int idx) {
+            std::string r;
+            int curidx = idx;
+            while(curidx != rootidx()) {
+                int parent = up[curidx];
+                r += '0' + (left[parent] != curidx);
+                curidx = parent; }
+            std::reverse(r.begin(), r.end());
+            return r; }
 
     private:
 
@@ -155,38 +190,6 @@ class VHTree {
         int     _cntlow;
         int     _depthmax;
 
-        // -----------------------------------------------------------------------------
-
-        std::vector<stnode> fromstri(std::string scode) {
-
-            std::vector<int>     lbo; // [
-            std::vector<int>     lsp; // :
-            std::vector<int>     lbc; // ]
-            std::vector<stnode>   r;
-
-            for(int i=0;i<scode.size();i++) {
-                char s = scode[i];
-                if(s == '[') lbo.push_back(i);
-                else if(s == ':') lsp.push_back(i);
-                else if(s == ']') lbc.push_back(i);
-                else if( ! std::isdigit(s)) { i=scode.size(); return r;} }
-
-            // Check syntax pass 1 cnt
-            if( ( lbo.size() != lsp.size() ) || ( lsp.size() != lbc.size() ) )
-                return r;
-
-            // Check syntax pass 2 order
-            for(int i=0; i< lbo.size();i++) {
-                if( ! ( (lsp[i] - 1) - (lbo[i]) >= 1 ) ) return r;
-                if( ! ( (lbc[i] - 1) - (lsp[i]) >= 1 ) ) return r; }
-
-            for(int i=0; i< lbo.size();i++) {
-                std::string sid = scode.substr(lbo[i]+1, lsp[i] - lbo[i] - 1);
-                std::string sit = scode.substr(lsp[i]+1, lbc[i] - lsp[i] - 1);
-                stnode nn = { .id = std::stoi(sid), .tt = std::stoi(sit) };
-                r.push_back(nn); }
-
-            return r; }
 
         // -----------------------------------------------------------------------------
 
