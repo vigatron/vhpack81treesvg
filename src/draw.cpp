@@ -105,8 +105,7 @@ void draw_elm(int idx) {
     std::string colb = flagsym ? colors::sblue : colors::lgreen;
 
     // Debug staff : Rectangle [WL|WR]
-    bool show_wl_range = false;
-    if(show_wl_range) {
+    if( iparams.show_width_elmslr ) {
         int sx  = oparams.gfxpos_x[idx] - oparams.gfx_nodewl[idx];
         int ww  = oparams.gfx_nodewl[idx] + oparams.gfx_nodewr[idx];
         int th  = iparams.svg_elm_width;
@@ -133,7 +132,7 @@ void draw_elm(int idx) {
 // -------------------------------------------------------------------------------------------------
 
 void draw_bitpath_sym(int idx) {
-    int         ww          = gfx_ramka.w / 2;
+    int         ww          = gfx_ramka.w / 4;
     int         hh          = 14;
     int         symsincol   = 8;
     int         coln        = idx / symsincol;
@@ -144,8 +143,8 @@ void draw_bitpath_sym(int idx) {
     string      bitpath     = tree.bitpath(idx);
 
     string color = colors::gray;
-    svg.text( symx      , symy, strsymn, iparams.fntSans, 10, color);
-    svg.text( symx + 40 , symy, bitpath, iparams.fntSans, 10, color);
+    svg.text( symx      , symy, strsymn, iparams.fntSans, 11, color);
+    svg.text( symx + 30 , symy, bitpath, iparams.fntSans, 11, color);
 }
 
 void draw_bitpaths() { for(int i=0; i < tree.cntsyms();i++) { draw_bitpath_sym(i); } }

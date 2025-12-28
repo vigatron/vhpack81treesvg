@@ -12,7 +12,7 @@ class TreeGenParamsIn {
         int     svg_elm_width   = 26;
         int     svg_elm_fntsz   = 12;
         int     svg_node_xdist  = svg_elm_width;
-        int     svg_node_spacr  = svg_node_xdist; //  / 2;
+        int     svg_node_spacr  = svg_node_xdist/2; //  / 2;
         int     svg_lnkwidth    = 2;
 
         std::string fntSans         = "sans-serif";
@@ -21,4 +21,6 @@ class TreeGenParamsIn {
 
         int     svg_paper_border = 40;
         int     svg_paper_underh = 120;
+
+        bool    show_width_elmslr = false;
 };
