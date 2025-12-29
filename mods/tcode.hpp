@@ -14,21 +14,20 @@ class TCode {
             return initfrombin(src); }
 
         bool initfrombin(const std::vector<uint8_t> & src) {
-            packedcode = src;
-            unpacknodes();
-            calcsyms();
-            return true; }
+            packedcode = src; unpacknodes(); calcsyms(); dmpinfo(); return true; }
 
-        int operator[] (int idx) const { return nodes[idx]; }
-        int sizenodes() const { return _sizenodes; }
-        int sizesyms() const { return _sizesyms; }
-        int sizeall() const { return _sizenodes + _sizesyms; }
+        int operator[]  (int idx)   const { return nodes[idx]; }
 
-        void dmpinfo() {
-            printf("cntsyms = %d cntnodes = %d total = %d\n",
-                _sizesyms, _sizenodes, sizeall() ); }
+        int sizenodes()             const { return _sizenodes; }
+        int sizesyms()              const { return _sizesyms;  }
+        int sizeall()               const { return _sizenodes + _sizesyms; }
+        int getrootidx  ()          const { return sizeall() - 1; }
+
+        void dmpinfo() { printf("cntsyms = %d cntnodes = %d total = %d\n", _sizesyms, _sizenodes, sizeall() ); }
 
     private:
+
+        const uint8_t           nodeweight[4] = { 2, 1, 1, 0 };
 
         std::vector<uint8_t>    packedcode; 
         std::vector<uint8_t>    nodes;
@@ -50,16 +49,20 @@ class TCode {
             else if((s>='A')&&(s<='F')) return(10 + (s - 'A'));
             return 0; }
 
+        void addnode( uint8_t val ) { nodes.push_back(val & 3); }
+
         void unpacknodes() {
             int pos = 0;
             nodes.clear();
             _sizenodes = packedcode.size() ? (packedcode[0] + 1) : 0;
             for(int i=1; i < packedcode.size(); i++) {
-                if(pos < _sizenodes) { uint8_t val = (packedcode[i] >> 6) & 3; nodes.push_back(val); pos++; }
-                if(pos < _sizenodes) { uint8_t val = (packedcode[i] >> 4) & 3; nodes.push_back(val); pos++; }
-                if(pos < _sizenodes) { uint8_t val = (packedcode[i] >> 2) & 3; nodes.push_back(val); pos++; }
-                if(pos < _sizenodes) { uint8_t val = (packedcode[i] >> 0) & 3; nodes.push_back(val); pos++; } } }
+                uint8_t bv = packedcode[i];
+                if(pos < _sizenodes) { addnode(bv>>6); pos++; }
+                if(pos < _sizenodes) { addnode(bv>>4); pos++; }
+                if(pos < _sizenodes) { addnode(bv>>2); pos++; }
+                if(pos < _sizenodes) { addnode(bv>>0); pos++; } } }
 
-        const uint8_t nodeweight[4] = { 2, 1, 1, 0 };
         void calcsyms() { _sizesyms = 0; for(int i=0;i<nodes.size();i++) { _sizesyms += nodeweight[ nodes[i] & 3 ]; } }
 };
+
+/* int minid = find_minnode_id(); printf("cnt = %d\n", minid); */

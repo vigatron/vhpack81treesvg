@@ -11,13 +11,40 @@ class VHTree {
 
     public:
 
+        enum enNodeType {
+            eNodeF = 0,     // F Fin
+            eNodeL = 1,     // L Left
+            eNodeR = 2,     // R Right
+            eNodeB = 3      // B Both
+        };
+
+        const char * szhex = "0123456789ABCDEF";
+
         VHTree() { }
 
-        void fromtcode ( const TCode & code) {
+        bool initFromTCode ( std::string strtcode ) {
+            if(!tcode.initfromstr(strtcode)) return false;
             scode.clear();
-            for(int i=0; i<code.sizenodes(); i++) {
-                stnode nn = { .id = code.sizeall() - 1 - i, .tt = code[i] };
-                scode.push_back(nn); } }
+            for(int i=0; i < tcode.sizenodes(); i++) {
+                stnode nn = { .id = tcode.sizeall() - 1 - i, .tt = tcode[i] };
+                scode.push_back(nn); }
+            dumpscode(); 
+            build();
+            dumplr();
+            dumpnodes();
+            return true;}
+
+        void build() {
+            for(int i=0; i<255; i++) { clrnode(i); }
+            _cntlow = find_minnode_id();
+            // recurse1pass(0, 0);
+            // attachelms();
+            autoenumerate(0, 0);
+            // exit(10);
+            // rotatenodes();
+            _depthmax = scandepth();
+            asm("nop"); }
+
 
         void fromstr ( std::string strscode) {
             std::vector<int>     lbo; // [
@@ -63,9 +90,7 @@ class VHTree {
         int     getrigh(int i) { return righ[i]; }
         int     getlay (int i) { return lay [i]; }
 
-        void clrnode(int i) { left [i] = 0xFFFF; righ [i] = 0xFFFF; up [i] = 0xFFFF; lay [i] = 0xFFFF; }
-
-        const char * szhex = "0123456789ABCDEF";
+        void    clrnode(int i) { left [i] = 0xFFFF; righ [i] = 0xFFFF; up [i] = 0xFFFF; lay [i] = 0xFFFF; }
 
         std::string astext() {
             std::string r;
@@ -108,16 +133,6 @@ class VHTree {
             if(msk != 0x80) r.push_back(v);
             return bintohex(r); }
 
-        void build() {
-            for(int i=0; i<255; i++) { clrnode(i); }
-            _cntlow = find_min_id();
-            recurse1pass(0, 0);
-            attachelms();
-            // rotatenodes();
-            _depthmax = scandepth();
-            
-            asm("nop"); }
-
         void rotatenodes() {
             for(int i = 0; i <= scode.size(); i++) {
                 if(scode[i].tt == 2) {
@@ -127,10 +142,10 @@ class VHTree {
 
         void swaplr(int idx) { int tmp = left[idx]; left[idx] = righ[idx]; righ[idx] = tmp; }
 
-        void dump() {
-            int i=0;
-            for( const stnode & n : scode) { printf("#%d  %2d:%d\n", i++, n.id, n.tt); }
-            int minid = find_min_id(); printf("cnt = %d\n", minid); }
+        void dumpscode() {
+            printf("SCode: ");
+            for( const stnode & n : scode) { printf("[%2d:%d]", n.id, n.tt); }
+            printf("\n"); }
 
         void dumplr() {
             for( const stnode & n : scode) { 
@@ -156,12 +171,6 @@ class VHTree {
 
         const std::vector<int> & seqlay(int lay) { return seqlays[lay]; }
 
-        enum enNodeType {
-            eNodeF = 0,     // F Fin
-            eNodeL = 1,     // L Left
-            eNodeR = 2,     // R Right
-            eNodeB = 3      // B Both
-        };
 
         void dump_str_array(std::vector<std::string> & content) {
             for( const std::string & s : content) {
@@ -179,6 +188,7 @@ class VHTree {
 
     private:
 
+        TCode                    tcode;
         std::vector<stnode>      scode;             // Binary tree scode
         std::vector<stattach>    sattach;           // Link elms
         std::vector<int>         seqlays[16];       // 2D array layers sequence
@@ -205,76 +215,56 @@ class VHTree {
 
         // -----------------------------------------------------------------------------
 
-        int find_min_id() {
+        int find_minnode_id() {
             int minval    = scode[0].id;
-            for( int i=1; i < scode.size();i++) {
-                if(scode[i].id < minval) minval = scode[i].id; }
+            for( int i=1; i < scode.size();i++) { if(scode[i].id < minval) minval = scode[i].id; }
             return minval; }
 
         void LinkLeft(int idx, int parent, int curlay) {
             left    [parent]    = idx;
-            lay     [idx]       = curlay + 1;
+            lay     [idx]       = curlay;
             up      [idx]       = parent;
-            printf("LinkLeft #%d <- %d L%d\n", idx, parent, curlay); }
+            printf("LinkLeft #%d L%d <- %d \n", idx, curlay, parent ); }
 
         void LinkRigh(int idx, int parent, int curlay) {
             righ    [parent]    = idx;
-            lay     [idx]       = curlay + 1;
+            lay     [idx]       = curlay;
             up      [idx]       = parent;
-            printf("LinkRigh #%d <- %d L%d\n", idx, parent, curlay); }
+            printf("LinkRigh #%d L%d <- %d \n", idx, curlay, parent ); }
 
+        int _autoenumcnt;
         // -----------------------------------------------------------------------------
+        int autoenumerate(int tcodeidx, int layn) {
+            int tid = scode[tcodeidx].id;
+            int tt  = scode[tcodeidx].tt;
+            int r   = tcodeidx;
 
-        void pushattach(int idx, int tt, int lay) {
-            stattach s = { .idx = idx, .tt = tt, .lay=lay };
-            sattach.push_back(s); }
-
-        // -----------------------------------------------------------------------------
-        int recurse1pass(int i, int layn) {
-
-            int tid = scode[i].id;
-            int tt  = scode[i].tt;
-            int r   = i;
-
-            if(!i) { lay[tid] = 0; }
-
-            printf("Pass1 Enter >   #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
+            if(!tcodeidx) { _autoenumcnt = 0; lay[tid] = 0; }
+            printf("AUTOENUM Enter >   #%2d LAY=%2d [%d:%d] )\n", tid, layn, tid, tt);
 
             switch(tt) {
                 case eNodeL: {
-                    LinkLeft(scode[i+1].id, tid, layn);
-                    r = recurse1pass(r+1, layn+1);
-                    pushattach(tid, tt, layn);
+                    LinkLeft(scode[r+1].id,  tid, layn + 1);         // Node link
+                    LinkRigh(_autoenumcnt++, tid, layn + 1);         // Sym link
+                    r = autoenumerate(r+1, layn+1);
                     } break;
                 case eNodeR: {
-                    LinkRigh(scode[i+1].id, tid, layn);
-                    r = recurse1pass(i+1, layn+1);
-                    pushattach(tid, tt, layn);
+                    LinkLeft(_autoenumcnt++, tid, layn + 1);
+                    LinkRigh(scode[r+1].id,  tid, layn + 1);
+                    r = autoenumerate(r+1, layn+1);
                 } break;
                 case eNodeB: {
-                    LinkLeft(scode[i+1].id, tid, layn);
-                    r = recurse1pass(i+1, layn+1);
-                    LinkRigh(scode[r+1].id, tid, layn);
-                    r = recurse1pass(r+1, layn+1);
+                    LinkLeft(scode[r+1].id, tid, layn + 1);
+                    r = autoenumerate(r+1, layn+1);
+                    LinkRigh(scode[r+1].id, tid, layn + 1);
+                    r = autoenumerate(r+1, layn+1);
                     } break;
                 default: {
-                    pushattach(tid, tt, layn);
+                    LinkLeft(_autoenumcnt++, tid, layn + 1);
+                    LinkRigh(_autoenumcnt++, tid, layn + 1);
                     } break; }
-
-            printf("Pass1 Exit  <   #%2d LAY=%2d ( %d:%d ) \n", i, layn, tid, tt);
-            return r; }
-
-        // -----------------------------------------------------------------------------
-        bool tthasl(int tt) { return (tt == eNodeR) || (tt == eNodeF); }
-        bool tthasr(int tt) { return (tt == eNodeL) || (tt == eNodeF); }
-
-        void attachelms() {
-            int maxdepth = scandepth() + 1;
-            int nidx = 0;
-            for(int i = maxdepth ; i >= 0 ; i--) {
-                for(const stattach & item : sattach) {
-                    if(item.lay == i) {
-                        if( tthasl(item.tt) ) { LinkLeft(nidx, item.idx, item.lay); nidx++; }
-                        if( tthasr(item.tt) ) { LinkRigh(nidx, item.idx, item.lay); nidx++; } } } } }
-
+            
+            printf("AUTOENUM Exit  <   #%2d LAY=%2d [%d:%d] )\n", tid, layn, tid, tt);
+            return r;
+        }
 };

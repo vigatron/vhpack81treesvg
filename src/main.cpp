@@ -57,15 +57,7 @@ int main(int argc, char * argv[]) {
     // C5 = 1100 0101
     // 40 = 0100 0000 
     string  strtcode = "09B8C700"; // "05C540"; // 301110        "0464";  
-    TCode   tcode(strtcode);
-    tcode.dmpinfo();
-    tree.fromtcode(tcode);
-
-    tree.dump();
-    tree.build();
-    tree.dumplr();
-    tree.dumpnodes();
-
+    tree.initFromTCode(strtcode);
     CalculateTreeGfx();
     RenderTreeGfx();
 
