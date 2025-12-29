@@ -5,7 +5,6 @@
 #include "svg.hpp"
 
 struct stnode    { int id; int tt; };
-struct stattach  { int idx; int tt; int lay; };
 
 class VHTree {
 
@@ -16,6 +15,13 @@ class VHTree {
             eNodeL = 1,     // L Left
             eNodeR = 2,     // R Right
             eNodeB = 3      // B Both
+        };
+
+        struct stobj {
+            uint16_t l;     // left
+            uint16_t r;     // right
+            uint16_t u;     // up
+            uint16_t y;     // layer
         };
 
         const char * szhex = "0123456789ABCDEF";
@@ -86,11 +92,11 @@ class VHTree {
         bool                            issym       (int idx)   { return idx < _cntlow;  }
         bool                            isnode      (int idx)   { return idx >= _cntlow; }
 
-        int     getleft(int i) { return left[i]; }
-        int     getrigh(int i) { return righ[i]; }
-        int     getlay (int i) { return lay [i]; }
+        int     getleft(int i) { return sobjs[i].l; }
+        int     getrigh(int i) { return sobjs[i].r; }
+        int     getlay (int i) { return sobjs[i].y; }
 
-        void    clrnode(int i) { left [i] = 0xFFFF; righ [i] = 0xFFFF; up [i] = 0xFFFF; lay [i] = 0xFFFF; }
+        void    clrnode(int i) { sobjs[i].l = 0xFFFF; sobjs[i].r = 0xFFFF; sobjs[i].u = 0xFFFF; sobjs[i].y = 0xFFFF; }
 
         std::string astext() {
             std::string r;
@@ -140,7 +146,7 @@ class VHTree {
                     int swpidx = scode[i].id;
                     swaplr(swpidx); } } }
 
-        void swaplr(int idx) { int tmp = left[idx]; left[idx] = righ[idx]; righ[idx] = tmp; }
+        void swaplr(int idx) { int tmp = sobjs[idx].l; sobjs[idx].l = sobjs[idx].r; sobjs[idx].r = tmp; }
 
         void dumpscode() {
             printf("SCode: ");
@@ -148,58 +154,48 @@ class VHTree {
             printf("\n"); }
 
         void dumplr() {
-            for( const stnode & n : scode) { 
-                printf("%2d:%d L=%2d R=%2d\n", n.id, n.tt, left[n.id], righ[n.id]); } }
+            for( const stnode & n : scode) { printf("%2d:%d L=%2d R=%2d\n", n.id, n.tt, sobjs[n.id].l, sobjs[n.id].r); } }
 
         void dumpnodes() {
-            int total = cntall();
-            for(int i=0; i<=total;i++) {
-                printf("#%2d LY=%d\n", i, lay[i]); } }
+            int total = cntall(); for(int i=0; i<=total;i++) { printf("#%2d LY=%d\n", i, sobjs[i].y); } }
         
         int scandepth() {
             int r = 0;
             int total = cntall();
-            for(int i=0;i<total;i++) { if(lay[i] != 0xFFFF) if(lay[i]>r) r = lay[i]; }
+            for(int i=0;i<total;i++) { if(sobjs[i].y != 0xFFFF) if(sobjs[i].y > r) r = sobjs[i].y; }
             return r; }
 
         std::vector<int> findbylay(int ll) {
             std::vector<int> r;
             int total = cntall();
-            for(int i=0;i<=total;i++) {
-                if( lay[i] == ll ) r.push_back(i); }
+            for(int i=0;i<=total;i++) { if( sobjs[i].y == ll ) r.push_back(i); }
             return r; }
 
         const std::vector<int> & seqlay(int lay) { return seqlays[lay]; }
 
-
         void dump_str_array(std::vector<std::string> & content) {
-            for( const std::string & s : content) {
-                printf("%s\n", s.c_str() ); } }
+            for( const std::string & s : content) { printf("%s\n", s.c_str() ); } }
 
         std::string bitpath(int idx) {
             std::string r;
             int curidx = idx;
             while(curidx != rootidx()) {
-                int parent = up[curidx];
-                r += '0' + (left[parent] != curidx);
+                int parent = sobjs[curidx].u;
+                r += '0' + (sobjs[parent].l != curidx);
                 curidx = parent; }
             std::reverse(r.begin(), r.end());
             return r; }
 
     private:
 
-        TCode                    tcode;
-        std::vector<stnode>      scode;             // Binary tree scode
-        std::vector<stattach>    sattach;           // Link elms
-        std::vector<int>         seqlays[16];       // 2D array layers sequence
+        TCode                   tcode;
+        std::vector<stnode>     scode;             // Binary tree scode
+        std::vector<int>        seqlays[16];       // 2D array layers sequence
 
-        int     left[256];
-        int     righ[256];
-        int     up  [256];
-        int     lay [256];
-        int     _cntlow;
-        int     _depthmax;
+        stobj                   sobjs[256];
 
+        int                     _cntlow;
+        int                     _depthmax;
 
         // -----------------------------------------------------------------------------
 
@@ -221,50 +217,53 @@ class VHTree {
             return minval; }
 
         void LinkLeft(int idx, int parent, int curlay) {
-            left    [parent]    = idx;
-            lay     [idx]       = curlay;
-            up      [idx]       = parent;
+            sobjs[parent].l    = idx;
+            sobjs[idx].y       = curlay;
+            sobjs[idx].u       = parent;
             printf("LinkLeft #%d L%d <- %d \n", idx, curlay, parent ); }
 
         void LinkRigh(int idx, int parent, int curlay) {
-            righ    [parent]    = idx;
-            lay     [idx]       = curlay;
-            up      [idx]       = parent;
+            sobjs[parent].r    = idx;
+            sobjs[idx].y       = curlay;
+            sobjs[idx].u       = parent;
             printf("LinkRigh #%d L%d <- %d \n", idx, curlay, parent ); }
 
         int _autoenumcnt;
-        // -----------------------------------------------------------------------------
-        int autoenumerate(int tcodeidx, int layn) {
-            int tid = scode[tcodeidx].id;
-            int tt  = scode[tcodeidx].tt;
-            int r   = tcodeidx;
 
-            if(!tcodeidx) { _autoenumcnt = 0; lay[tid] = 0; }
-            printf("AUTOENUM Enter >   #%2d LAY=%2d [%d:%d] )\n", tid, layn, tid, tt);
+        // -----------------------------------------------------------------------------
+        int autoenumerate(int tcodeidx, int lay) {
+
+            int tid     = scode[tcodeidx].id;
+            int tt      = scode[tcodeidx].tt;
+            int r       = tcodeidx;
+            int layn    = lay + 1;
+
+            if(!tcodeidx) { _autoenumcnt = 0; sobjs[tid].y = 0; }
+            printf("AUTOENUM Enter >   #%2d LAY=%2d [%d:%d] )\n", tid, lay, tid, tt);
 
             switch(tt) {
                 case eNodeL: {
-                    LinkLeft(scode[r+1].id,  tid, layn + 1);         // Node link
-                    LinkRigh(_autoenumcnt++, tid, layn + 1);         // Sym link
-                    r = autoenumerate(r+1, layn+1);
+                    LinkLeft(scode[r+1].id,  tid, layn);         // Node link
+                    LinkRigh(_autoenumcnt++, tid, layn);         // Sym link
+                    r = autoenumerate(r+1, layn);
                     } break;
                 case eNodeR: {
-                    LinkLeft(_autoenumcnt++, tid, layn + 1);
-                    LinkRigh(scode[r+1].id,  tid, layn + 1);
-                    r = autoenumerate(r+1, layn+1);
+                    LinkLeft(_autoenumcnt++, tid, layn);
+                    LinkRigh(scode[r+1].id,  tid, layn);
+                    r = autoenumerate(r+1, layn);
                 } break;
                 case eNodeB: {
-                    LinkLeft(scode[r+1].id, tid, layn + 1);
-                    r = autoenumerate(r+1, layn+1);
-                    LinkRigh(scode[r+1].id, tid, layn + 1);
-                    r = autoenumerate(r+1, layn+1);
+                    LinkLeft(scode[r+1].id, tid, layn);
+                    r = autoenumerate(r+1, layn);
+                    LinkRigh(scode[r+1].id, tid, layn);
+                    r = autoenumerate(r+1, layn);
                     } break;
                 default: {
-                    LinkLeft(_autoenumcnt++, tid, layn + 1);
-                    LinkRigh(_autoenumcnt++, tid, layn + 1);
+                    LinkLeft(_autoenumcnt++, tid, layn);
+                    LinkRigh(_autoenumcnt++, tid, layn);
                     } break; }
             
-            printf("AUTOENUM Exit  <   #%2d LAY=%2d [%d:%d] )\n", tid, layn, tid, tt);
+            printf("AUTOENUM Exit  <   #%2d LAY=%2d [%d:%d] )\n", tid, lay, tid, tt);
             return r;
         }
 };
