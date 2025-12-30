@@ -6,11 +6,15 @@
 using namespace std;
 
 int main(int argc, char * argv[]) {
-    string  strtcode = argc == 2 ? argv[1] : "05C640";
+    string  strtcode = argc >= 2 ? argv[1] : "05C640";
     tree.initFromTCode(strtcode);
     CalculateTreeGfx();
     RenderTreeGfx();
-    svg.savetosvg("tcode_" + strtcode + ".svg");
+
+    string strout = "tcode_";
+    if(argc == 3) { strout += string(argv[2]) + "_"; }
+    strout += strtcode;
+    svg.savetosvg( strout + ".svg");
     return 0; }
 
 // r.push_back( svg_rect( 0, 0, svg_elm_width,   svg_elm_width, 1, col_gray, "none" ));
