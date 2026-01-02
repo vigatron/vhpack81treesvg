@@ -1,5 +1,6 @@
 #pragma once
 
+#include "strtools.hpp"
 #include "vhrect.hpp"
 #include "tree.hpp"
 #include "svg.hpp"
