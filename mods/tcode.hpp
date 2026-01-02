@@ -14,7 +14,11 @@ class TCode {
             return initfrombin(src); }
 
         bool initfrombin(const std::vector<uint8_t> & src) {
-            packedcode = src; unpacknodes(); calcsyms(); dmpinfo(); return true; }
+            packedcode = src;
+            unpacknodes();
+            calcsyms();
+            dmpinfo();
+            return true; }
 
         int operator[]  (int idx)   const { return nodes[idx]; }
 

@@ -1,0 +1,8 @@
+{
+"cmake.debugConfig": {
+        "args": [
+            "XXX",
+            "-blkn", "123"
+        ]
+    }
+}

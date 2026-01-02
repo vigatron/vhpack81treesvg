@@ -2,66 +2,83 @@
 #include <vector>
 
 #include "global.hpp"
+#include "args.hpp"
 
 using namespace std;
 
-int main(int argc, char * argv[]) {
-    string  strtcode = argc >= 2 ? argv[1] : "05C640";
+
+verr verrmsg(int x, std::string strerr) {
+    std::cout << strerr << endl;
+    return x; }
+
+
+bool check_str_ishex(std::string str) {
+    for( char s : str) {
+        bool p1 = (s >='0' && s <='9');
+        bool p2 = (s >='A' && s <='F');
+        bool p3 = (s >='a' && s <='f');
+        bool p  = p1 || p2 || p3;
+        if(!p) return false; }
+    return true; }
+
+verr build_from_tcode( std::string strtcode, std::string blkn) {
+
+    if(!strtcode.size() || !check_str_ishex(strtcode)) { 
+        return verrmsg(1, "Invalid TCode"); }
+
     tree.initFromTCode(strtcode);
     CalculateTreeGfx();
     RenderTreeGfx();
 
+    // Generate file name
     string strout = "tcode_";
-    if(argc == 3) { strout += string(argv[2]) + "_"; }
+    if(blkn.size()) { strout += blkn + "_"; }
     strout += strtcode;
+
+    // Save results
     svg.savetosvg( strout + ".svg");
-    return 0; }
 
-// r.push_back( svg_rect( 0, 0, svg_elm_width,   svg_elm_width, 1, col_gray, "none" ));
-// r.push_back( svg_circ(10,10, svg_elm_width/2,                1, col_gray, "none" ));
+    return vok; }
 
-// vector<string> dbkeys;
+verr build_from_spc( std::string strspc ) {
 
-// dbkeys.push_back("[16:1][15:3][13:3][11:2][9:0][12:1][10:0][14:0]");
-// dbkeys.push_back("[12:2][11:1][10:3][8:2][7:0][9:0]");
-// dbkeys.push_back("[14:2][13:2][12:3][10:0][11:1][9:1][8:0]");
-// dbkeys.push_back("[18:3][16:0][17:2][15:3][13:3][10:0][11:0][14:1][12:0]");
-// dbkeys.push_back("[18:3][16:1][14:3][12:2][10:0][13:1][11:0][17:1][15:0]");
-// dbkeys.push_back("[14:2][13:1][12:2][11:3][9:2][8:0][10:0]");
-// dbkeys.push_back("[16:3][14:1][12:1][10:0][15:1][13:1][11:2][9:0]");
-// dbkeys.push_back("[12:1][11:2][10:2][9:2][8:2][7:0]");
+    return verror(1); }
 
-// // Custom
-// dbkeys.push_back(
-//     "[234:3][232:3][228:3][221:3][211:3][193:2][169:1][142:1][126:0][194:2][170:0][212:3][195:3][171:0]"
-//     "[172:0][196:3][173:2][143:0][174:3][144:0][145:0][222:1][213:3][197:3][175:3][146:0][147:0][176:3]"
-//     "[148:0][149:0][198:0][229:3][223:3][214:1][199:3][177:1][150:0][178:0][215:3][200:1][179:0][201:2]"
-//     "[180:1][151:0][224:2][216:3][202:2][181:3][152:0][153:0][203:3][182:3][154:0][155:0][183:3][156:0]"
-//     "[157:3][127:0][128:0][233:3][230:2][225:3][217:3][204:3][184:3][158:3][129:0][130:0][159:3][131:0]"
-//     "[132:0][185:3][160:3][133:0][134:0][161:3][135:0][136:0][205:1][186:3][162:3][137:0][138:3][118:0]"
-//     "[119:0][163:3][139:3][120:0][121:0][140:3][122:0][123:0][218:2][206:0][231:3][226:1][219:3][207:3]"
-//     "[187:0][188:0][208:2][189:1][164:1][141:3][124:0][125:0][227:2][220:3][209:3][190:2][165:0][191:3]"
-//     "[166:0][167:0][210:2][192:1][168:0]");
+// argsparser.Usage();
 
-// dbkeys.push_back(
-//     "[196:3][194:3][190:0][191:3][185:3][175:3][160:3][138:0][139:0][161:3][140:0][141:0][176:0][186:3]"
-//     "[177:1][162:1][142:0][178:3][163:0][164:0][195:3][192:3][187:3][179:3][165:3][143:0][144:0][166:3]"
-//     "[145:2][114:0][146:3][115:0][116:0][180:3][167:3][147:3][117:0][118:0][148:3][119:0][120:0][168:3]"
-//     "[149:3][121:0][122:0][150:3][123:0][124:0][188:3][181:3][169:3][151:3][125:0][126:2][99:0][152:3]"
-//     "[127:3][100:0][101:0][128:3][102:0][103:0][170:3][153:3][129:3][104:0][105:0][130:3][106:0][107:0]"
-//     "[154:3][131:3][108:0][109:0][132:3][110:0][111:0][182:2][171:0][193:2][189:3][183:1][172:1][155:1]"
-//     "[133:3][112:0][113:0][184:3][173:3][156:0][157:0][174:3][158:3][134:0][135:0][159:3][136:0][137:0]");
+int main( int argc, char * argv[] ) {
 
-// dbkeys.push_back(
-//     "[136:3][134:3][130:1][125:3][115:3][100:3][83:0][84:0][101:1][85:0][116:3][102:0][103:0][131:1]"
-//     "[126:3][117:1][104:0][118:2][105:1][86:0][135:3][132:2][127:3][119:3][106:2][87:0][107:3][88:0]"
-//     "[89:0][120:3][108:3][90:0][91:2][74:0][109:3][92:3][75:0][76:0][93:3][77:0][78:0][133:3][128:3]"
-//     "[121:1][110:1][94:3][79:3][69:0][70:0][80:3][71:0][72:0][122:2][111:0][129:3][123:2][112:3][95:0]"
-//     "[96:0][124:3][113:3][97:0][98:2][81:1][73:0][114:2][99:2][82:0]");
+    // Parse args : input values or TCode
+    VHArgsParser argsparser;
 
-// string strscode  = "[8:1][7:3][5:0][6:0]";
-// string strscode  = "[16:1][15:3][13:3][9:0][10:0][14:3][11:0][12:0]";
-// tree.fromstr(dbkeys[1]);
+    argsparser.setappname("pack81treesvg");
 
-// "09B8C700" "05C540"
-// C5 = 1100 0101 | 40 = 0100 0000 
+    argsparser.addopt(  "t",    "Build from TCode");
+    argsparser.addopt(  "v",    "Build from spectrum values, for example '1+2+3'");
+    argsparser.addopt(  "blkn", "Block number ( optional)");
+
+    if( vok != argsparser.ParseArgs(argc, argv)) {
+        std::cout << "Parse args issue" << std::endl;
+        argsparser.Usage();
+        return 1; }
+
+    verr ret;
+
+    if(argsparser.checkopt("t")) {
+
+        ret = build_from_tcode(
+            argsparser.getopt("t"),
+            argsparser.getopt("blkn") );
+
+    } else if(argsparser    .checkopt("v")) {
+
+        ret = build_from_spc( 
+            argsparser.getopt("v")
+        );
+    } else {
+        ret = 1;
+        std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
+        argsparser.Usage();
+    }
+
+    return vok == ret; }
