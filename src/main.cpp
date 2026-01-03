@@ -44,7 +44,21 @@ verr build_from_spc( std::string strspc ) {
         if(!check_str_digit(s)) return verrmsg(1, "Invalid spectrum values");
         spcints.push_back( std::stoi(s) ); }
     
-    return tree.buildFromSpectrum(spcints); }
+    if(vok != tree.buildFromSpectrum(spcints)) {
+        return verrmsg(2, "build tree from spectrum failed"); }
+
+    CalculateTreeGfx();
+    RenderTreeGfx();
+
+    // Generate file name
+    string strout = "spectrum_";
+    // if(blkn.size()) { strout += blkn + "_"; }
+    // strout += strtcode;
+
+    // Save results
+    svg.savetosvg( strout + ".svg");
+
+    return vok; }
 
 // argsparser.Usage();
 
@@ -82,6 +96,6 @@ int main( int argc, char * argv[] ) {
         argsparser.Usage();
     }
 
-    if(vok != ret) { std::cout << "SVG generation issue!" << std::endl; }
+    if(vok != ret) { std::cout << "Final result: generation process failed !" << std::endl; }
 
     return vok == ret; }

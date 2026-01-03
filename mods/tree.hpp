@@ -21,7 +21,9 @@ class VHTree {
             uint16_t l;     // left
             uint16_t r;     // right
             uint16_t u;     // up
-            uint16_t y;     // layer
+            uint16_t v;     // count
+            uint8_t  y;     // layer
+            uint8_t  m;     // Mark flag, need for build by spectrum
         };
 
         const char * szhex = "0123456789ABCDEF";
@@ -35,17 +37,19 @@ class VHTree {
                 stnode nn = { .id = tcode.sizeall() - 1 - i, .tt = tcode[i] };
                 scode.push_back(nn); }
             dumpscode(); 
-            build();
+            autobuild();
             dumplr();
             dumpnodes();
             return vok; }
 
         verr buildFromSpectrum(std::vector<int> arr) {
+            if(arr.size()<2) return verrmsg(1,"Can't build tree with spectrum less than <2 elms");
+            for( int i=0 ; i < 512 ; i++ )          { clrnode(i); }
+            for( int i=0 ; i < arr.size() ; i++ )   { ooo[i].v = arr[i]; }
+            LinkTreeFromSpectrum(arr.size());
+            return vok; }
 
-            return verror(1);
-        }
-
-        void build() {
+        void autobuild() {
             for(int i=0; i<255; i++) { clrnode(i); }
             _cntlow = find_minnode_id();
             // recurse1pass(0, 0);
@@ -101,7 +105,9 @@ class VHTree {
         int     getrigh(int i) { return ooo[i].r; }
         int     getlay (int i) { return ooo[i].y; }
 
-        void    clrnode(int i) { ooo[i].l = 0xFFFF; ooo[i].r = 0xFFFF; ooo[i].u = 0xFFFF; ooo[i].y = 0xFFFF; }
+        void    clrnode(int i)   {
+            ooo[i].l = INV; ooo[i].r = INV; ooo[i].u = INV;
+            ooo[i].y = 0; ooo[i].v = 0; ooo[i].m = 0; }
 
         std::string astext() {
             std::string r;
@@ -201,6 +207,44 @@ class VHTree {
 
         int                     _cntlow;
         int                     _depthmax;
+
+        // -----------------------------------------------------------------------------
+        // Huffman tree props
+        // -----------------------------------------------------------------------------
+
+        int                     huffcnt;
+        // int                     huffcntsym;
+        const u16               INV = 0xFFFF;
+
+
+        void NSLRU(u16 i, u16 l, u16 r) { ooo[i].l = l; ooo[i].r=r; ooo[l].u=i; ooo[r].u=i; }
+
+        void FindFirst(u16 *pidx) {
+            for(;*pidx<huffcnt;(*pidx)++) if(!ooo[*pidx].m) { return; } }
+
+        void Find2Min(u16 *r1, u16 *r2) {
+            u16 idx = 0, t, min1, min2;
+            FindFirst(&idx); min1=ooo[idx].v; *r1=idx++;
+            FindFirst(&idx); min2=ooo[idx].v; *r2=idx++;
+            // swap: min2 should be always > min1
+            if(min1 > min2) {t=min2; min2=min1; min1=t; t=*r1; *r1=*r2; *r2=t;}
+            for(;idx<huffcnt;idx++)
+                if(!ooo[idx].m) {
+                    if(ooo[idx].v<min1) {*r2=*r1;min2=min1;*r1=idx;min1=ooo[idx].v;}
+                    else if(ooo[idx].v<min2) {*r2=idx;min2=ooo[idx].v;} } }
+
+        void NLnk () { u16 idx1, idx2; Find2Min(&idx1, &idx2);
+            ooo[idx1].m=1; ooo[idx2].m=1; ooo[huffcnt].v = ooo[idx1].v + ooo[idx2].v;
+            dmpnlnk(idx1, idx2, huffcnt, ooo[huffcnt].v);
+            NSLRU(huffcnt,idx1,idx2); ooo[huffcnt].m=0; huffcnt++; }
+
+        void dmpnlnk(int il, int ir, int cnt, int v ) {
+            printf("Link #%2d & #%2d ", il, ir); printf(" vals[%3d]=%3d\n", cnt, v); }
+
+        verr LinkTreeFromSpectrum(int symscnt) {
+            huffcnt = symscnt;
+            while(symscnt-->=2) NLnk();
+            return vok; }
 
         // -----------------------------------------------------------------------------
 
