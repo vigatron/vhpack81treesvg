@@ -44,7 +44,7 @@
 
 // string strscode  = "[8:1][7:3][5:0][6:0]";
 // string strscode  = "[16:1][15:3][13:3][9:0][10:0][14:3][11:0][12:0]";
-// tree.fromstr(dbkeys[1]);
+// tree.buildFromNodes(dbkeys[1]);
 
 // "09B8C700" "05C540"
 // C5 = 1100 0101 | 40 = 0100 0000 

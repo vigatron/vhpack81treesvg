@@ -7,11 +7,7 @@
 using namespace std;
 
 
-
-verr verrmsg(int x, std::string strerr) {
-    std::cout << strerr << endl;
-    return x; }
-
+// -----------------------------------------------------------------------------
 
 verr build_from_tcode( std::string strtcode, std::string blkn) {
 
@@ -34,6 +30,7 @@ verr build_from_tcode( std::string strtcode, std::string blkn) {
 
     return vok; }
 
+// -----------------------------------------------------------------------------
 
 verr build_from_spc( std::string strspc ) {
 
@@ -41,9 +38,10 @@ verr build_from_spc( std::string strspc ) {
     std::vector<int>            spcints;
 
     for( std::string s : spcvals) {
-        if(!check_str_digit(s)) return verrmsg(1, "Invalid spectrum values");
+        if(!check_str_digit(s))
+            return verrmsg(1, "Invalid spectrum values");
         spcints.push_back( std::stoi(s) ); }
-    
+
     if(vok != tree.buildFromSpectrum(spcints)) {
         return verrmsg(2, "build tree from spectrum failed"); }
 
@@ -60,7 +58,7 @@ verr build_from_spc( std::string strspc ) {
 
     return vok; }
 
-// argsparser.Usage();
+// -----------------------------------------------------------------------------
 
 int main( int argc, char * argv[] ) {
 
@@ -78,24 +76,17 @@ int main( int argc, char * argv[] ) {
         argsparser.Usage();
         return 1; }
 
+    // Строим дерево по спектру либо по ТКоду
+
     verr ret;
 
-    if(argsparser.checkopt("t")) {
-
-        ret = build_from_tcode(
-            argsparser.getopt("t"),
-            argsparser.getopt("blkn") );
-
-    } else if(argsparser    .checkopt("v")) {
-
-        ret = build_from_spc( 
-            argsparser.getopt("v") );
+    if(argsparser.checkopt("t"))        { ret = build_from_tcode( argsparser.getopt("t"), argsparser.getopt("blkn") );
+    } else if(argsparser.checkopt("v")) { ret = build_from_spc(   argsparser.getopt("v") );
     } else {
-        ret = 1;
         std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
-        argsparser.Usage();
-    }
+        argsparser.Usage(); ret = 1; }
 
-    if(vok != ret) { std::cout << "Final result: generation process failed !" << std::endl; }
+    if(vok != ret) {
+        std::cout << "Final result: generation process failed !" << std::endl; }
 
     return vok == ret; }

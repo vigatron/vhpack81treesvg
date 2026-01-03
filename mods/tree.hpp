@@ -30,38 +30,42 @@ class VHTree {
 
         VHTree() { }
 
+        // -----------------------------------------------------------------------------
         verr buildFromTCode ( std::string strtcode ) {
+
             if(!tcode.initfromstr(strtcode)) return verror(1);
-            scode.clear();
-            for(int i=0; i < tcode.sizenodes(); i++) {
-                stnode nn = { .id = tcode.sizeall() - 1 - i, .tt = tcode[i] };
-                scode.push_back(nn); }
-            dumpscode(); 
-            autobuild();
+
+            scode = CreateSCodeFromTCode(tcode);
+            ClearAllNodes();
+            _cntlow = find_minnode_id();
+            autoenumerate(0, 0);
+            _depthmax = scandepth();
+            // rotatenodes();
+
+            dumplr();
+            dumpnodes();
+            return vok; }
+ 
+        // -----------------------------------------------------------------------------
+        verr buildFromSpectrum(std::vector<int> arr) {
+
+            if(arr.size()<2)
+                return verrmsg(1,"Can't build tree with spectrum less than <2 elms");
+
+            ClearAllNodes();
+            for( int i=0 ; i < arr.size() ; i++ ) { ooo[i].v = arr[i]; }
+            
+            LinkTreeFromSpectrum(arr.size());
+            _cntlow = arr.size();
+            scode = CreateSCodeFromHuff(huffcnt - 1);
+            _depthmax = scandepth();
+
             dumplr();
             dumpnodes();
             return vok; }
 
-        verr buildFromSpectrum(std::vector<int> arr) {
-            if(arr.size()<2) return verrmsg(1,"Can't build tree with spectrum less than <2 elms");
-            for( int i=0 ; i < 512 ; i++ )          { clrnode(i); }
-            for( int i=0 ; i < arr.size() ; i++ )   { ooo[i].v = arr[i]; }
-            LinkTreeFromSpectrum(arr.size());
-            return vok; }
-
-        void autobuild() {
-            for(int i=0; i<255; i++) { clrnode(i); }
-            _cntlow = find_minnode_id();
-            // recurse1pass(0, 0);
-            // attachelms();
-            autoenumerate(0, 0);
-            // exit(10);
-            // rotatenodes();
-            _depthmax = scandepth();
-            asm("nop"); }
-
-
-        void fromstr ( std::string strscode) {
+        // -----------------------------------------------------------------------------
+        void buildFromNodes ( std::string strscode) {
             std::vector<int>     lbo; // [
             std::vector<int>     lsp; // :
             std::vector<int>     lbc; // ]
@@ -69,9 +73,9 @@ class VHTree {
 
             for(int i=0;i<strscode.size();i++) {
                 char s = strscode[i];
-                if(s == '[') lbo.push_back(i);
-                else if(s == ':') lsp.push_back(i);
-                else if(s == ']') lbc.push_back(i);
+                if(s == '[')        lbo.push_back(i);
+                else if(s == ':')   lsp.push_back(i);
+                else if(s == ']')   lbc.push_back(i);
                 else if( ! std::isdigit(s)) { i=strscode.size(); return;} }
 
             // Check syntax pass 1 cnt
@@ -88,6 +92,8 @@ class VHTree {
                 std::string sit = strscode.substr(lsp[i]+1, lbc[i] - lsp[i] - 1);
                 stnode nn = { .id = std::stoi(sid), .tt = std::stoi(sit) };
                 r.push_back(nn); } }
+
+        // -----------------------------------------------------------------------------
 
         void                            set         ( const std::vector<stnode> & vect)     { scode = vect; }
         void                            fromscd     ( std::vector<unsigned char> & arr )    { scode = fromscdi(arr); }
@@ -108,6 +114,8 @@ class VHTree {
         void    clrnode(int i)   {
             ooo[i].l = INV; ooo[i].r = INV; ooo[i].u = INV;
             ooo[i].y = 0; ooo[i].v = 0; ooo[i].m = 0; }
+        
+        void ClearAllNodes() { for(int i=0; i<512; i++) { clrnode(i); } }
 
         std::string astext() {
             std::string r;
@@ -159,9 +167,9 @@ class VHTree {
 
         void swaplr(int idx) { int tmp = ooo[idx].l; ooo[idx].l = ooo[idx].r; ooo[idx].r = tmp; }
 
-        void dumpscode() {
+        void dumpSCode(std::vector<stnode> & scde) {
             printf("SCode: ");
-            for( const stnode & n : scode) { printf("[%2d:%d]", n.id, n.tt); }
+            for( const stnode & n : scde) { printf("[%2d:%d]", n.id, n.tt); }
             printf("\n"); }
 
         void dumplr() {
@@ -199,9 +207,10 @@ class VHTree {
 
     private:
 
-        TCode                   tcode;
-        std::vector<stnode>     scode;             // Binary tree scode
-        std::vector<int>        seqlays[16];       // 2D array layers sequence
+        TCode                   tcode;              // TCode
+        std::vector<stnode>     scode;              // Scode
+
+        std::vector<int>        seqlays[16];        // 2D array layers sequence
 
         stobj                   ooo[512];
 
@@ -246,6 +255,26 @@ class VHTree {
             while(symscnt-->=2) NLnk();
             return vok; }
 
+
+        // -----------------------------------------------------------------------------
+        std::vector<stnode> CreateSCodeFromTCode( const TCode & tcd) {
+            std::vector<stnode> r;
+            for(int i=0; i < tcd.sizenodes(); i++) {
+                stnode nn = { .id = tcd.sizeall() - 1 - i, .tt = tcd[i] };
+                r.push_back(nn); }
+            printf("SCode generated from TCode : "); dumpSCode(r);
+            return r; }
+
+        // -----------------------------------------------------------------------------
+        std::vector<stnode> CreateSCodeFromHuff(int rootidx) {
+            std::vector<stnode> r;
+
+            autopass(rootidx, 0);
+            r = _autoscode;
+
+            printf("SCode generated from Huffman : "); dumpSCode(r);
+            return r; }
+
         // -----------------------------------------------------------------------------
 
         std::vector<stnode> fromscdi ( std::vector<unsigned char> & arr ) {
@@ -280,14 +309,14 @@ class VHTree {
         int _autoenumcnt;
 
         // -----------------------------------------------------------------------------
-        int autoenumerate(int tcodeidx, int lay) {
+        int autoenumerate(int scodeidx, int lay) {
 
-            int tid     = scode[tcodeidx].id;
-            int tt      = scode[tcodeidx].tt;
-            int r       = tcodeidx;
+            int tid     = scode[scodeidx].id;
+            int tt      = scode[scodeidx].tt;
+            int r       = scodeidx;
             int layn    = lay + 1;
 
-            if(!tcodeidx) { _autoenumcnt = 0; ooo[tid].y = 0; }
+            if(!scodeidx) { _autoenumcnt = 0; ooo[tid].y = 0; }
             printf("AUTOENUM Enter >   #%2d LAY=%2d [%d:%d] )\n", tid, lay, tid, tt);
 
             switch(tt) {
@@ -313,6 +342,41 @@ class VHTree {
                     } break; }
             
             printf("AUTOENUM Exit  <   #%2d LAY=%2d [%d:%d] )\n", tid, lay, tid, tt);
-            return r;
-        }
+            return r; }
+        
+        std::vector<stnode> _autoscode;
+
+        enNodeType nodetype(int idx) {
+            bool lsym = ooo[idx].l < _cntlow;
+            bool rsym = ooo[idx].r < _cntlow;
+            if( lsym && rsym )  return eNodeF;
+            if( !lsym && !rsym) return eNodeB;
+            return !lsym ? eNodeL : eNodeR; }
+
+        // -----------------------------------------------------------------------------
+        int autopass(int idx, int lay) {
+
+            enNodeType  tt      = nodetype(idx);
+            stnode      nn      = { .id = idx, .tt = tt };
+            int         layn    = lay + 1;
+
+            _autoscode.push_back(nn);
+    
+            int lidx = ooo[idx].l;
+            int ridx = ooo[idx].r;
+
+            ooo[lidx].y = layn;
+            ooo[ridx].y = layn;
+
+            switch(tt) {
+                case eNodeL: {
+                    autopass(ooo[idx].l, layn); } break;
+                case eNodeR: {
+                    autopass(ooo[idx].r, layn); } break;
+                case eNodeB: {
+                    autopass(ooo[idx].l, layn);
+                    autopass(ooo[idx].r, layn); } break;
+                default: { } break; }
+
+        return idx; }
 };
