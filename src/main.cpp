@@ -36,7 +36,7 @@ verr build_from_tcode( std::string strtcode, std::string blkn) {
 
 // -----------------------------------------------------------------------------
 
-verr build_from_spc( std::string strspc ) {
+verr build_from_spc( std::string strspc, std::string blkn ) {
 
     std::vector<std::string>    spcvals = split(strspc, '.');
     std::vector<int>            spcints;
@@ -56,8 +56,11 @@ verr build_from_spc( std::string strspc ) {
 
     // Generate file name
     string strout = "spectrum_";
-    // if(blkn.size()) { strout += blkn + "_"; }
-    // strout += strtcode;
+    if(blkn.size()) { strout += blkn + "b_"; }
+    
+    string strspfx = strspc;
+    for( int i=0; i < strspfx.size(); i++ ) { if(strspfx[i] == '.') strspfx[i] = '_'; }
+    strout += strspfx;
 
     // Save results
     svg.savetosvg( strout + ".svg");
@@ -87,7 +90,7 @@ int main( int argc, char * argv[] ) {
     verr ret;
 
     if(argsparser.checkopt("t"))        { ret = build_from_tcode( argsparser.getopt("t"), argsparser.getopt("blkn") );
-    } else if(argsparser.checkopt("v")) { ret = build_from_spc(   argsparser.getopt("v") );
+    } else if(argsparser.checkopt("v")) { ret = build_from_spc(   argsparser.getopt("v"), argsparser.getopt("blkn") );
     } else {
         std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
         argsparser.Usage(); ret = 1; }

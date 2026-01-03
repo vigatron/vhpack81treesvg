@@ -1,7 +1,7 @@
 {
 "cmake.debugConfig": {
         "args": [
-            // "-v", "1.2.3.4.5.10.22.1.3.20.36.4.4.5", // for test purposes
+            "-v", "1.2.3.4.5.10.22.1.3.20.36.4.4.5", // for test purposes
             // "-t", "05C640", // test tree structure
             "-blkn", "12345"
         ]
