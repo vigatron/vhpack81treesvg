@@ -95,4 +95,4 @@ int main( int argc, char * argv[] ) {
     if(vok != ret) {
         std::cout << "Final result: generation process failed !" << std::endl; }
 
-    return vok == ret; }
+    return (vok == ret) ? 0 : 1; }
