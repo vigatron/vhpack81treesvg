@@ -53,7 +53,7 @@ void draw_ramka() {
     int h = gfx_ramka.h;
 
     string str1 = "Визуализатор деревьев Хаффмана";
-    string str2 = "V1.00 V01G04A81 (C) 2025";
+    string str2 = "V1.00 V01G04A81 (C) 2025, 2026";
 
     int x1 = gfx_ramka.sx;
     int x2 = gfx_ramka.ex;
@@ -61,7 +61,7 @@ void draw_ramka() {
 
     svg.rect(x1, y, w, h, 1.5, colors::nblue, "none", 12 );
     svg.text(x1 +  10, y - 10, str1, iparams.fntSans, 15, colors::lgray );
-    svg.text(x2 - 140, y - 10, str2, iparams.fntSans, 10, colors::lgray ); }
+    svg.text(x2 - 170, y - 10, str2, iparams.fntSans, 10, colors::lgray ); }
 
 
 // -------------------------------------------------------------------------------------------------
@@ -81,6 +81,24 @@ void draw_links(int idx) {
         draw_link(idx, tree.getrigh(idx));
         draw_links(tree.getleft(idx));
         draw_links(tree.getrigh(idx)); } }
+
+
+
+// -------------------------------------------------------------------------------------------------
+void draw_elm_value(int idx) {
+
+    VHTree::stobj * pooo    = tree[idx];
+    int             fntsz   = 5;
+
+    string  str1 = std::to_string(pooo->v);
+    int     mdx = pooo->v < 10 ? fntsz/3 : fntsz*2/3;
+
+    int     x  = oparams.gfxpos_x[idx] - mdx;
+    int     y  = oparams.gfxpos_y[idx] + 10;
+    string  fnt = iparams.fntSans;
+
+    svg.text(x, y, str1, fnt, fntsz, "black" );
+}
 
 // -------------------------------------------------------------------------------------------------
 
@@ -121,13 +139,22 @@ void draw_elm(int idx) {
 
     svg.text(tx, ty, std::to_string(idx), fnt, fontw, colors::gray );
 
-    // Props print
-    bool show_props = false;
-    if(show_props) {
+    // Props print: gfx X L:R ( debug )
+    if(iparams.show_dbg_xwlwr) {
+
+        // X-Pos
         string str1 = std::to_string(oparams.gfxpos_x[idx]);
-        svg.text(tx, ty - 30, str1, fnt, 10, "black" );
-        string wlwr = std::to_string(oparams.gfx_nodewl[idx]) + ":" + std::to_string(oparams.gfx_nodewr[idx]);
-        svg.text(tx, ty - 20, wlwr, fnt, 10, "black" ); } }
+        svg.text(tx, ty - 30, str1, fnt, 3, "black" );
+
+        // WL WR
+        string strl = std::to_string(oparams.gfx_nodewl[idx]);
+        string strr = std::to_string(oparams.gfx_nodewr[idx]);
+        string wlwr = strl + ":" + strr;
+        svg.text(tx, ty - 20, wlwr, fnt, 3, "black" ); }
+
+        draw_elm_value(idx);
+    }
+
 
 // -------------------------------------------------------------------------------------------------
 

@@ -73,9 +73,10 @@ void CalculateTreeGfx() {
     // recurse, start from root
     int rootidx = tree.rootidx();
     // int ramka_centerx = gfx_ramka.sx + (gfx_ramka.w/2);
-    // int cx = ramka_centerx - ;
-    // int wl = oparams.gfx_nodewl[rootidx];
-    int cx = gfx_ramka.sx + iparams.svg_ramka_border + wl;
+    
+    
+    //  int cx = gfx_ramka.sx + iparams.svg_ramka_border + wl;
+    int cx = gfx_ramka.sx + (gfx_ramka.w/2) ;
     svgcalc_set_coords( rootidx , cx );
 
     // Move to top left corner

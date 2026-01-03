@@ -107,6 +107,8 @@ class VHTree {
         bool                            issym       (int idx)   { return idx < _cntlow;  }
         bool                            isnode      (int idx)   { return idx >= _cntlow; }
 
+        VHTree::stobj *                 operator[]  (int idx)   { return &ooo[idx];      }
+
         int     getleft(int i) { return ooo[i].l; }
         int     getrigh(int i) { return ooo[i].r; }
         int     getlay (int i) { return ooo[i].y; }
