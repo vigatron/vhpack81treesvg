@@ -32,4 +32,7 @@ class TreeGenParamsIn {
 
         // Mode : Tree created from Spectrum
         bool    from_spectrum     = false;
+
+        // 
+        std::string                 callparams;
 };

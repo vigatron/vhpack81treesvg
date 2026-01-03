@@ -123,6 +123,19 @@ void draw_tstamp() {
 
 // -------------------------------------------------------------------------------------------------
 
+void draw_callparams() {
+
+    std::string callParams = "Call parameters : " + iparams.callparams;
+
+    string fnt = iparams.fntSans;
+    int x2 = gfx_ramka.sx + 10;
+    int y  = gfx_ramka.ey + 16;
+    svg.text(x2, y, callParams, fnt, 8, colors::lgray);
+
+}
+
+// -------------------------------------------------------------------------------------------------
+
 void RenderTreeGfx() {
     svg.begin( oparams.svg_width, oparams.svg_height );
     draw_background();
@@ -132,5 +145,6 @@ void RenderTreeGfx() {
     draw_scode();
     draw_ramka();
     draw_tstamp();
+    draw_callparams();
     draw_bitpaths();
     svg.end(); }

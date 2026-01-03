@@ -26,7 +26,7 @@ verr build_from_tcode( std::string strtcode, std::string blkn) {
 
     // Generate file name
     string strout = "tcode_";
-    if(blkn.size()) { strout += blkn + "_"; }
+    if(blkn.size()) { strout += "B" + blkn + "_"; }
     strout += strtcode;
 
     // Save results
@@ -56,7 +56,7 @@ verr build_from_spc( std::string strspc, std::string blkn ) {
 
     // Generate file name
     string strout = "spectrum_";
-    if(blkn.size()) { strout += blkn + "b_"; }
+    if(blkn.size()) { strout += "B" + blkn + "_"; }
     
     string strspfx = strspc;
     for( int i=0; i < strspfx.size(); i++ ) { if(strspfx[i] == '.') strspfx[i] = '_'; }
@@ -84,6 +84,8 @@ int main( int argc, char * argv[] ) {
         std::cout << "Parse args issue" << std::endl;
         argsparser.Usage();
         return 1; }
+
+    iparams.callparams = argsparser.listparams();
 
     // Строим дерево по спектру либо по ТКоду
 
