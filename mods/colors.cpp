@@ -1,6 +1,7 @@
 #include "colors.hpp"
 
 std::string colors::white       = "#FFFFFF";
+std::string colors::orangel     = "#FFD000";
 
 std::string colors::yellowl     = "#FFFFE0";
 std::string colors::yellowll    = "#FFFFF0";

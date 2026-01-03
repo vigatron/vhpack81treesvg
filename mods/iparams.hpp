@@ -22,7 +22,8 @@ class TreeGenParamsIn {
         int     svg_ramka_border = 100;
 
         int     svg_paper_border = 40;
-        int     svg_paper_underh = 120;
+
+        // int     svg_paper_underh = 120; 
 
         bool    show_width_elmslr = false;
         bool    show_cnt          = true;

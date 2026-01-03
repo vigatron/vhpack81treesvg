@@ -3,19 +3,24 @@
 
 void svgcalc_ramka() {
 
+    int min_allowed_w               = 400;
+    int description_field_height    = 80; // для битовых полей
+
     int idx = tree.rootidx();
     int nodew = oparams.gfx_nodewl[ idx ] + oparams.gfx_nodewr[ idx ];
 
     int x = iparams.svg_paper_border;
     int y = iparams.svg_paper_border;
 
-    int w = (nodew < 400 ? 400 : nodew) + 2 * iparams.svg_ramka_border;
+    int w = (nodew < min_allowed_w ? min_allowed_w : nodew);    // с учетом минимальной ширины
+    w += 2 * iparams.svg_ramka_border;                          // отступ по бокам
+
     int h = (tree.depthmax() + 1 + 4) * iparams.svg_layerh;
 
-    gfx_ramka.set(x, y, w, h);
+    gfx_ramka.set(x, y, w, h + description_field_height);
     
     oparams.svg_width   = gfx_ramka.w + (2 * iparams.svg_paper_border);
-    oparams.svg_height  = gfx_ramka.h + (2 * iparams.svg_paper_border) + iparams.svg_paper_underh;
+    oparams.svg_height  = gfx_ramka.h + (2 * iparams.svg_paper_border);
 
 }
 

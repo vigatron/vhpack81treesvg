@@ -7,6 +7,8 @@ class colors {
     public:
 
     static  std::string white;       // = "#FFFFFF";
+    static  std::string orangel;
+
     static  std::string yellowl;     // = "#FFFFE0";
     static  std::string yellowll;    // = "#FFFFF0";
     static  std::string myell;       // = "#FFFFD0";

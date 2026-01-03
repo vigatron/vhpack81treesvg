@@ -1,5 +1,6 @@
-#include "global.hpp"
-#include "calc.hpp"
+#include "draw.hpp"
+
+#include <ctime>
 
 using namespace std;
 
@@ -61,127 +62,32 @@ void draw_ramka() {
 
     svg.rect(x1, y, w, h, 1.5, colors::nblue, "none", 12 );
     svg.text(x1 +  10, y - 10, str1, iparams.fntSans, 15, colors::lgray );
-    svg.text(x2 - 170, y - 10, str2, iparams.fntSans, 10, colors::lgray ); }
-
-
-// -------------------------------------------------------------------------------------------------
-
-void draw_link(int idx1, int idx2) {
-    std::vector<std::string> r;
-    int x1 = oparams.gfxpos_x[idx1];
-    int y1 = oparams.gfxpos_y[idx1];
-    int x2 = oparams.gfxpos_x[idx2];
-    int y2 = oparams.gfxpos_y[idx2];
-    svg.line(x1, y1, x2, y2, iparams.svg_lnkwidth, colors::mgreen); }
-
-// -------------------------------------------------------------------------------------------------
-void draw_links(int idx) {
-    if(idx >= tree.cntsyms() ) {
-        draw_link(idx, tree.getleft(idx));
-        draw_link(idx, tree.getrigh(idx));
-        draw_links(tree.getleft(idx));
-        draw_links(tree.getrigh(idx)); } }
+    svg.text(x2 - 170, y - 20, str2, iparams.fntSans, 10, colors::lgray ); }
 
 // -------------------------------------------------------------------------------------------------
 int font_align_pixels(std::string str, int fntsize) {
     return str.size() * (fntsize*0.6) / 2; }
 
-// -------------------------------------------------------------------------------------------------
-void draw_elm_value(int idx) {
-
-    VHTree::stobj * pooo    = tree[idx];
-    int             fntsz   = 6;
-
-    string  str     = "S" + std::to_string(pooo->v);
-    int     mdx     = font_align_pixels(str, fntsz); // (str1.size() < 2) ? fntsz/3 : fntsz*2/3;
-
-    int     x  = oparams.gfxpos_x[idx] - mdx;
-    int     y  = oparams.gfxpos_y[idx] + fntsz + 2;
-    string  fnt = iparams.fntSans;
-
-    svg.text(x, y, str, fnt, fntsz, "gray" );
-}
-
-// -------------------------------------------------------------------------------------------------
-
-void draw_elm(int idx) {
-
-    bool flagsym = tree.issym(idx);
-
-    int cx = oparams.gfxpos_x[idx];
-    int cy = oparams.gfxpos_y[idx];
-
-    int qx = oparams.gfxpos_x[idx] - iparams.svg_elm_width/2;
-    int qy = oparams.gfxpos_y[idx] - iparams.svg_elm_width/2;
-    int th = 1.5;
-
-    int fontw   = iparams.svg_elm_fntsz * 3 / 4;
-    int fonth   = iparams.svg_elm_fntsz * 4 / 7;
-    string fnt  = iparams.fntSans;
-
-    std::string colf = flagsym ? colors::mblue : colors::dgreen;
-    std::string colb = flagsym ? colors::sblue : colors::lgreen;
-    std::string cols = flagsym ? colors::mblue : colors::mgreen;  // separator
-
-    // Debug staff : Rectangle [WL|WR]
-    if( iparams.show_width_elmslr ) {
-        int sx  = oparams.gfxpos_x[idx] - oparams.gfx_nodewl[idx];
-        int ww  = oparams.gfx_nodewl[idx] + oparams.gfx_nodewr[idx];
-        int th  = iparams.svg_elm_width;
-        svg.rect(sx, qy, ww, th, 1, "black", "orange" ); }
-
-
-    int     ra  = iparams.svg_elm_width*5/8;
-    int     w   = iparams.svg_elm_width;
-    int     r   = w/2;
-
-    if(flagsym) {
-        svg.rect(qx, qy, w, w, th, colf, colb, w * 0.2 );
-    } else {
-        svg.circ(cx, cy, ra, th*3/8, colf, "white");
-        svg.circ(cx, cy, w/2, th, colf, colb); }
-
-
-    int tx      = oparams.gfxpos_x[idx] - ((idx>9) ? (fontw * 3 / 5) : (fontw / 4));
-    int ty      = oparams.gfxpos_y[idx] + (fonth / 2);
-
-    // Show counts ?
-    if(iparams.from_spectrum) {
-        // Separator
-        svg.line( cx - r, cy, cx + r, cy, 1, cols);
-        ty -= fonth*0.9;
-        draw_elm_value(idx);
-    }
-
-    // Index
-    svg.text(tx, ty, std::to_string(idx), fnt, fontw, colors::gray );
-
-    // Props print: gfx X L:R ( debug )
-    if(iparams.show_dbg_xwlwr) {
-
-        // X-Pos
-        string str1 = std::to_string(oparams.gfxpos_x[idx]);
-        svg.text(tx, ty - 30, str1, fnt, 3, "black" );
-
-        // WL WR
-        string strl = std::to_string(oparams.gfx_nodewl[idx]);
-        string strr = std::to_string(oparams.gfx_nodewr[idx]);
-        string wlwr = strl + ":" + strr;
-        svg.text(tx, ty - 20, wlwr, fnt, 3, "black" ); }
-
-    }
-
 
 // -------------------------------------------------------------------------------------------------
 
 void draw_bitpath_sym(int idx) {
-    int         ww          = gfx_ramka.w / 4;
+
+    int colsmin = tree.cntsyms() / 8;
+    if( tree.cntsyms() % 8 ) colsmin++;
+    if(!colsmin) colsmin++;
+
+    // ширина столбцов зависит от количества узлов дерева
+    int         ww          = gfx_ramka.w / colsmin; 
+
     int         hh          = 14;
     int         symsincol   = 8;
     int         coln        = idx / symsincol;
     int         rown        = idx % symsincol;
+
     int         symx        = gfx_ramka.sx + 40 + (coln * ww);
-    int         symy        = gfx_ramka.ey + 40 + (rown * hh);
+    int         symy        = gfx_ramka.ey - (symsincol * hh) + (rown * hh);
+
     string      strsymn     = "#" + std::to_string(idx) + ":";
     string      bitpath     = tree.bitpath(idx);
 
@@ -190,15 +96,32 @@ void draw_bitpath_sym(int idx) {
     svg.text( symx + 30 , symy, bitpath, iparams.fntSans, 11, color);
 }
 
+// -------------------------------------------------------------------------------------------------
+
 void draw_bitpaths() { for(int i=0; i < tree.cntsyms();i++) { draw_bitpath_sym(i); } }
 
 // -------------------------------------------------------------------------------------------------
 
-void draw_elems(int idx) {
-    draw_elm(idx);
-    if( tree.isnode(idx) ) {
-        draw_elems( tree.getleft(idx) );
-        draw_elems( tree.getrigh(idx) ); } }
+void draw_tstamp() {
+
+    // 1. Get the current time in seconds since the Unix epoch
+    std::time_t now = std::time(nullptr);
+
+    // 2. Convert to a local time structure
+    std::tm tmb = *std::localtime(&now);
+
+    // 3. Format the time into a string (C++11 and later using streams)
+    // Example format: YYYY-MM-DD HH:MM:SS    
+    char buffer[80];
+    std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &tmb);
+
+    string fnt = iparams.fntSans;
+    int x2 = gfx_ramka.ex - 170;
+    int y  = gfx_ramka.sy - 7;
+    svg.text(x2, y, buffer, fnt, 10, colors::lgray);
+}
+
+// -------------------------------------------------------------------------------------------------
 
 void RenderTreeGfx() {
     svg.begin( oparams.svg_width, oparams.svg_height );
@@ -208,5 +131,6 @@ void RenderTreeGfx() {
     draw_layers();
     draw_scode();
     draw_ramka();
+    draw_tstamp();
     draw_bitpaths();
     svg.end(); }
