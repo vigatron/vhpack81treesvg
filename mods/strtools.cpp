@@ -1,5 +1,10 @@
 #include "strtools.hpp"
 
+bool check_str_digit(std::string str) {
+    if(!str.size()) return false;
+    for(char s : str) { if(s<'0' || s>'9') return false; }
+    return true; }
+
 bool check_str_ishex(std::string str) {
     for( char s : str) {
         bool p1 = (s >='0' && s <='9');
@@ -38,7 +43,6 @@ std::vector<std::string> split(std::string str, char sym) {
         int     posl = arrsep.back();
         bool    empt = posl == str.size()-1;
         s = empt ? "" : str.substr(posl+1, str.size() - posl);
-        r.push_back(s);
-    }
+        r.push_back(s); }
 
     return r; }

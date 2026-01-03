@@ -12,12 +12,15 @@ verr verrmsg(int x, std::string strerr) {
     std::cout << strerr << endl;
     return x; }
 
+
 verr build_from_tcode( std::string strtcode, std::string blkn) {
 
     if(!strtcode.size() || !check_str_ishex(strtcode)) { 
         return verrmsg(1, "Invalid TCode"); }
 
-    tree.initFromTCode(strtcode);
+    if( vok != tree.buildFromTCode(strtcode) )
+        return verrmsg(1, "Can't build tree from TCode");
+
     CalculateTreeGfx();
     RenderTreeGfx();
 
@@ -31,11 +34,17 @@ verr build_from_tcode( std::string strtcode, std::string blkn) {
 
     return vok; }
 
+
 verr build_from_spc( std::string strspc ) {
 
-    std::vector<std::string> spcvals = split(strspc, '.');
+    std::vector<std::string>    spcvals = split(strspc, '.');
+    std::vector<int>            spcints;
 
-    return verror(1); }
+    for( std::string s : spcvals) {
+        if(!check_str_digit(s)) return verrmsg(1, "Invalid spectrum values");
+        spcints.push_back( std::stoi(s) ); }
+    
+    return tree.buildFromSpectrum(spcints); }
 
 // argsparser.Usage();
 

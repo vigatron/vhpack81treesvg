@@ -28,8 +28,8 @@ class VHTree {
 
         VHTree() { }
 
-        bool initFromTCode ( std::string strtcode ) {
-            if(!tcode.initfromstr(strtcode)) return false;
+        verr buildFromTCode ( std::string strtcode ) {
+            if(!tcode.initfromstr(strtcode)) return verror(1);
             scode.clear();
             for(int i=0; i < tcode.sizenodes(); i++) {
                 stnode nn = { .id = tcode.sizeall() - 1 - i, .tt = tcode[i] };
@@ -38,7 +38,12 @@ class VHTree {
             build();
             dumplr();
             dumpnodes();
-            return true;}
+            return vok; }
+
+        verr buildFromSpectrum(std::vector<int> arr) {
+
+            return verror(1);
+        }
 
         void build() {
             for(int i=0; i<255; i++) { clrnode(i); }
@@ -92,11 +97,11 @@ class VHTree {
         bool                            issym       (int idx)   { return idx < _cntlow;  }
         bool                            isnode      (int idx)   { return idx >= _cntlow; }
 
-        int     getleft(int i) { return sobjs[i].l; }
-        int     getrigh(int i) { return sobjs[i].r; }
-        int     getlay (int i) { return sobjs[i].y; }
+        int     getleft(int i) { return ooo[i].l; }
+        int     getrigh(int i) { return ooo[i].r; }
+        int     getlay (int i) { return ooo[i].y; }
 
-        void    clrnode(int i) { sobjs[i].l = 0xFFFF; sobjs[i].r = 0xFFFF; sobjs[i].u = 0xFFFF; sobjs[i].y = 0xFFFF; }
+        void    clrnode(int i) { ooo[i].l = 0xFFFF; ooo[i].r = 0xFFFF; ooo[i].u = 0xFFFF; ooo[i].y = 0xFFFF; }
 
         std::string astext() {
             std::string r;
@@ -146,7 +151,7 @@ class VHTree {
                     int swpidx = scode[i].id;
                     swaplr(swpidx); } } }
 
-        void swaplr(int idx) { int tmp = sobjs[idx].l; sobjs[idx].l = sobjs[idx].r; sobjs[idx].r = tmp; }
+        void swaplr(int idx) { int tmp = ooo[idx].l; ooo[idx].l = ooo[idx].r; ooo[idx].r = tmp; }
 
         void dumpscode() {
             printf("SCode: ");
@@ -154,21 +159,21 @@ class VHTree {
             printf("\n"); }
 
         void dumplr() {
-            for( const stnode & n : scode) { printf("%2d:%d L=%2d R=%2d\n", n.id, n.tt, sobjs[n.id].l, sobjs[n.id].r); } }
+            for( const stnode & n : scode) { printf("%2d:%d L=%2d R=%2d\n", n.id, n.tt, ooo[n.id].l, ooo[n.id].r); } }
 
         void dumpnodes() {
-            int total = cntall(); for(int i=0; i<=total;i++) { printf("#%2d LY=%d\n", i, sobjs[i].y); } }
+            int total = cntall(); for(int i=0; i<=total;i++) { printf("#%2d LY=%d\n", i, ooo[i].y); } }
         
         int scandepth() {
             int r = 0;
             int total = cntall();
-            for(int i=0;i<total;i++) { if(sobjs[i].y != 0xFFFF) if(sobjs[i].y > r) r = sobjs[i].y; }
+            for(int i=0;i<total;i++) { if(ooo[i].y != 0xFFFF) if(ooo[i].y > r) r = ooo[i].y; }
             return r; }
 
         std::vector<int> findbylay(int ll) {
             std::vector<int> r;
             int total = cntall();
-            for(int i=0;i<=total;i++) { if( sobjs[i].y == ll ) r.push_back(i); }
+            for(int i=0;i<=total;i++) { if( ooo[i].y == ll ) r.push_back(i); }
             return r; }
 
         const std::vector<int> & seqlay(int lay) { return seqlays[lay]; }
@@ -180,8 +185,8 @@ class VHTree {
             std::string r;
             int curidx = idx;
             while(curidx != rootidx()) {
-                int parent = sobjs[curidx].u;
-                r += '0' + (sobjs[parent].l != curidx);
+                int parent = ooo[curidx].u;
+                r += '0' + (ooo[parent].l != curidx);
                 curidx = parent; }
             std::reverse(r.begin(), r.end());
             return r; }
@@ -192,7 +197,7 @@ class VHTree {
         std::vector<stnode>     scode;             // Binary tree scode
         std::vector<int>        seqlays[16];       // 2D array layers sequence
 
-        stobj                   sobjs[256];
+        stobj                   ooo[512];
 
         int                     _cntlow;
         int                     _depthmax;
@@ -217,15 +222,15 @@ class VHTree {
             return minval; }
 
         void LinkLeft(int idx, int parent, int curlay) {
-            sobjs[parent].l    = idx;
-            sobjs[idx].y       = curlay;
-            sobjs[idx].u       = parent;
+            ooo[parent].l    = idx;
+            ooo[idx].y       = curlay;
+            ooo[idx].u       = parent;
             printf("LinkLeft #%d L%d <- %d \n", idx, curlay, parent ); }
 
         void LinkRigh(int idx, int parent, int curlay) {
-            sobjs[parent].r    = idx;
-            sobjs[idx].y       = curlay;
-            sobjs[idx].u       = parent;
+            ooo[parent].r    = idx;
+            ooo[idx].y       = curlay;
+            ooo[idx].u       = parent;
             printf("LinkRigh #%d L%d <- %d \n", idx, curlay, parent ); }
 
         int _autoenumcnt;
@@ -238,7 +243,7 @@ class VHTree {
             int r       = tcodeidx;
             int layn    = lay + 1;
 
-            if(!tcodeidx) { _autoenumcnt = 0; sobjs[tid].y = 0; }
+            if(!tcodeidx) { _autoenumcnt = 0; ooo[tid].y = 0; }
             printf("AUTOENUM Enter >   #%2d LAY=%2d [%d:%d] )\n", tid, lay, tid, tt);
 
             switch(tt) {
