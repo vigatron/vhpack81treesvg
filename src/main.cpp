@@ -6,6 +6,10 @@
 
 using namespace std;
 
+// DATE : TIME
+// Call Params
+// Ramka up
+// BPath rates %
 
 // -----------------------------------------------------------------------------
 
@@ -44,6 +48,8 @@ verr build_from_spc( std::string strspc ) {
 
     if(vok != tree.buildFromSpectrum(spcints)) {
         return verrmsg(2, "build tree from spectrum failed"); }
+
+    iparams.from_spectrum = true;
 
     CalculateTreeGfx();
     RenderTreeGfx();

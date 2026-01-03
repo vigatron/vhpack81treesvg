@@ -82,22 +82,24 @@ void draw_links(int idx) {
         draw_links(tree.getleft(idx));
         draw_links(tree.getrigh(idx)); } }
 
-
+// -------------------------------------------------------------------------------------------------
+int font_align_pixels(std::string str, int fntsize) {
+    return str.size() * (fntsize*0.6) / 2; }
 
 // -------------------------------------------------------------------------------------------------
 void draw_elm_value(int idx) {
 
     VHTree::stobj * pooo    = tree[idx];
-    int             fntsz   = 5;
+    int             fntsz   = 6;
 
-    string  str1 = std::to_string(pooo->v);
-    int     mdx = pooo->v < 10 ? fntsz/3 : fntsz*2/3;
+    string  str     = "S" + std::to_string(pooo->v);
+    int     mdx     = font_align_pixels(str, fntsz); // (str1.size() < 2) ? fntsz/3 : fntsz*2/3;
 
     int     x  = oparams.gfxpos_x[idx] - mdx;
-    int     y  = oparams.gfxpos_y[idx] + 10;
+    int     y  = oparams.gfxpos_y[idx] + fntsz + 2;
     string  fnt = iparams.fntSans;
 
-    svg.text(x, y, str1, fnt, fntsz, "black" );
+    svg.text(x, y, str, fnt, fntsz, "gray" );
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -115,12 +117,11 @@ void draw_elm(int idx) {
 
     int fontw   = iparams.svg_elm_fntsz * 3 / 4;
     int fonth   = iparams.svg_elm_fntsz * 4 / 7;
-    int tx      = oparams.gfxpos_x[idx] - ((idx>9) ? (fontw * 3 / 5) : (fontw / 4));
-    int ty      = oparams.gfxpos_y[idx] + (fonth / 2);
     string fnt  = iparams.fntSans;
 
     std::string colf = flagsym ? colors::mblue : colors::dgreen;
     std::string colb = flagsym ? colors::sblue : colors::lgreen;
+    std::string cols = flagsym ? colors::mblue : colors::mgreen;  // separator
 
     // Debug staff : Rectangle [WL|WR]
     if( iparams.show_width_elmslr ) {
@@ -129,14 +130,30 @@ void draw_elm(int idx) {
         int th  = iparams.svg_elm_width;
         svg.rect(sx, qy, ww, th, 1, "black", "orange" ); }
 
-    if(!flagsym) {
-        int r = iparams.svg_elm_width*5/8;
-        svg.circ(cx, cy, r, th*3/8, colf, "white"); }
 
-    int w = iparams.svg_elm_width;
-    if(flagsym) { svg.rect(qx, qy, w, w, th, colf, colb, w * 0.2 );
-    } else { svg.circ(cx, cy, w/2, th, colf, colb); }
+    int     ra  = iparams.svg_elm_width*5/8;
+    int     w   = iparams.svg_elm_width;
+    int     r   = w/2;
 
+    if(flagsym) {
+        svg.rect(qx, qy, w, w, th, colf, colb, w * 0.2 );
+    } else {
+        svg.circ(cx, cy, ra, th*3/8, colf, "white");
+        svg.circ(cx, cy, w/2, th, colf, colb); }
+
+
+    int tx      = oparams.gfxpos_x[idx] - ((idx>9) ? (fontw * 3 / 5) : (fontw / 4));
+    int ty      = oparams.gfxpos_y[idx] + (fonth / 2);
+
+    // Show counts ?
+    if(iparams.from_spectrum) {
+        // Separator
+        svg.line( cx - r, cy, cx + r, cy, 1, cols);
+        ty -= fonth*0.9;
+        draw_elm_value(idx);
+    }
+
+    // Index
     svg.text(tx, ty, std::to_string(idx), fnt, fontw, colors::gray );
 
     // Props print: gfx X L:R ( debug )
@@ -152,7 +169,6 @@ void draw_elm(int idx) {
         string wlwr = strl + ":" + strr;
         svg.text(tx, ty - 20, wlwr, fnt, 3, "black" ); }
 
-        draw_elm_value(idx);
     }
 
 
