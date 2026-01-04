@@ -69,36 +69,6 @@ int font_align_pixels(std::string str, int fntsize) {
     return str.size() * (fntsize*0.6) / 2; }
 
 
-// -------------------------------------------------------------------------------------------------
-
-void draw_bitpath_sym(int idx) {
-
-    int colsmin = tree.cntsyms() / 8;
-    if( tree.cntsyms() % 8 ) colsmin++;
-    if(!colsmin) colsmin++;
-
-    // ширина столбцов зависит от количества узлов дерева
-    int         ww          = gfx_ramka.w / colsmin; 
-
-    int         hh          = 14;
-    int         symsincol   = 8;
-    int         coln        = idx / symsincol;
-    int         rown        = idx % symsincol;
-
-    int         symx        = gfx_ramka.sx + 40 + (coln * ww);
-    int         symy        = gfx_ramka.ey - (symsincol * hh) + (rown * hh);
-
-    string      strsymn     = "#" + std::to_string(idx) + ":";
-    string      bitpath     = tree.bitpath(idx);
-
-    string color = colors::gray;
-    svg.text( symx      , symy, strsymn, iparams.fntSans, 11, color);
-    svg.text( symx + 30 , symy, bitpath, iparams.fntSans, 11, color);
-}
-
-// -------------------------------------------------------------------------------------------------
-
-void draw_bitpaths() { for(int i=0; i < tree.cntsyms();i++) { draw_bitpath_sym(i); } }
 
 // -------------------------------------------------------------------------------------------------
 
@@ -146,5 +116,6 @@ void RenderTreeGfx() {
     draw_ramka();
     draw_tstamp();
     draw_callparams();
+    draw_bitpath_back();
     draw_bitpaths();
     svg.end(); }

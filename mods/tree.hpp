@@ -4,6 +4,8 @@
 #include "tcode.hpp"
 #include "svg.hpp"
 
+#include <charconv>
+
 struct stnode    { int id; int tt; };
 
 class VHTree {
@@ -197,6 +199,15 @@ class VHTree {
         void dump_str_array(std::vector<std::string> & content) {
             for( const std::string & s : content) { printf("%s\n", s.c_str() ); } }
 
+        // int bitpathi(int idx) {
+        //     int r = 0;
+        //     int curidx = idx;
+        //     while(curidx != rootidx()) {
+        //         int parent = ooo[curidx].u;
+        //         r += '0' + (ooo[parent].l != curidx);
+        //         curidx = parent; }
+        //     return r; }
+
         std::string bitpath(int idx) {
             std::string r;
             int curidx = idx;
@@ -205,6 +216,17 @@ class VHTree {
                 r += '0' + (ooo[parent].l != curidx);
                 curidx = parent; }
             std::reverse(r.begin(), r.end());
+            return r; }
+
+        char symrate_buffer[64];
+
+        std::string symrate( int idx ) {
+            std::string     bpath   = bitpath(idx);
+            double          val     = bpath.size() * 1.0f / (ooo[idx].v * 8);
+
+            auto [ptr, ec] = std::to_chars(symrate_buffer, symrate_buffer + 64, val * 100, std::chars_format::fixed, 2);
+            std::string s(symrate_buffer, ptr);
+            std::string r = "%" + s; // + "%)";
             return r; }
 
     private:
@@ -345,7 +367,7 @@ class VHTree {
             
             printf("AUTOENUM Exit  <   #%2d LAY=%2d [%d:%d] )\n", tid, lay, tid, tt);
             return r; }
-        
+
         std::vector<stnode> _autoscode;
 
         enNodeType nodetype(int idx) {
