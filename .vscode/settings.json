@@ -5,8 +5,9 @@
             // "-t", "05C640", // test tree structure
             // "-t", "09F70300", // to debug centering
             // "-t", "28DF894BB454B2358574D200",
-            "-t", "1ECEDD528C4B54B920", // test tree structure
-            "-blkn", "12345"
+            "-t"    , "1ECEDD528C4B54B920", // test tree structure
+            "-blkn" , "12345",
+            "-w"    , "20^22"
         ]
     }
 }

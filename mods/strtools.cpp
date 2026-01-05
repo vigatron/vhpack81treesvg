@@ -1,9 +1,11 @@
 #include "strtools.hpp"
 
+
 bool check_str_digit(std::string str) {
     if(!str.size()) return false;
     for(char s : str) { if(s<'0' || s>'9') return false; }
     return true; }
+
 
 bool check_str_ishex(std::string str) {
     for( char s : str) {
@@ -14,10 +16,13 @@ bool check_str_ishex(std::string str) {
         if(!p) return false; }
     return true; }
 
+
 std::vector<std::string> split(std::string str, char sym) {
 
     std::vector<std::string>    r;
     std::vector<int>            arrsep;
+
+    if(!str.size()) return r;
 
     // Find all separators
     for(int i=0;i<str.size();i++) {

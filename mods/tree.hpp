@@ -26,6 +26,7 @@ class VHTree {
             uint16_t v;     // count
             uint8_t  y;     // layer
             uint8_t  m;     // Mark flag, need for build by spectrum
+            uint8_t  w;     // Rotation flag, LR was swapped
         };
 
         const char * szhex = "0123456789ABCDEF";
