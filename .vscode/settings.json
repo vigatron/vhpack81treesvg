@@ -5,9 +5,12 @@
             // "-t", "05C640", // test tree structure
             // "-t", "09F70300", // to debug centering
             // "-t", "28DF894BB454B2358574D200",
-            "-t"    , "1ECEDD528C4B54B920", // test tree structure
+
+            // rotation test tree
+            "-t"    , "1ECEDD528C4B54B920",
             "-blkn" , "12345",
-            "-w"    , "20^22"
+            "-w"    , "56^59"
+
         ]
     }
 }

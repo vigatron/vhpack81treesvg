@@ -58,10 +58,21 @@ void draw_elm(int idx) {
     int     w   = iparams.svg_elm_width;
     int     r   = w/2;
 
+
     if(flagsym) {
         svg.rect(qx, qy, w, w, th, colf, colb, w * 0.2 );
     } else {
         svg.circ(cx, cy, ra, th*3/8, colf, "white" );
+
+        if( tree.getswap(idx)) {
+            int rr = 14;
+            std::string spc  = " ";
+            std::string sx_y  = std::to_string(cx-rr) + spc + std::to_string(cy);
+            std::string ex_y  = std::to_string(cx+rr) + spc + std::to_string(cy);
+            std::string test = " <path d=\"M " + sx_y + " A 14 14 0 0 1 " + ex_y + " \" fill=\"none\" stroke=\"#41b180ff\" stroke-width=\"3\" />";
+            svg.append(test); }
+
+
         svg.circ(cx, cy, w/2, th, colf, colb); }
 
 

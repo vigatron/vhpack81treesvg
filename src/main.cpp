@@ -18,7 +18,7 @@ verr build_from_tcode( std::string strtcode, std::string blkn, std::vector<int> 
     if(!strtcode.size() || !check_str_ishex(strtcode)) { 
         return verrmsg(1, "Invalid TCode"); }
 
-    if( vok != tree.buildFromTCode(strtcode) )
+    if( vok != tree.buildFromTCode(strtcode, rotints) )
         return verrmsg(1, "Can't build tree from TCode");
 
     CalculateTreeGfx();

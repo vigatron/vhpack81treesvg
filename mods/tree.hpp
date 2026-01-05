@@ -34,7 +34,7 @@ class VHTree {
         VHTree() { }
 
         // -----------------------------------------------------------------------------
-        verr buildFromTCode ( std::string strtcode ) {
+        verr buildFromTCode ( std::string strtcode , std::vector<int> rotints) {
 
             if(!tcode.initfromstr(strtcode)) return verror(1);
 
@@ -43,6 +43,8 @@ class VHTree {
             _cntlow = find_minnode_id();
             autoenumerate(0, 0);
             _depthmax = scandepth();
+            
+            for(int rotidx : rotints) { ooo[rotidx].w = 1; }
             // rotatenodes();
 
             dumplr();
@@ -115,10 +117,11 @@ class VHTree {
         int     getleft(int i) { return ooo[i].l; }
         int     getrigh(int i) { return ooo[i].r; }
         int     getlay (int i) { return ooo[i].y; }
+        bool    getswap(int i) { return ooo[i].w; }
 
         void    clrnode(int i)   {
             ooo[i].l = INV; ooo[i].r = INV; ooo[i].u = INV;
-            ooo[i].y = 0; ooo[i].v = 0; ooo[i].m = 0; }
+            ooo[i].y = 0; ooo[i].v = 0; ooo[i].m = 0; ooo[i].w = 0; }
         
         void ClearAllNodes() { for(int i=0; i<512; i++) { clrnode(i); } }
 
