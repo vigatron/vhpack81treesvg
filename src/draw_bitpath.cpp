@@ -29,12 +29,14 @@ static void draw_bitpath_sym(int idx) {
 
     string      strsymn     = "#" + std::to_string(idx); // + ":";
     string      bitpath     = tree.bitpath(idx);
-    string      bitrate     = tree.symrate(idx);
 
     string color = colors::gray;
     svg.text( symx      , symy, strsymn, iparams.fntSans,  9, color);
     svg.text( symx + 50 , symy, bitpath, iparams.fntSans, 10, color);
-    svg.text( symx + 20 , symy, bitrate, iparams.fntSans, 7, "#A0A0A0");
+
+    if(iparams.from_spectrum) {
+    string      bitrate     = tree.symrate(idx);
+    svg.text( symx + 20 , symy, bitrate, iparams.fntSans, 7, "#A0A0A0"); }
 
 }
 

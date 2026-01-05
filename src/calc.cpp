@@ -75,7 +75,9 @@ void CalculateTreeGfx() {
     // int ramka_centerx = gfx_ramka.sx + (gfx_ramka.w/2);
 
     //  int cx = gfx_ramka.sx + iparams.svg_ramka_border + wl;
-    int cx = gfx_ramka.sx + (gfx_ramka.w/2) - ((wl>wr) ? ( wl - wr)/2 : (wr - wl)/2);
+    int ramka_centerx   = gfx_ramka.sx + (gfx_ramka.w/2);
+    int root_width      = wl + wr;
+    int cx              = ramka_centerx + root_width/2 - wr;
     svgcalc_set_coords( rootidx , cx );
 
     // Move to top left corner
