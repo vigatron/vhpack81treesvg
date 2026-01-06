@@ -60,7 +60,6 @@ class VHSVG {
         append( svg_tline("line", txt) ); }
 
     // -------------------------------------------------------------------------------------------------
-
     void circ(int cx, int cy, int r, int wdt, std::string colf, std::string colb ) {
         std::string txt = "";
         txt += svg_param("cx", cx);
@@ -72,7 +71,29 @@ class VHSVG {
         append( svg_tline("circle", txt) ); }
 
     // -------------------------------------------------------------------------------------------------
+    void arc(int x, int y, int rad, int wdt, std::string colf) {
+        std::string strsx = std::to_string(x-rad);
+        std::string strsy = std::to_string(y);
+        std::string strex = std::to_string(x+rad);
+        std::string strey = std::to_string(y);
 
+        std::vector<std::string> dparams = {
+        "M", strsx, strsy,
+        "A", std::to_string(rad), std::to_string(rad),
+        "0", // x-axis-rotation: Rotation of the ellipse.
+        "0", // large-arc-flag: 0 for the smaller arc, 1 for the larger arc.
+        "0", // sweep-flag: 0 for clockwise, 1 for counter-clockwise.
+        strex, strey };
+
+        std::string par_d       = svg_param( "d"                , join(dparams, " ") );
+        std::string par_fill    = svg_param( "fill"             , "none" );
+        std::string par_strk    = svg_param( "stroke"           , colf );
+        std::string par_strkc   = svg_param( "stroke-width"     , wdt );
+
+        std::vector<std::string> pparams = { par_d, par_fill, par_strk, par_strkc };
+        append( svg_tline("path", join(pparams, " ")) ); }
+
+    // -------------------------------------------------------------------------------------------------
     void rect(int x, int y, int width, int height, int wdt, std::string colf, std::string colb = "none", int rr = 0 ) {
         std::string txt = "";
         txt += svg_param("x", x);
@@ -113,5 +134,6 @@ class VHSVG {
     private:
 
         std::vector<std::string>    svg_content;
+        const std::string           spc = " ";
 
 };

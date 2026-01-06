@@ -1,5 +1,8 @@
 #include "strtools.hpp"
 
+#include <iostream>
+#include <sstream>
+
 
 bool check_str_digit(std::string str) {
     if(!str.size()) return false;
@@ -51,3 +54,9 @@ std::vector<std::string> split(std::string str, char sym) {
         r.push_back(s); }
 
     return r; }
+
+std::string join(const std::vector<std::string>& elements, const std::string& delimiter) {
+    std::ostringstream os;
+    for (size_t i = 0; i < elements.size(); ++i) {
+        os << elements[i]; if (i < elements.size() - 1) { os << delimiter; } }
+    return os.str(); } // Get the final string

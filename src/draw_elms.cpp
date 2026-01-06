@@ -14,8 +14,7 @@ struct sColor {
 const sColor  arrcolors[3] = {
     { colors::mblue     , colors::sblue     , colors::mblue     , "gray" },
     { colors::dgreen    , colors::lgreen    , colors::mgreen    , "gray" },
-    { colors::orangel   , colors::nyell     , colors::orangel   , "gray" }
-};
+    { colors::orangel   , colors::nyell     , colors::orangel   , "gray" } };
 
 // -------------------------------------------------------------------------------------------------
 static const sColor * elm_color(int idx) {
@@ -63,22 +62,12 @@ static void draw_elm_form (int idx, int x, int y) {
             colors->colf, colors->colb, elmsize * 0.2 );
     } else {
         int     ra  = iparams.svg_elm_width*5/8;
-
         svg.circ(x, y, ra, th*3/8, colors->colf, "white" );
-
-        if( tree.getswap(idx)) {
-            int rr = 14;
-            std::string spc  = " ";
-            std::string sx_y  = std::to_string(x-rr) + spc + std::to_string(y);
-            std::string ex_y  = std::to_string(x+rr) + spc + std::to_string(y);
-            std::string test = " <path d=\"M " + sx_y + " A 14 14 0 0 1 " + ex_y + " \" fill=\"none\" stroke=\"#41b180ff\" stroke-width=\"3\" />";
-            svg.append(test); }
-
+        if( tree.getswap(idx)) { svg.arc(x, y, 14, 4, colors->colf); }
         svg.circ(x, y, elmsize / 2, th, colors->colf, colors->colb); }
 
-    if(iparams.from_spectrum) {
-        svg.line( x - r, y, x + r, y, 1, colors->cols); } // Separator
-
+     // Separator
+    if(iparams.from_spectrum) { svg.line( x - r, y, x + r, y, 1, colors->cols); }
 }
 
 // -------------------------------------------------------------------------------------------------
