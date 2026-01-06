@@ -105,12 +105,14 @@ class VHTree {
         void                            fromtcd     ( std::vector<unsigned char> & arr )    { scode = fromtcdi(arr); }
         const std::vector<stnode> &     nodes       ( )                                     { return scode; }
 
-        int                             cntall      ()          { return scode[0].id;    }
-        int                             rootidx     ()          { return cntall();       }
-        int                             cntsyms     ()          { return _cntlow;        }
-        int                             depthmax    ()          { return _depthmax;      }
-        bool                            issym       (int idx)   { return idx < _cntlow;  }
-        bool                            isnode      (int idx)   { return idx >= _cntlow; }
+        int                             cntall      ()          { return scode[0].id;       }
+        int                             rootidx     ()          { return cntall();          }
+        int                             cntsyms     ()          { return _cntlow;           }
+        int                             depthmax    ()          { return _depthmax;         }
+
+        bool                            issym       (int idx)   { return idx < _cntlow;     }
+        bool                            isnode      (int idx)   { return idx >= _cntlow;    }
+        bool                            isroot      (int idx)   { return idx == rootidx();  }
 
         VHTree::stobj *                 operator[]  (int idx)   { return &ooo[idx];      }
 
