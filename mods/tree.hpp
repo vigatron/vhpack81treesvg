@@ -25,7 +25,7 @@ class VHTree {
             tarch.ClearAllNodes();
             tarch.setsymscount( find_minnode_id() );
             autoenumerate(0, 0);
-            _depthmax = scandepth();
+            tarch.CalculateMaxDepth();
 
             InternalAutorotation(rotints);
 
@@ -45,7 +45,7 @@ class VHTree {
             tarch.LinkTreeFromSpectrum( arrspc.size());
             tarch.setsymscount( arrspc.size() );
             arrnodes = CreateSCodeFromHuff( tarch.size() - 1);
-            _depthmax = scandepth();
+            tarch.CalculateMaxDepth();
 
             InternalAutorotation(rotints);
 
@@ -95,7 +95,6 @@ class VHTree {
 
         int                             cntall      ()          { return arrnodes[0].id;    }
         int                             rootidx     ()          { return cntall();          }
-        int                             depthmax    ()          { return _depthmax;         }
 
         const VHTreeArch  &             arch        ()          { return tarch; }
         VHTreeArch::stobj *             operator[]  (int idx)   { return tarch[idx];        }
@@ -166,14 +165,6 @@ class VHTree {
             for(int i=0; i<=total;i++) {
                 printf("#%2d LY=%d\n", i, getlay(i)); } }
 
-        int scandepth() {
-            int r = 0;
-            int total = cntall();
-            for(int i=0;i<total;i++) {
-                uint8_t lay = getlay(i); // TO CHECK : if( lay != VHTreeArch::INV ) 
-                if( lay > r) r = lay; }
-            return r; }
-
         std::vector<int> findbylay(int ll) {
             std::vector<int> r;
             int total = cntall();
@@ -211,14 +202,10 @@ class VHTree {
         std::vector<stnode>     arrnodes;           // Scode
         std::vector<int>        seqlays[16];        // 2D array layers sequence
         
+        // -----------------------------------------------------------------------------
+        // Huffman tree architecture
+        // -----------------------------------------------------------------------------
         VHTreeArch              tarch;
-
-        int                     _depthmax;
-
-        // -----------------------------------------------------------------------------
-        // Huffman tree props
-        // -----------------------------------------------------------------------------
-
 
 
         // -----------------------------------------------------------------------------

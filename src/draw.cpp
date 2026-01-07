@@ -9,24 +9,22 @@ using namespace std;
 // -------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------
-
 void draw_background() {
 
     // Paper
     svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
 
     // Draw layers back
-    for(int ll=0; ll <= tree.depthmax(); ll++) {
+    for(int ll=0; ll <= tree.arch().depthmax(); ll++) {
         int x = gfx_ramka.sx;
         int y = svg_getlayer_posy(ll);
         std::string color = (ll & 1) ? colors::yellowll : colors::yellowl;
         svg.rect(x, y, gfx_ramka.w, iparams.svg_layerh, 0, color, color ); } }
 
 // -------------------------------------------------------------------------------------------------
-
 void draw_layers() {
 
-    int depthmax = tree.scandepth();
+    int depthmax = tree.arch().depthmax();
 
     for(int i=0; i <= depthmax; i++) {
         int cx = gfx_ramka.sx + 18;
@@ -35,7 +33,6 @@ void draw_layers() {
         svg.text(cx, cy, "L" + std::to_string(i), iparams.fntSans, 9, colors::lgray ); } }
 
 // -------------------------------------------------------------------------------------------------
-
 void draw_scode() {
     
     std::string str = tree.SCodeToTCode() + " : " + tree.SCodeToText(); // TCode : SCode
@@ -47,7 +44,6 @@ void draw_scode() {
     svg.text(x + 18, y + 32, str, iparams.fntSans, 16, colors::nblue ); }
 
 // -------------------------------------------------------------------------------------------------
-
 void draw_ramka() {
 
     int w = gfx_ramka.w;
@@ -69,9 +65,7 @@ int font_align_pixels(std::string str, int fntsize) {
     return str.size() * (fntsize*0.6) / 2; }
 
 
-
 // -------------------------------------------------------------------------------------------------
-
 void draw_tstamp() {
 
     // 1. Get the current time in seconds since the Unix epoch
@@ -92,7 +86,6 @@ void draw_tstamp() {
 }
 
 // -------------------------------------------------------------------------------------------------
-
 void draw_callparams() {
 
     std::string callParams = "Call parameters : " + iparams.callparams;
@@ -105,7 +98,6 @@ void draw_callparams() {
 }
 
 // -------------------------------------------------------------------------------------------------
-
 void RenderTreeGfx() {
     svg.begin( oparams.svg_width, oparams.svg_height );
     draw_background();

@@ -15,7 +15,7 @@ void svgcalc_ramka() {
     int w = (nodew < min_allowed_w ? min_allowed_w : nodew);    // с учетом минимальной ширины
     w += 2 * iparams.svg_ramka_border;                          // отступ по бокам
 
-    int h = (tree.depthmax() + 1 + 4) * iparams.svg_layerh;
+    int h = (tree.arch().depthmax() + 1 + 4) * iparams.svg_layerh;
 
     gfx_ramka.set(x, y, w, h + description_field_height);
     

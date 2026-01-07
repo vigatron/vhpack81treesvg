@@ -37,24 +37,25 @@ class VHTreeArch {
 
         stobj *         operator[]  (int idx)   { return &  ooo[idx]; }
 
-        uint16_t        size        () const    { return    huffcnt;  }
-        uint16_t        cntsyms     () const    { return    _cntlow;  }
+        uint16_t        size        () const    { return    huffcnt;    }
+        uint16_t        cntsyms     () const    { return    _cntlow;    }
+        uint16_t        depthmax    () const    { return    _depthmax;  }
 
         uint16_t        rootidx     () const    { return    huffcnt-1;}
 
-        uint16_t                getv        (int i)     { return    ooo[i].v; }
-        uint16_t                getu        (int i)     { return    ooo[i].u; }
-        uint16_t                getleft     (int i)     { return    ooo[i].l; }
-        uint16_t                getrigh     (int i)     { return    ooo[i].r; }
-        int                     getlay      (int i)     { return    ooo[i].y; }
-        bool                    getswap     (int i)     { return    ooo[i].w; }
+        uint16_t        getv        (int i)     { return    ooo[i].v; }
+        uint16_t        getu        (int i)     { return    ooo[i].u; }
+        uint16_t        getleft     (int i)     { return    ooo[i].l; }
+        uint16_t        getrigh     (int i)     { return    ooo[i].r; }
+        int             getlay      (int i)     { return    ooo[i].y; }
+        bool            getswap     (int i)     { return    ooo[i].w; }
 
         bool    issym       (int idx) const  { return idx < _cntlow;     }
         bool    isnode      (int idx) const  { return idx >= _cntlow;    }
         bool    isroot      (int idx) const  { return idx == rootidx();  }
 
-        void                    setlay  (int i, uint8_t y)  { ooo[i].y = y; }
-        void                    setsymscount( uint8_t s )   { _cntlow = s;  }
+        void    setlay          (int i, uint8_t y)      { ooo[i].y = y; }
+        void    setsymscount    ( uint8_t s )           { _cntlow = s;  }
 
         static const u16        INV = 0xFFFF;
 
@@ -80,13 +81,18 @@ class VHTreeArch {
             ooo[idx].u       = parent;
             printf("LinkRigh #%d L%d <- %d \n", idx, curlay, parent ); }
 
+        // -----------------------------------------------------------------------------
+        void CalculateMaxDepth() {
+            uint8_t r = 0;
+            for(int i=0;i < size();i++) { uint8_t lay = getlay(i); if( lay > r) r = lay; }
+            _depthmax = r; }
 
     private:
 
         stobj                   ooo[512];
         uint16_t                huffcnt;
         uint16_t                _cntlow;
-
+        uint8_t                 _depthmax;
 
         void    clrnode(int i)   {
             ooo[i].l = INV; ooo[i].r = INV; ooo[i].u = INV; ooo[i].v = 0;
