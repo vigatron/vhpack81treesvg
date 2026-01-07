@@ -14,8 +14,8 @@ static int get_line_y(int i) { return gfx_ramka.ey - (symsincol * hh) + (i * hh)
 // -------------------------------------------------------------------------------------------------
 static void draw_bitpath_sym(int idx) {
 
-    int colsmin = tree.cntsyms() / 8;
-    if( tree.cntsyms() % 8 ) colsmin++;
+    int colsmin = tree.arch().cntsyms() / 8;
+    if( tree.arch().cntsyms() % 8 ) colsmin++;
     if(!colsmin) colsmin++;
 
     // ширина столбцов зависит от количества узлов дерева
@@ -42,7 +42,7 @@ static void draw_bitpath_sym(int idx) {
 
 // -------------------------------------------------------------------------------------------------
 void draw_bitpaths() {
-    for(int i=0; i < tree.cntsyms();i++) { draw_bitpath_sym(i); } }
+    for(int i=0; i < tree.arch().cntsyms();i++) { draw_bitpath_sym(i); } }
 
 // -------------------------------------------------------------------------------------------------
 void draw_bitpath_backline(int rown, std::string fcol) {

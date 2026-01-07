@@ -23,7 +23,7 @@ void svgcalc_w(int idx, int * retwl, int * retwr) {
     int wl, wr;
 
     int idxl = tree.getleft(idx);
-    if( tree.issym(idxl) ) {
+    if( tree.arch().issym(idxl) ) {
         int ws = iparams.svg_node_xdist + iparams.svg_node_spacr;
         oparams.gfx_nodewl[idx ] = ws;
         oparams.gfx_nodewl[idxl] = ws / 2;
@@ -33,7 +33,7 @@ void svgcalc_w(int idx, int * retwl, int * retwr) {
         oparams.gfx_nodewl[idx] = wl + wr; }
 
     int idxr = tree.getrigh(idx);
-    if( tree.issym(idxr) ) {
+    if( tree.arch().issym(idxr) ) {
         int ws = iparams.svg_node_xdist + iparams.svg_node_spacr;
         oparams.gfx_nodewr[idx ] = ws;
         oparams.gfx_nodewl[idxr] = ws / 2;
@@ -52,7 +52,7 @@ void svgcalc_set_coords(int idx, int cx) {
     oparams.gfxpos_x[idx] = cx;
     oparams.gfxpos_y[idx] = svg_getlayer_posyc( tree.getlay(idx));
 
-    if( tree.isnode( idx ) ) {
+    if( tree.arch().isnode( idx ) ) {
         int idxl = tree.getleft(idx);
         int lnodex = cx - oparams.gfx_nodewr[ idxl ];
         svgcalc_set_coords( idxl, lnodex );

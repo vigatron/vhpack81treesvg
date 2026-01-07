@@ -18,8 +18,8 @@ const sColor  arrcolors[3] = {
 
 // -------------------------------------------------------------------------------------------------
 static const sColor * elm_color(int idx) {
-    if( tree.isroot(idx) )  return & arrcolors[2];
-    if( tree.issym (idx) )  return & arrcolors[0];
+    if( tree.arch().isroot(idx) )  return & arrcolors[2];
+    if( tree.arch().issym (idx) )  return & arrcolors[0];
     return & arrcolors[1]; }
 
 // -------------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ static void draw_dbg_txt_LW(int idx) {
 // -------------------------------------------------------------------------------------------------
 static void draw_elm_form (int idx, int x, int y) {
 
-    bool            flagsym     = tree.issym(idx);
+    bool            flagsym     = tree.arch().issym(idx);
     int             elmsize     = iparams.svg_elm_width;
     int             r           = elmsize / 2;
     int             th          = 1.5;
@@ -73,7 +73,8 @@ static void draw_elm_form (int idx, int x, int y) {
 // -------------------------------------------------------------------------------------------------
 static void draw_elm_value(int idx) {
 
-    VHTree::stobj * pooo    = tree[idx];
+    VHTreeArch::stobj * pooo    = tree[idx];
+
     int             fntsz   = 6;
     string          str     = "S" + std::to_string(pooo->v);
     int             mdx     = font_align_pixels(str, fntsz);
@@ -86,8 +87,8 @@ static void draw_elm_value(int idx) {
 // -------------------------------------------------------------------------------------------------
 void draw_elm(int idx) {
 
-    bool    flagroot    = tree.isroot(idx);
-    bool    flagsym     = tree.issym(idx);
+    bool    flagroot    = tree.arch().isroot(idx);
+    bool    flagsym     = tree.arch().issym(idx);
     int     cx          = oparams.gfxpos_x[idx];
     int     cy          = oparams.gfxpos_y[idx];
     int     qx          = oparams.gfxpos_x[idx] - iparams.svg_elm_width/2;
@@ -121,7 +122,7 @@ void draw_elm(int idx) {
 
 void draw_elems(int idx) {
     draw_elm(idx);
-    if( tree.isnode(idx) ) {
+    if( tree.arch().isnode(idx) ) {
         draw_elems( tree.getleft(idx) );
         draw_elems( tree.getrigh(idx) ); } }
 
@@ -137,7 +138,7 @@ void draw_link(int idx1, int idx2) {
 
 // -------------------------------------------------------------------------------------------------
 void draw_links(int idx) {
-    if(idx >= tree.cntsyms() ) {
+    if(idx >= tree.arch().cntsyms() ) {
         draw_link(idx, tree.getleft(idx));
         draw_link(idx, tree.getrigh(idx));
         draw_links(tree.getleft(idx));
