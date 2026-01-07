@@ -12,13 +12,13 @@ using namespace std;
 // BPath rates %
 
 // -----------------------------------------------------------------------------
+// std::string strtcode, std::string blkn, std::vector<int> rotints
+verr build_from_tcode() {
 
-verr build_from_tcode( std::string strtcode, std::string blkn, std::vector<int> rotints) {
-
-    if(!strtcode.size() || !check_str_ishex(strtcode)) { 
+    if(! iparams.param_tcode.size() || !check_str_ishex(iparams.param_tcode)) { 
         return verrmsg(1, "Invalid TCode"); }
 
-    if( vok != tree.buildFromTCode(strtcode, rotints) )
+    if( vok != tree.buildFromTCode() )
         return verrmsg(1, "Can't build tree from TCode");
 
     CalculateTreeGfx();
@@ -26,8 +26,8 @@ verr build_from_tcode( std::string strtcode, std::string blkn, std::vector<int> 
 
     // Generate file name
     string strout = "tcode_";
-    if(blkn.size()) { strout += "B" + blkn + "_"; }
-    strout += strtcode;
+    if( iparams.param_blockn.size()) { strout += "B" + iparams.param_blockn + "_"; }
+    strout += iparams.param_tcode;
 
     // Save results
     svg.savetosvg( strout + ".svg");
@@ -35,17 +35,9 @@ verr build_from_tcode( std::string strtcode, std::string blkn, std::vector<int> 
     return vok; }
 
 // -----------------------------------------------------------------------------
-verr build_from_spc( std::string strspc, std::string blkn, std::vector<int> rotints ) {
+verr build_from_spc() {
 
-    std::vector<std::string>    spcvals = split(strspc, '.');
-    std::vector<int>            spcints;
-
-    for( std::string s : spcvals) {
-        if(!check_str_digit(s))
-            return verrmsg(1, "Invalid spectrum values");
-        spcints.push_back( std::stoi(s) ); }
-
-    if(vok != tree.buildFromSpectrum(spcints, rotints)) {
+    if(vok != tree.buildFromSpectrum()) {
         return verrmsg(2, "build tree from spectrum failed"); }
 
     iparams.from_spectrum = true;
@@ -55,10 +47,10 @@ verr build_from_spc( std::string strspc, std::string blkn, std::vector<int> roti
 
     // Generate file name
     string strout = "spectrum_";
-    if(blkn.size()) { strout += "B" + blkn + "_"; }
+    if(iparams.param_blockn.size()) { strout += "B" + iparams.param_blockn + "_"; }
     
     // Spectrum string for outfname
-    string strspfx = strspc;
+    string strspfx = iparams.param_strspc;
     for( int i=0; i < strspfx.size(); i++ ) { if(strspfx[i] == '.') strspfx[i] = '_'; }
     strout += strspfx;
 
@@ -68,7 +60,28 @@ verr build_from_spc( std::string strspc, std::string blkn, std::vector<int> roti
     return vok; }
 
 // -----------------------------------------------------------------------------
+std::vector<int> ParseSpectrum( std::string strspc ) {
+    std::vector<std::string>    spcvals = split(strspc, '.');
+    std::vector<int> r;
+    for( std::string s : spcvals) {
+        if(!check_str_digit(s)) {
+            verrmsg(1, "Invalid spectrum values");
+            exit(1); }
+        r.push_back( std::stoi(s) ); }
+    return r; }
 
+// -----------------------------------------------------------------------------
+std::vector<int> ParseRotation( std::string rotation ) {
+    std::vector<int> r;
+    std::vector<std::string> rotvals = split(rotation, '^');
+    for( std::string s : rotvals) {
+        if(!check_str_digit(s)) {
+            verrmsg(2, "Invalid rotation values");
+            exit(1); }
+        r.push_back( std::stoi(s) ); }
+    return r; }
+
+// -----------------------------------------------------------------------------
 int main( int argc, char * argv[] ) {
 
     // Parse args : input values or TCode
@@ -88,26 +101,19 @@ int main( int argc, char * argv[] ) {
 
     iparams.callparams = argsparser.listparams();
 
+    iparams.param_tcode     = argsparser.getopt("t");
+    iparams.param_strspc    = argsparser.getopt("v");
+    iparams.param_blockn    = argsparser.getopt("blkn");
+    iparams.param_strrot    = argsparser.getopt("w");
 
-    std::string blockn   = argsparser.checkopt("blkn")  ? argsparser.getopt("blkn") : "";
-    std::string rotation = argsparser.checkopt("w")     ? argsparser.getopt("w")    : "";
-
-    std::vector<std::string>    rotvals = split(rotation, '^');
-    std::vector<int>            rotints;
-
-    for( std::string s : rotvals) {
-        if(!check_str_digit(s))
-            return verrmsg(2, "Invalid rotation values");
-        rotints.push_back( std::stoi(s) ); }
-
+    iparams.param_spcints   = ParseSpectrum( iparams.param_strspc );
+    iparams.param_rotints   = ParseRotation( iparams.param_strrot );
 
     // Строим дерево по спектру либо по ТКоду
 
     verr ret;
-
-
-    if(argsparser.checkopt("t"))        { ret = build_from_tcode( argsparser.getopt("t"), blockn, rotints );
-    } else if(argsparser.checkopt("v")) { ret = build_from_spc(   argsparser.getopt("v"), blockn, rotints );
+    if(argsparser.checkopt("t"))        { ret = build_from_tcode();
+    } else if(argsparser.checkopt("v")) { ret = build_from_spc  ();
     } else {
         std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
         argsparser.Usage(); ret = 1; }

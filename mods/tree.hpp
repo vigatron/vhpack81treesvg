@@ -7,6 +7,10 @@
 
 #include <charconv>
 
+#include "iparams.hpp"
+
+extern TreeGenParamsIn  iparams;
+
 
 class VHTree {
 
@@ -17,9 +21,9 @@ class VHTree {
         VHTree() { }
 
         // -----------------------------------------------------------------------------
-        verr buildFromTCode ( std::string strtcode , std::vector<int> rotints) {
+        verr buildFromTCode ( ) {
 
-            if(!tcode.initfromstr(strtcode)) return verror(1);
+            if(!tcode.initfromstr( iparams.param_tcode )) return verror(1);
 
             arrnodes = CreateSCodeFromTCode(tcode);
             tarch.ClearAllNodes();
@@ -28,27 +32,28 @@ class VHTree {
             tarch.setsize(arrnodes[0].id+1); // Important
             tarch.CalculateMaxDepth();
 
-            InternalAutorotation(rotints);
+            InternalAutorotation( iparams.param_rotints );
 
             dumplr();
             dumpnodes();
             return vok; }
  
         // -----------------------------------------------------------------------------
-        verr buildFromSpectrum(std::vector<int> arrspc, std::vector<int> rotints) {
+        verr buildFromSpectrum() {
 
-            if( arrspc.size() < 2 )
+            if( iparams.param_spcints.size() < 2 )
                 return verrmsg(1,"Can't build tree with spectrum less than <2 elms");
 
             tarch.ClearAllNodes();
-            for( int i=0 ; i < arrspc.size() ; i++ ) { tarch.SetCountVal(i, arrspc[i]); }
+            for( int i=0 ; i < iparams.param_spcints.size() ; i++ ) {
+                tarch.SetCountVal(i, iparams.param_spcints[i]); }
 
-            tarch.LinkTreeFromSpectrum( arrspc.size());
-            tarch.setsymscount( arrspc.size() );
+            tarch.LinkTreeFromSpectrum( iparams.param_spcints.size());
+            tarch.setsymscount( iparams.param_spcints.size() );
             arrnodes = CreateSCodeFromHuff( tarch.size() - 1);
             tarch.CalculateMaxDepth();
 
-            InternalAutorotation(rotints);
+            InternalAutorotation( iparams.param_rotints );
 
             dumplr();
             dumpnodes();
