@@ -5,7 +5,8 @@
 
 int     font_align_pixels(std::string str, int fntsize);
 
-// void    draw_elm_value(int idx);
+void    draw_layers_back();
+
 void    draw_elm(int idx);
 void    draw_elems(int idx);
 void    draw_links(int idx);

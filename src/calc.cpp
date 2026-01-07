@@ -6,13 +6,9 @@
 // SVG Calculations
 // -------------------------------------------------------------------------------------------------
 
-// oparams.gfx_ramka_height / (tree.depthmax() + 2);
-// int svgcalc_layer_height    () { int r = iparams.svg_def_line_height_; return r; }
-// int posy = svgcalc_centery() - oparams.gfx_ramka_height/2  + layn * svgcalc_layer_height();
+// int svg_getlayer_posy (int layn)    { return gfxrect_ramka.sy + (layn + 2) * iparams.svg_layerh; }
 
-// int svgcalc_centery ()              { return iparams.svg_height /2; }
-
-int svg_getlayer_posy (int layn)    { return gfx_ramka.sy + (layn + 2) * iparams.svg_layerh; }
+int svg_getlayer_posy (int layn)    { return gfxrect_layers.sy + (layn * iparams.svg_layerh); }
 
 int svg_getlayer_posyc(int layn)    { return svg_getlayer_posy(layn) + iparams.svg_layerh / 2; }
 
@@ -74,8 +70,8 @@ void CalculateTreeGfx() {
     int rootidx = tree.rootidx();
     // int ramka_centerx = gfx_ramka.sx + (gfx_ramka.w/2);
 
-    //  int cx = gfx_ramka.sx + iparams.svg_ramka_border + wl;
-    int ramka_centerx   = gfx_ramka.sx + (gfx_ramka.w/2);
+    //  Centering root and start recursive X/Y enumeration
+    int ramka_centerx   = gfxrect_ramka.sx + (gfxrect_ramka.w/2);
     int root_width      = wl + wr;
     int cx              = ramka_centerx + root_width/2 - wr;
     svgcalc_set_coords( rootidx , cx );
@@ -83,3 +79,8 @@ void CalculateTreeGfx() {
     // Move to top left corner
     svgcalc_transform();
 }
+
+// oparams.gfx_ramka_height / (tree.depthmax() + 2);
+// int svgcalc_layer_height    () { int r = iparams.svg_def_line_height_; return r; }
+// int posy = svgcalc_centery() - oparams.gfx_ramka_height/2  + layn * svgcalc_layer_height();
+// int svgcalc_centery ()              { return iparams.svg_height /2; }

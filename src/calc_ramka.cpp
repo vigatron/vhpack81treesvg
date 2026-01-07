@@ -1,26 +1,59 @@
 #include "global.hpp"
 
+static int svgcalc_ramka_w() {
+    int idx     = tree.rootidx();
+    int nodew   = oparams.gfx_nodewl[ idx ] + oparams.gfx_nodewr[ idx ];
+    int minw    = iparams.svg_ramka_min_w;
+    int dxbrd   = 2 * iparams.svg_ramka_border;             // отступ по бокам
+    int r       = dxbrd + (nodew < minw ? minw : nodew);    // с учетом минимальной ширины
+    return r; }
+
+
+static int svgcalc_ramka_h( int w ) {
+    
+    int r       = iparams.svg_paper_border;
+    int x       = iparams.svg_paper_border;
+    int spcrh   = iparams.svg_spacer_h;
+
+    int hh_header   = iparams.svg_headerh;                                  // высота заголовка
+    gfxrect_header.set(x, r, w, hh_header);
+    r += hh_header;
+
+    r += spcrh;
+
+    int hh_layers   = (tree.arch().depthmax() + 1) * iparams.svg_layerh;    // высота слоев
+    gfxrect_layers.set(x, r, w, hh_layers);
+    r += hh_layers;
+
+    r += spcrh;
+
+    int hh_shadows  = iparams.svg_shadowh * tree.arch().size();             // высота теней
+    gfxrect_shadows.set(x, r, w, hh_shadows);
+    r += hh_shadows;
+    
+    r += spcrh;
+
+    int hh_bitfield = iparams.svg_bitfieldh * 8;                            // высота битовых полей
+    gfxrect_bitfield.set(x, r, w, hh_bitfield );
+    r += hh_bitfield;
+
+    r += spcrh;
+    r -= iparams.svg_paper_border;
+
+    return r; }
+
 
 void svgcalc_ramka() {
 
-    int min_allowed_w               = 400;
-    int description_field_height    = 80; // для битовых полей
-
-    int idx = tree.rootidx();
-    int nodew = oparams.gfx_nodewl[ idx ] + oparams.gfx_nodewr[ idx ];
-
     int x = iparams.svg_paper_border;
     int y = iparams.svg_paper_border;
-
-    int w = (nodew < min_allowed_w ? min_allowed_w : nodew);    // с учетом минимальной ширины
-    w += 2 * iparams.svg_ramka_border;                          // отступ по бокам
-
-    int h = (tree.arch().depthmax() + 1 + 4) * iparams.svg_layerh;
-
-    gfx_ramka.set(x, y, w, h + description_field_height);
+    int w = svgcalc_ramka_w();
+    int h = svgcalc_ramka_h( w );
+    gfxrect_ramka.set(x, y, w, h );
     
-    oparams.svg_width   = gfx_ramka.w + (2 * iparams.svg_paper_border);
-    oparams.svg_height  = gfx_ramka.h + (2 * iparams.svg_paper_border);
+    // Setup final document size
+    oparams.svg_width   = gfxrect_ramka.w + (2 * iparams.svg_paper_border);
+    oparams.svg_height  = gfxrect_ramka.h + (2 * iparams.svg_paper_border);
 
 }
 

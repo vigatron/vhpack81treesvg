@@ -9,52 +9,28 @@ using namespace std;
 // -------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------
-void draw_background() {
-
-    // Paper
-    svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
-
-    // Draw layers back
-    for(int ll=0; ll <= tree.arch().depthmax(); ll++) {
-        int x = gfx_ramka.sx;
-        int y = svg_getlayer_posy(ll);
-        std::string color = (ll & 1) ? colors::yellowll : colors::yellowl;
-        svg.rect(x, y, gfx_ramka.w, iparams.svg_layerh, 0, color, color ); } }
-
-// -------------------------------------------------------------------------------------------------
-void draw_layers() {
-
-    int depthmax = tree.arch().depthmax();
-
-    for(int i=0; i <= depthmax; i++) {
-        int cx = gfx_ramka.sx + 18;
-        int cy = svg_getlayer_posyc(i);
-        svg.circ(cx + 4, cy-2, iparams.svg_elm_width/2, 1, colors::nyell, colors::myell );
-        svg.text(cx, cy, "L" + std::to_string(i), iparams.fntSans, 9, colors::lgray ); } }
-
-// -------------------------------------------------------------------------------------------------
 void draw_scode() {
     
     std::string str = tree.SCodeToTCode() + " : " + tree.SCodeToText(); // TCode : SCode
-    int w   = gfx_ramka.w/2;
+    int w   = gfxrect_ramka.w/2;
     int dd  = 4;
-    int x   = gfx_ramka.sx;
-    int y   = gfx_ramka.sy;
+    int x   = gfxrect_ramka.sx;
+    int y   = gfxrect_ramka.sy;
     svg.rect(x + dd, y + dd, w - dd*2, 46, 1, colors::lblue, colors::lblue, 8);
     svg.text(x + 18, y + 32, str, iparams.fntSans, 16, colors::nblue ); }
 
 // -------------------------------------------------------------------------------------------------
 void draw_ramka() {
 
-    int w = gfx_ramka.w;
-    int h = gfx_ramka.h;
+    int w = gfxrect_ramka.w;
+    int h = gfxrect_ramka.h;
 
     string str1 = "Визуализатор деревьев Хаффмана";
     string str2 = "V1.00 V01G04A81 (C) 2025, 2026";
 
-    int x1 = gfx_ramka.sx;
-    int x2 = gfx_ramka.ex;
-    int y  = gfx_ramka.sy;
+    int x1 = gfxrect_ramka.sx;
+    int x2 = gfxrect_ramka.ex;
+    int y  = gfxrect_ramka.sy;
 
     svg.rect(x1, y, w, h, 1.5, colors::nblue, "none", 12 );
     svg.text(x1 +  10, y - 10, str1, iparams.fntSans, 15, colors::lgray );
@@ -80,8 +56,8 @@ void draw_tstamp() {
     std::strftime(buffer, sizeof(buffer), "%Y-%m-%d %H:%M:%S", &tmb);
 
     string fnt = iparams.fntSans;
-    int x2 = gfx_ramka.ex - 170;
-    int y  = gfx_ramka.sy - 7;
+    int x2 = gfxrect_ramka.ex - 170;
+    int y  = gfxrect_ramka.sy - 7;
     svg.text(x2, y, buffer, fnt, 10, colors::lgray);
 }
 
@@ -91,23 +67,45 @@ void draw_callparams() {
     std::string callParams = "Call parameters : " + iparams.callparams;
 
     string fnt = iparams.fntSans;
-    int x2 = gfx_ramka.sx + 10;
-    int y  = gfx_ramka.ey + 16;
+    int x2 = gfxrect_ramka.sx + 10;
+    int y  = gfxrect_ramka.ey + 16;
     svg.text(x2, y, callParams, fnt, 8, colors::lgray);
+
+}
+
+void draw_debug() {
+
+    { VHRect * prect = & gfxrect_header;
+    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+
+    { VHRect * prect = & gfxrect_layers;
+    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+
+    { VHRect * prect = & gfxrect_shadows;
+    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+
+    { VHRect * prect = & gfxrect_bitfield;
+    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
 
 }
 
 // -------------------------------------------------------------------------------------------------
 void RenderTreeGfx() {
+
     svg.begin( oparams.svg_width, oparams.svg_height );
-    draw_background();
+
+    // Full Paper
+    svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
+
+    draw_layers_back();
     draw_links( tree.cntall() ); // recurse
     draw_elems( tree.cntall() ); // recurse
-    draw_layers();
     draw_scode();
     draw_ramka();
     draw_tstamp();
     draw_callparams();
     draw_bitpath_back();
     draw_bitpaths();
+    draw_debug();
+    
     svg.end(); }

@@ -6,7 +6,13 @@ TreeGenParamsOut    oparams;
 VHSVG               svg;
 
 
-VHRect              gfx_ramka;
+VHRect              gfxrect_ramka;
+
+VHRect              gfxrect_header;
+VHRect              gfxrect_layers;
+VHRect              gfxrect_shadows;
+VHRect              gfxrect_bitfield;
+
 
 verr verrmsg(int x, std::string strerr) {
     std::cout << strerr << std::endl;

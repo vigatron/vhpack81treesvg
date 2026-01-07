@@ -7,9 +7,8 @@ using namespace std;
 static VHRect   rectrows[SYMSINCON];
 
 static int      symsincol    = SYMSINCON;
-static int      hh           = 14;
 
-static int get_line_y(int i) { return gfx_ramka.ey - (symsincol * hh) + (i * hh); }
+static int get_line_y(int i) { return gfxrect_bitfield.sy + (i * iparams.svg_bitfieldh); }
 
 // -------------------------------------------------------------------------------------------------
 static void draw_bitpath_sym(int idx) {
@@ -19,13 +18,13 @@ static void draw_bitpath_sym(int idx) {
     if(!colsmin) colsmin++;
 
     // ширина столбцов зависит от количества узлов дерева
-    int         ww          = gfx_ramka.w / colsmin; 
+    int         ww          = gfxrect_ramka.w / colsmin; 
 
     int         coln        = idx / symsincol;
     int         rown        = idx % symsincol;
 
-    int         symx        = gfx_ramka.sx + 40 + (coln * ww);
-    int         symy        = get_line_y(rown) - hh*0.25;
+    int         symx        = gfxrect_ramka.sx + 40 + (coln * ww);
+    int         symy        = get_line_y(rown) + iparams.svg_bitfieldh - iparams.svg_bitfieldh*0.25;
 
     string      strsymn     = "#" + std::to_string(idx); // + ":";
     string      bitpath     = tree.bitpath(idx);
@@ -37,7 +36,6 @@ static void draw_bitpath_sym(int idx) {
     if(iparams.from_spectrum) {
     string      bitrate     = tree.symrate(idx);
     svg.text( symx + 20 , symy, bitrate, iparams.fntSans, 7, "#A0A0A0"); }
-
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -46,9 +44,10 @@ void draw_bitpaths() {
 
 // -------------------------------------------------------------------------------------------------
 void draw_bitpath_backline(int rown, std::string fcol) {
-    int y = get_line_y(rown - 1);
     int dx = 2;
-    svg.rect( gfx_ramka.sx + dx, y, gfx_ramka.w - dx*2, hh, 1, fcol, fcol ); }
+    int x = gfxrect_ramka.sx + dx;
+    int y = get_line_y(rown);
+    svg.rect( x, y, gfxrect_ramka.w - dx*2, iparams.svg_bitfieldh, 1, fcol, fcol ); }
 
 // -------------------------------------------------------------------------------------------------
 void draw_bitpath_back() {
