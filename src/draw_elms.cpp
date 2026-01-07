@@ -56,12 +56,19 @@ static void draw_elm_form (int idx, int x, int y) {
     const sColor *  colors      = elm_color(idx);
 
     if(flagsym) {
-        svg.rect(
-            x - elmsize/2, y - elmsize/2,
-            elmsize, elmsize, th,
-            colors->colf, colors->colb, elmsize * 0.2 );
+
+        int rx = x - elmsize/2, ry = y - elmsize/2;
+        string colf     = colors->colf, colb    = colors->colb;
+        string colbf    = "#F8F8FF", colbb   = "#EAEAFF" ; 
+
+        svg.rect( rx + 4, ry + 4, elmsize, elmsize, th, colbf, colbb, elmsize * 0.2 );
+        svg.rect( rx, ry, elmsize, elmsize, th, colf, colb, elmsize * 0.2 );
+
     } else {
-        int     ra  = iparams.svg_elm_width*5/8;
+        int     ra      = iparams.svg_elm_width*5/8;
+        // string  colsh   = "#F0FFF0";
+        // svg.circ(x+2, y+2, ra, th*3/8, colsh, colsh ); // Shadow
+
         svg.circ(x, y, ra, th*3/8, colors->colf, "white" );
         if( tree.getswap(idx)) { svg.arc(x, y, 14, 4, colors->colf); }
         svg.circ(x, y, elmsize / 2, th, colors->colf, colors->colb); }

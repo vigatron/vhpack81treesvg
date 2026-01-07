@@ -35,21 +35,17 @@ class VHSVG {
 
 
     // -------------------------------------------------------------------------------------------------
-
     std::string svg_param(std::string pn, std::string pv )  { return pn + "=\"" + pv + "\" "; }
 
     // -------------------------------------------------------------------------------------------------
-    
     std::string svg_param(std::string pn, int pv )          { return pn + "=\"" + std::to_string(pv) + "\" "; }
 
     // -------------------------------------------------------------------------------------------------
-
     std::string svg_tline(std::string pfx, std::string content, bool close=true) {
         return "<" + pfx + " " + content + (close ? "/" : "") + ">"; }
 
     // -------------------------------------------------------------------------------------------------
-
-    void line(int x1, int y1, int x2, int y2, int wdt, std::string col ) {
+    void line(int x1, int y1, int x2, int y2, int wdt, std::string col, std::string dot = "" ) {
         std::string txt = "";
         txt += svg_param("x1", x1);
         txt += svg_param("y1", y1);
@@ -57,10 +53,13 @@ class VHSVG {
         txt += svg_param("y2", y2);
         if(wdt) txt += svg_param("stroke-width", wdt);
         if(!col.empty()) txt += svg_param("stroke", col);
+        if(!dot.empty()) {
+            txt += svg_param("stroke-linecap", "round" );
+            txt += svg_param("stroke-dasharray", "1,8"); }
         append( svg_tline("line", txt) ); }
 
     // -------------------------------------------------------------------------------------------------
-    void circ(int cx, int cy, int r, int wdt, std::string colf, std::string colb ) {
+    void circ(int cx, int cy, int r, int wdt, std::string colf, std::string colb = "" ) {
         std::string txt = "";
         txt += svg_param("cx", cx);
         txt += svg_param("cy", cy);

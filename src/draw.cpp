@@ -75,6 +75,8 @@ void draw_callparams() {
 
 void draw_debug() {
 
+    return;
+
     { VHRect * prect = & gfxrect_header;
     svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
 
@@ -98,14 +100,15 @@ void RenderTreeGfx() {
     svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
 
     draw_layers_back();
+    draw_shadows();
     draw_links( tree.cntall() ); // recurse
     draw_elems( tree.cntall() ); // recurse
     draw_scode();
-    draw_ramka();
     draw_tstamp();
     draw_callparams();
     draw_bitpath_back();
     draw_bitpaths();
     draw_debug();
-    
+    draw_ramka();
+
     svg.end(); }

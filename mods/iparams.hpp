@@ -11,8 +11,8 @@ class TreeGenParamsIn {
 
         // Vertical segments height
         int     svg_headerh     = 56;
-        int     svg_layerh      = 42;
-        int     svg_shadowh     =  2;
+        int     svg_layerh      = 36;
+        int     svg_shadowh     =  3;
         int     svg_bitfieldh   = 14;
 
         // Elms GFX props

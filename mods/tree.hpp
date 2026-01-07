@@ -25,6 +25,7 @@ class VHTree {
             tarch.ClearAllNodes();
             tarch.setsymscount( find_minnode_id() );
             autoenumerate(0, 0);
+            tarch.setsize(arrnodes[0].id+1); // Important
             tarch.CalculateMaxDepth();
 
             InternalAutorotation(rotints);

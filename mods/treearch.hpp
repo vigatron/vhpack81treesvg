@@ -43,18 +43,19 @@ class VHTreeArch {
 
         uint16_t        rootidx     () const    { return    huffcnt-1;}
 
-        uint16_t        getv        (int i)     { return    ooo[i].v; }
-        uint16_t        getu        (int i)     { return    ooo[i].u; }
-        uint16_t        getleft     (int i)     { return    ooo[i].l; }
-        uint16_t        getrigh     (int i)     { return    ooo[i].r; }
-        int             getlay      (int i)     { return    ooo[i].y; }
-        bool            getswap     (int i)     { return    ooo[i].w; }
+        uint16_t        getv        (int i) const    { return    ooo[i].v; }
+        uint16_t        getu        (int i) const    { return    ooo[i].u; }
+        uint16_t        getleft     (int i) const    { return    ooo[i].l; }
+        uint16_t        getrigh     (int i) const    { return    ooo[i].r; }
+        int             getlay      (int i) const    { return    ooo[i].y; }
+        bool            getswap     (int i) const    { return    ooo[i].w; }
 
         bool    issym       (int idx) const  { return idx < _cntlow;     }
         bool    isnode      (int idx) const  { return idx >= _cntlow;    }
         bool    isroot      (int idx) const  { return idx == rootidx();  }
 
-        void    setlay          (int i, uint8_t y)      { ooo[i].y = y; }
+        void    setlay          ( int i, uint8_t y)     { ooo[i].y = y; }
+        void    setsize         ( int cnt )             { huffcnt = cnt; }
         void    setsymscount    ( uint8_t s )           { _cntlow = s;  }
 
         static const u16        INV = 0xFFFF;

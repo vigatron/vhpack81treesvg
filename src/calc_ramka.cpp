@@ -25,9 +25,9 @@ static int svgcalc_ramka_h( int w ) {
     gfxrect_layers.set(x, r, w, hh_layers);
     r += hh_layers;
 
-    r += spcrh;
+    r += spcrh * 2;
 
-    int hh_shadows  = iparams.svg_shadowh * tree.arch().size();             // высота теней
+    int hh_shadows  = iparams.svg_shadowh * (tree.arch().depthmax()+1);     // высота теней
     gfxrect_shadows.set(x, r, w, hh_shadows);
     r += hh_shadows;
     
