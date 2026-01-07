@@ -11,9 +11,11 @@ class TreeGenParamsIn {
         std::string         param_strspc;
         std::string         param_blockn;
         std::string         param_strrot;
+        std::string         param_strsvz;
 
         std::vector<int>    param_spcints;
         std::vector<int>    param_rotints;
+        std::vector<int>    param_svzints;
 
         int     svg_spacer_h    = 16; // расстояние между сегментами
 
@@ -28,8 +30,9 @@ class TreeGenParamsIn {
         int     svg_elm_fntsz   = 12;
 
         int     svg_node_xdist  = svg_elm_width;
-        int     svg_node_spacr  = svg_node_xdist/2; //  / 2;
+        int     svg_node_spacr  = svg_node_xdist/2;
         int     svg_lnkwidth    = 2;
+        int     svg_lnkwidth2   = 1;
 
         std::string fntSans         = "sans-serif";
 

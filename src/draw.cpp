@@ -100,9 +100,11 @@ void RenderTreeGfx() {
     svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
 
     draw_layers_back();
+
     draw_shadows();
     draw_links( tree.cntall() ); // recurse
     draw_elems( tree.cntall() ); // recurse
+
     draw_scode();
     draw_tstamp();
     draw_callparams();

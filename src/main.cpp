@@ -82,6 +82,22 @@ std::vector<int> ParseRotation( std::string rotation ) {
     return r; }
 
 // -----------------------------------------------------------------------------
+std::vector<int> ParseSvyazki( std::string strsvzk) {
+    std::vector<int> r;
+    std::vector<std::string> svzpairs = split(strsvzk, ',');
+    for( std::string s : svzpairs ) {
+        std::vector<std::string> spl = split(s, '.');
+        if(spl.size() == 2) {
+            if(!check_str_digit(spl[0]) || !check_str_digit(spl[1]) ) {
+                verrmsg(2, "Invalid bind values");
+                exit(1); }
+            int v1 = std::stoi( spl[0] );
+            int v2 = std::stoi( spl[1] );
+            r.push_back( v1 > v2 ? v2 : v1 );
+            r.push_back( v1 > v2 ? v1 : v2 ); } }
+    return r; }
+
+// -----------------------------------------------------------------------------
 int main( int argc, char * argv[] ) {
 
     // Parse args : input values or TCode
@@ -92,6 +108,7 @@ int main( int argc, char * argv[] ) {
     argsparser.addopt(  "t",    "Build from TCode");
     argsparser.addopt(  "v",    "Build from spectrum values, for example '1.2.3'");
     argsparser.addopt(  "w",    "Rotate nodes, for example '1^2^3'");
+    argsparser.addopt(  "z",    "Bind   nodes, for example '1.2,3.4'");
     argsparser.addopt(  "blkn", "Block number ( optional)");
 
     if( vok != argsparser.ParseArgs(argc, argv)) {
@@ -105,9 +122,11 @@ int main( int argc, char * argv[] ) {
     iparams.param_strspc    = argsparser.getopt("v");
     iparams.param_blockn    = argsparser.getopt("blkn");
     iparams.param_strrot    = argsparser.getopt("w");
+    iparams.param_strsvz    = argsparser.getopt("z");
 
     iparams.param_spcints   = ParseSpectrum( iparams.param_strspc );
     iparams.param_rotints   = ParseRotation( iparams.param_strrot );
+    iparams.param_svzints   = ParseSvyazki ( iparams.param_strsvz );
 
     // Строим дерево по спектру либо по ТКоду
 

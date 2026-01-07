@@ -134,14 +134,45 @@ void draw_elems(int idx) {
         draw_elems( tree.getrigh(idx) ); } }
 
 // -------------------------------------------------------------------------------------------------
+static bool isbind( int idx1, int idx2 ) {
 
+    std::vector<int> arr = iparams.param_svzints;
+
+    std::vector<int>::iterator it1 = std::find(arr.begin(), arr.end(), idx1);
+    if( it1 == arr.end() ) return false;
+
+    std::vector<int>::iterator it2 = std::find(arr.begin(), arr.end(), idx2);
+    if( it2 == arr.end() ) return false;
+
+    int pos1 = std::distance(arr.begin(), it1);
+    int pos2 = std::distance(arr.begin(), it2);
+
+    return pos2 +1 == pos1;
+}
+
+// -------------------------------------------------------------------------------------------------
 void draw_link(int idx1, int idx2) {
-    std::vector<std::string> r;
-    int x1 = oparams.gfxpos_x[idx1];
-    int y1 = oparams.gfxpos_y[idx1];
-    int x2 = oparams.gfxpos_x[idx2];
-    int y2 = oparams.gfxpos_y[idx2];
-    svg.line(x1, y1, x2, y2, iparams.svg_lnkwidth, colors::mgreen); }
+
+    bool bindflag = isbind( idx1, idx2);
+
+    int x1 = oparams.gfxpos_x[idx1], y1 = oparams.gfxpos_y[idx1];
+    int x2 = oparams.gfxpos_x[idx2], y2 = oparams.gfxpos_y[idx2];
+
+    if(!bindflag) {
+        svg.line(x1, y1, x2, y2, iparams.svg_lnkwidth, colors::mgreen);
+    } else {
+        int s = 3;
+        int wx = x2 - x1; if(wx < 0) wx *= -1;
+        int wy = y2 - y1; if(wy < 0) wy *= -1;
+        int kx = (wx > wy) ? 0:1;
+        int ky = (wx > wy) ? 1:0;
+        x1 -= s * kx * 1; x2 -= s * kx * 1; y1 -= s*ky*1; y2 -= s*ky*1;
+        svg.line(x1, y1, x2, y2, iparams.svg_lnkwidth2, colors::mgreen);
+        x1 += s * kx * 2; x2 += s * kx * 2; y1 += s*ky*2; y2 += s*ky*2;
+        svg.line(x1, y1, x2, y2, iparams.svg_lnkwidth2, colors::mgreen);
+    }
+}
+
 
 // -------------------------------------------------------------------------------------------------
 void draw_links(int idx) {
