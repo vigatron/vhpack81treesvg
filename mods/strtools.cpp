@@ -3,6 +3,9 @@
 #include <iostream>
 #include <sstream>
 
+static const char * _szhex = "0123456789ABCDEF";
+
+const char * szhex () { return _szhex; }
 
 bool check_str_digit(std::string str) {
     if(!str.size()) return false;

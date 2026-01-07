@@ -6,7 +6,6 @@
 
 #include <charconv>
 
-struct stnode    { int id; int tt; };
 
 class VHTree {
 
@@ -24,12 +23,14 @@ class VHTree {
             uint16_t r;     // right
             uint16_t u;     // up
             uint16_t v;     // count
+            
             uint8_t  y;     // layer
             uint8_t  m;     // Mark flag, need for build by spectrum
             uint8_t  w;     // Rotation flag, LR was swapped
+            uint8_t  d;     // Depth of the node
         };
 
-        const char * szhex = "0123456789ABCDEF";
+        struct stnode    { int id; int tt; };
 
         VHTree() { }
 
@@ -52,7 +53,7 @@ class VHTree {
             return vok; }
  
         // -----------------------------------------------------------------------------
-        verr buildFromSpectrum(std::vector<int> arr) {
+        verr buildFromSpectrum(std::vector<int> arr, std::vector<int> rotints) {
 
             if(arr.size()<2)
                 return verrmsg(1,"Can't build tree with spectrum less than <2 elms");
@@ -64,6 +65,9 @@ class VHTree {
             _cntlow = arr.size();
             scode = CreateSCodeFromHuff(huffcnt - 1);
             _depthmax = scandepth();
+
+            for(int rotidx : rotints) { ooo[rotidx].w = 1; }
+            // rotatenodes();
 
             dumplr();
             dumpnodes();
@@ -101,8 +105,6 @@ class VHTree {
         // -----------------------------------------------------------------------------
 
         void                            set         ( const std::vector<stnode> & vect)     { scode = vect; }
-        void                            fromscd     ( std::vector<unsigned char> & arr )    { scode = fromscdi(arr); }
-        void                            fromtcd     ( std::vector<unsigned char> & arr )    { scode = fromtcdi(arr); }
         const std::vector<stnode> &     nodes       ( )                                     { return scode; }
 
         int                             cntall      ()          { return scode[0].id;       }
@@ -122,26 +124,20 @@ class VHTree {
         bool    getswap(int i) { return ooo[i].w; }
 
         void    clrnode(int i)   {
-            ooo[i].l = INV; ooo[i].r = INV; ooo[i].u = INV;
-            ooo[i].y = 0; ooo[i].v = 0; ooo[i].m = 0; ooo[i].w = 0; }
+            ooo[i].l = INV; ooo[i].r = INV; ooo[i].u = INV; ooo[i].v = 0;
+            ooo[i].y = 0; ooo[i].m = 0; ooo[i].w = 0; ooo[i].d = 0; }
         
         void ClearAllNodes() { for(int i=0; i<512; i++) { clrnode(i); } }
 
-        std::string astext() {
+        std::string SCodeToText() {
             std::string r;
             int ss = scode.size();
-            r += szhex[ ((scode.size() - 1) >> 4) & 0xF ];
-            r += szhex[ ((scode.size() - 1) >> 0) & 0xF ];
+            r += szhex()[ ((scode.size() - 1) >> 4) & 0xF ];
+            r += szhex()[ ((scode.size() - 1) >> 0) & 0xF ];
             for(const stnode & item :scode) { r += '0' + item.tt; }
             return r; }
 
-        std::string bintohex( const std::vector<unsigned char> & arr ) {
-            std::string r;
-            for( const unsigned char s : arr) { 
-                r.push_back(szhex[ (s>>4) & 0xF ]); r.push_back(szhex[ (s>>0) & 0xF ]); }
-            return r; }
-
-        std::string asbin() {
+        std::string SCodeToTCode() {
             std::vector<unsigned char> r;
             r.push_back( scode.size() - 1 );
             unsigned char v   = 0;
@@ -168,6 +164,13 @@ class VHTree {
             if(msk != 0x80) r.push_back(v);
             return bintohex(r); }
 
+
+        std::string bintohex( const std::vector<unsigned char> & arr ) {
+            std::string r;
+            for( const unsigned char s : arr) { 
+                r.push_back(szhex()[ (s>>4) & 0xF ]); r.push_back(szhex()[ (s>>0) & 0xF ]); }
+            return r; }
+
         void rotatenodes() {
             for(int i = 0; i <= scode.size(); i++) {
                 if(scode[i].tt == 2) {
@@ -178,9 +181,7 @@ class VHTree {
         void swaplr(int idx) { int tmp = ooo[idx].l; ooo[idx].l = ooo[idx].r; ooo[idx].r = tmp; }
 
         void dumpSCode(std::vector<stnode> & scde) {
-            printf("SCode: ");
-            for( const stnode & n : scde) { printf("[%2d:%d]", n.id, n.tt); }
-            printf("\n"); }
+            printf("SCode: "); for( const stnode & n : scde) { printf("[%2d:%d]", n.id, n.tt); } printf("\n"); }
 
         void dumplr() {
             for( const stnode & n : scode) { printf("%2d:%d L=%2d R=%2d\n", n.id, n.tt, ooo[n.id].l, ooo[n.id].r); } }
@@ -239,11 +240,8 @@ class VHTree {
 
         TCode                   tcode;              // TCode
         std::vector<stnode>     scode;              // Scode
-
         std::vector<int>        seqlays[16];        // 2D array layers sequence
-
         stobj                   ooo[512];
-
         int                     _cntlow;
         int                     _depthmax;
 
@@ -252,14 +250,11 @@ class VHTree {
         // -----------------------------------------------------------------------------
 
         int                     huffcnt;
-        // int                     huffcntsym;
         const u16               INV = 0xFFFF;
-
 
         void NSLRU(u16 i, u16 l, u16 r) { ooo[i].l = l; ooo[i].r=r; ooo[l].u=i; ooo[r].u=i; }
 
-        void FindFirst(u16 *pidx) {
-            for(;*pidx<huffcnt;(*pidx)++) if(!ooo[*pidx].m) { return; } }
+        void FindFirst(u16 *pidx) { for(;*pidx<huffcnt;(*pidx)++) if(!ooo[*pidx].m) { return; } }
 
         void Find2Min(u16 *r1, u16 *r2) {
             u16 idx = 0, t, min1, min2;
@@ -281,10 +276,7 @@ class VHTree {
             printf("Link #%2d & #%2d ", il, ir); printf(" vals[%3d]=%3d\n", cnt, v); }
 
         verr LinkTreeFromSpectrum(int symscnt) {
-            huffcnt = symscnt;
-            while(symscnt-->=2) NLnk();
-            return vok; }
-
+            huffcnt = symscnt; while(symscnt-->=2) NLnk(); return vok; }
 
         // -----------------------------------------------------------------------------
         std::vector<stnode> CreateSCodeFromTCode( const TCode & tcd) {
@@ -297,28 +289,11 @@ class VHTree {
 
         // -----------------------------------------------------------------------------
         std::vector<stnode> CreateSCodeFromHuff(int rootidx) {
-            std::vector<stnode> r;
-
             autopass(rootidx, 0);
-            r = _autoscode;
-
-            printf("SCode generated from Huffman : "); dumpSCode(r);
-            return r; }
+            std::vector<stnode> r = _autoscode;
+            printf("SCode generated from Huffman : "); dumpSCode(r); return r; }
 
         // -----------------------------------------------------------------------------
-
-        std::vector<stnode> fromscdi ( std::vector<unsigned char> & arr ) {
-            std::vector<stnode> r;
-            return r; }
-
-        // -----------------------------------------------------------------------------
-
-        std::vector<stnode> fromtcdi ( std::vector<unsigned char> & arr ) {
-            std::vector<stnode> r;
-            return r; }
-
-        // -----------------------------------------------------------------------------
-
         int find_minnode_id() {
             int minval    = scode[0].id;
             for( int i=1; i < scode.size();i++) { if(scode[i].id < minval) minval = scode[i].id; }
@@ -410,3 +385,10 @@ class VHTree {
 
         return idx; }
 };
+
+// void fromscd     ( std::vector<unsigned char> & arr )    { scode = fromscdi(arr); }
+// void fromtcd     ( std::vector<unsigned char> & arr )    { scode = fromtcdi(arr); }
+// -----------------------------------------------------------------------------
+// std::vector<stnode> fromscdi ( std::vector<unsigned char> & arr ) { std::vector<stnode> r; return r; }
+// -----------------------------------------------------------------------------
+// std::vector<stnode> fromtcdi ( std::vector<unsigned char> & arr ) { std::vector<stnode> r; return r; }

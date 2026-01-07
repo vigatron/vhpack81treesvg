@@ -45,7 +45,7 @@ verr build_from_spc( std::string strspc, std::string blkn, std::vector<int> roti
             return verrmsg(1, "Invalid spectrum values");
         spcints.push_back( std::stoi(s) ); }
 
-    if(vok != tree.buildFromSpectrum(spcints)) {
+    if(vok != tree.buildFromSpectrum(spcints, rotints)) {
         return verrmsg(2, "build tree from spectrum failed"); }
 
     iparams.from_spectrum = true;

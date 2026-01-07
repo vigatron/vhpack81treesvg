@@ -38,7 +38,7 @@ void draw_layers() {
 
 void draw_scode() {
     
-    std::string str = tree.asbin() + " : " + tree.astext(); // TCode : SCode
+    std::string str = tree.SCodeToTCode() + " : " + tree.SCodeToText(); // TCode : SCode
     int w   = gfx_ramka.w/2;
     int dd  = 4;
     int x   = gfx_ramka.sx;
