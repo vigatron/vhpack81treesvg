@@ -55,7 +55,7 @@ class VHSVG {
         if(!col.empty()) txt += svg_param("stroke", col);
         if(!dot.empty()) {
             txt += svg_param("stroke-linecap", "round" );
-            txt += svg_param("stroke-dasharray", "1,8"); }
+            txt += svg_param("stroke-dasharray", dot); }
         append( svg_tline("line", txt) ); }
 
     // -------------------------------------------------------------------------------------------------
@@ -90,6 +90,30 @@ class VHSVG {
         std::string par_strkc   = svg_param( "stroke-width"     , wdt );
 
         std::vector<std::string> pparams = { par_d, par_fill, par_strk, par_strkc };
+        append( svg_tline("path", join(pparams, " ")) ); }
+
+    // <path fill="none" stroke="red"    stroke-width="2" d="M80,80 a30,30 0 0,1 30,-30" />
+    void path(int mx, int my, int ax, int ay, int fx, int fy, int ca, int wdt, std::string colf, std::string dot = "") {
+        std::string strsx = std::to_string(mx);
+        std::string strsy = std::to_string(my);
+        
+        std::string strax = std::to_string(ax);
+        std::string stray = std::to_string(ay);
+        std::string strfx = std::to_string(fx);
+        std::string strfy = std::to_string(fy);
+
+        std::string strca = std::to_string(ca);
+        std::vector<std::string> dparams = { "M", strsx, strsy, "A", strax, stray, "0", "0", strca, strfx, strfy };
+
+        std::string par_d       = svg_param( "d"                , join(dparams, " ") );
+        std::string par_fill    = svg_param( "fill"             , "none" );
+        std::string par_strk    = svg_param( "stroke"           , colf );
+        std::string par_strkc   = svg_param( "stroke-width"     , wdt );
+
+        std::vector<std::string> pparams = { par_d, par_fill, par_strk, par_strkc };
+        if(dot.size()) { 
+            std::string par_strdot  = svg_param("stroke-dasharray", dot);
+            pparams.push_back(par_strdot); }
         append( svg_tline("path", join(pparams, " ")) ); }
 
     // -------------------------------------------------------------------------------------------------

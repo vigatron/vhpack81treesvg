@@ -16,8 +16,8 @@ class VHRect {
     void setsiz(uint16_t w, uint16_t h)     { this->w = w;  this->h = h; this->ex = sx+w; this->ey = sy+h; }
     void move(int16_t dx, int16_t dy)       { setpos(sx + dx, sy + dy); }
     void extdxdy(uint16_t dd = 1)           { sx -= dd; sy -= dd; ex += dd; ey += dd; w += dd + dd; h += dd + dd; }
-
-    void operator=(const VHRect & rect) { set(rect.sx, rect.sy, rect.w, rect.h); }
+    void operator=(const VHRect & rect)     { set(rect.sx, rect.sy, rect.w, rect.h); }
+    void shrink(int dx, int dy)             { set( sx + dx, sy + dy, w - dx*2, h - dy*2 ); }
 
     int16_t     sx; int16_t     sy;
     uint16_t    w;  uint16_t    h;

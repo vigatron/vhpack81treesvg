@@ -110,6 +110,7 @@ void RenderTreeGfx() {
     draw_callparams();
     draw_bitpath_back();
     draw_bitpaths();
+    draw_spectrum();
     draw_debug();
     draw_ramka();
 

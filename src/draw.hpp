@@ -14,3 +14,5 @@ void    draw_shadows();
 
 void    draw_bitpath_back();
 void    draw_bitpaths();
+
+void    draw_spectrum();

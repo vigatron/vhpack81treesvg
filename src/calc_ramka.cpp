@@ -39,8 +39,9 @@ static int svgcalc_ramka_h( int w ) {
 
     r += spcrh;
 
-    int hh_spectrum = 300;
+    int hh_spectrum = 256/2;
     gfxrect_spectrum.set(x, r, w, hh_spectrum);
+    gfxrect_spectrum.shrink(20, 0);
     r += hh_spectrum;
 
     r += spcrh;
