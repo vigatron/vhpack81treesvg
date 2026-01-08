@@ -38,6 +38,13 @@ static int svgcalc_ramka_h( int w ) {
     r += hh_bitfield;
 
     r += spcrh;
+
+    int hh_spectrum = 300;
+    gfxrect_spectrum.set(x, r, w, hh_spectrum);
+    r += hh_spectrum;
+
+    r += spcrh;
+
     r -= iparams.svg_paper_border;
 
     return r; }

@@ -38,7 +38,7 @@ class TreeGenParamsIn {
 
 
         // Ramka related
-        int     svg_ramka_min_w  = 400;
+        int     svg_ramka_min_w  = 600;
         int     svg_ramka_border = 100;
 
         // Final document border

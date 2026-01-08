@@ -19,6 +19,7 @@ extern VHRect               gfxrect_header;
 extern VHRect               gfxrect_layers;
 extern VHRect               gfxrect_shadows;
 extern VHRect               gfxrect_bitfield;
+extern VHRect               gfxrect_spectrum;
 
 
 void CalculateTreeGfx();

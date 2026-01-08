@@ -61,7 +61,7 @@ static void draw_elm_form (int idx, int x, int y) {
         string colf     = colors->colf, colb    = colors->colb;
         string colbf    = "#F8F8FF", colbb   = "#EAEAFF" ; 
 
-        svg.rect( rx + 4, ry + 4, elmsize, elmsize, th, colbf, colbb, elmsize * 0.2 );
+        svg.rect( rx + 5, ry + 5, elmsize, elmsize, th, colbf, colbb, elmsize * 0.2 );
         svg.rect( rx, ry, elmsize, elmsize, th, colf, colb, elmsize * 0.2 );
 
     } else {
@@ -158,19 +158,22 @@ void draw_link(int idx1, int idx2) {
     int x1 = oparams.gfxpos_x[idx1], y1 = oparams.gfxpos_y[idx1];
     int x2 = oparams.gfxpos_x[idx2], y2 = oparams.gfxpos_y[idx2];
 
-    if(!bindflag) {
-        svg.line(x1, y1, x2, y2, iparams.svg_lnkwidth, colors::mgreen);
-    } else {
+    int wdt = bindflag ? iparams.svg_lnkwidth2 : iparams.svg_lnkwidth;
+
+    svg.line(x1, y1, x2, y2, wdt, colors::mgreen);
+
+    if(bindflag) {
         int s = 3;
         int wx = x2 - x1; if(wx < 0) wx *= -1;
         int wy = y2 - y1; if(wy < 0) wy *= -1;
         int kx = (wx > wy) ? 0:1;
         int ky = (wx > wy) ? 1:0;
+
         x1 -= s * kx * 1; x2 -= s * kx * 1; y1 -= s*ky*1; y2 -= s*ky*1;
-        svg.line(x1, y1, x2, y2, iparams.svg_lnkwidth2, colors::mgreen);
+        svg.line(x1, y1, x2, y2, wdt, colors::mgreen);
+
         x1 += s * kx * 2; x2 += s * kx * 2; y1 += s*ky*2; y2 += s*ky*2;
-        svg.line(x1, y1, x2, y2, iparams.svg_lnkwidth2, colors::mgreen);
-    }
+        svg.line(x1, y1, x2, y2, wdt, colors::mgreen); }
 }
 
 
