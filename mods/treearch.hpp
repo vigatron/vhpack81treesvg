@@ -65,7 +65,9 @@ class VHTreeArch {
         void SetSwapFlag( int idx, uint8_t  f) { ooo[idx].w = 1; }
         void SetCountVal( int idx, uint16_t v) { ooo[idx].v = v; }
 
-        void swaplr(int idx) { int tmp = ooo[idx].l; ooo[idx].l = ooo[idx].r; ooo[idx].r = tmp; }
+        void swaplr(int idx) {
+            int tmp;
+            tmp = ooo[idx].l; ooo[idx].l = ooo[idx].r; ooo[idx].r = tmp; }
 
         // -----------------------------------------------------------------------------
         verr LinkTreeFromSpectrum(int symscnt) {
@@ -96,11 +98,18 @@ class VHTreeArch {
             for(int i=0; i < cntsyms(); i++) { recursedepth(i, 0); } }
 
         // -----------------------------------------------------------------------------
-        void MarkRotation() {
+        // Leftroot oriented to left side, Rightroot oriented to right side
+        // -----------------------------------------------------------------------------
+        void Rotation() {
             for(int i=rootidx(); i>= cntsyms(); i--) {
-                int lidx = getleft(i);
-                int ridx = getrigh(i);
-                if(ooo[lidx].d < ooo[ridx].d) ooo[i].w = 1; } }
+                int     lidx        = getleft(i);
+                int     ridx        = getrigh(i);
+                bool    swapflag    = false;
+                if(isLeftSideRoot(i))   { if(ooo[lidx].d < ooo[ridx].d) swapflag = true; }
+                else                    { if(ooo[lidx].d > ooo[ridx].d) swapflag = true; }
+                if(swapflag) { swaplr(i); ooo[i].w = 1; }
+            }
+        }
 
         // -----------------------------------------------------------------------------
         void recursedepth(int idx, uint8_t dpt) {
@@ -110,14 +119,10 @@ class VHTreeArch {
 
         // -----------------------------------------------------------------------------
         bool isLeftSideRoot(int idx) {
-
-            // Do not use for root idx ! For childs nodes only
-            if( isroot(idx)) return false;
-
+            if( isroot(idx)) return true; // Root is always left oriented
             int parentidx = getu(idx);
             if( isroot( parentidx) ) {
                 return getleft(parentidx) == idx; }
-
             return isLeftSideRoot(parentidx); }
 
     private:

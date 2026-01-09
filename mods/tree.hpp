@@ -32,9 +32,9 @@ class VHTree {
             tarch.setsize(arrnodes[0].id+1); // Important
             tarch.CalculateNodesDepth();
             tarch.CalculateMaxDepth();
-            tarch.MarkRotation();
+            tarch.Rotation();
 
-            InternalAutorotation( iparams.param_rotints );
+            // InternalAutorotation( iparams.param_rotints );
 
             dumplr();
             dumpnodes();
@@ -55,19 +55,13 @@ class VHTree {
             arrnodes = CreateSCodeFromHuff( tarch.size() - 1);
             tarch.CalculateNodesDepth();
             tarch.CalculateMaxDepth();
-            tarch.MarkRotation();
+            tarch.Rotation();
 
-            InternalAutorotation( iparams.param_rotints );
+            // InternalAutorotation( iparams.param_rotints );
 
             dumplr();
             dumpnodes();
             return vok; }
-
-        // -----------------------------------------------------------------------------
-        void InternalAutorotation(std::vector<int> rotints) {
-            // for(int rotidx : rotints) { tarch.SetSwapFlag(rotidx,1); }
-            // rotatenodes();
-        }
 
         // -----------------------------------------------------------------------------
         void buildFromNodes ( std::string strscode) {
