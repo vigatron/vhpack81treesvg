@@ -13,9 +13,13 @@
             // "-t", "28DF894BB454B2358574D200",
 
             // rotation test tree
+            // "-t"    , "1ECEDD528C4B54B920",
+            // "-blkn" , "12345",
+            // "-w"    , "56^59^62",
+
+            // rotation test tree / NO rotation params
             "-t"    , "1ECEDD528C4B54B920",
-            "-blkn" , "12345",
-            "-w"    , "56^59^62"
+            "-blkn" , "12345"
 
         ]
     }

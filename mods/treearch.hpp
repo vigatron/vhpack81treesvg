@@ -91,9 +91,18 @@ class VHTreeArch {
             for(int i=0;i < size();i++) { uint8_t lay = getlay(i); if( lay > r) r = lay; }
             _depthmax = r; }
 
+        // -----------------------------------------------------------------------------
         void CalculateNodesDepth() {
             for(int i=0; i < cntsyms(); i++) { recursedepth(i, 0); } }
 
+        // -----------------------------------------------------------------------------
+        void MarkRotation() {
+            for(int i=rootidx(); i>= cntsyms(); i--) {
+                int lidx = getleft(i);
+                int ridx = getrigh(i);
+                if(ooo[lidx].d < ooo[ridx].d) ooo[i].w = 1; } }
+
+        // -----------------------------------------------------------------------------
         void recursedepth(int idx, uint8_t dpt) {
             if( dpt > ooo[idx].d ) ooo[idx].d = dpt;
             if( idx == rootidx()) return;
