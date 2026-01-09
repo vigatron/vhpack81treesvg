@@ -77,17 +77,10 @@ void draw_debug() {
 
     return;
 
-    { VHRect * prect = & gfxrect_header;
-    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
-
-    { VHRect * prect = & gfxrect_layers;
-    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
-
-    { VHRect * prect = & gfxrect_shadows;
-    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
-
-    { VHRect * prect = & gfxrect_bitfield;
-    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+    { VHRect * prect = & gfxrect_header;    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+    { VHRect * prect = & gfxrect_layers;    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+    { VHRect * prect = & gfxrect_shadows;   svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+    { VHRect * prect = & gfxrect_bitfield;  svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
 
 }
 

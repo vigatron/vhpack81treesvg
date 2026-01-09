@@ -67,15 +67,18 @@ class VHTreeArch {
 
         void swaplr(int idx) { int tmp = ooo[idx].l; ooo[idx].l = ooo[idx].r; ooo[idx].r = tmp; }
 
+        // -----------------------------------------------------------------------------
         verr LinkTreeFromSpectrum(int symscnt) {
             huffcnt = symscnt; while(symscnt-->=2) NLnk(); return vok; }
 
+        // -----------------------------------------------------------------------------
         void LinkLeft(int idx, int parent, int curlay) {
             ooo[parent].l    = idx;
             ooo[idx].y       = curlay;
             ooo[idx].u       = parent;
             printf("LinkLeft #%d L%d <- %d \n", idx, curlay, parent ); }
 
+        // -----------------------------------------------------------------------------
         void LinkRigh(int idx, int parent, int curlay) {
             ooo[parent].r    = idx;
             ooo[idx].y       = curlay;
@@ -87,6 +90,26 @@ class VHTreeArch {
             uint8_t r = 0;
             for(int i=0;i < size();i++) { uint8_t lay = getlay(i); if( lay > r) r = lay; }
             _depthmax = r; }
+
+        void CalculateNodesDepth() {
+            for(int i=0; i < cntsyms(); i++) { recursedepth(i, 0); } }
+
+        void recursedepth(int idx, uint8_t dpt) {
+            if( dpt > ooo[idx].d ) ooo[idx].d = dpt;
+            if( idx == rootidx()) return;
+            recursedepth(getu(idx), dpt + 1); }
+
+        // -----------------------------------------------------------------------------
+        bool isLeftSideRoot(int idx) {
+
+            // Do not use for root idx ! For childs nodes only
+            if( isroot(idx)) return false;
+
+            int parentidx = getu(idx);
+            if( isroot( parentidx) ) {
+                return getleft(parentidx) == idx; }
+
+            return isLeftSideRoot(parentidx); }
 
     private:
 

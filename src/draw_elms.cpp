@@ -83,7 +83,7 @@ static void draw_elm_value(int idx) {
     VHTreeArch::stobj * pooo    = tree[idx];
 
     int             fntsz   = 6;
-    string          str     = "S" + std::to_string(pooo->v);
+    string          str     = "S" + std::to_string(pooo->v) + ":" + std::to_string(pooo->d);
     int             mdx     = font_align_pixels(str, fntsz);
     int             x       = oparams.gfxpos_x[idx] - mdx;
     int             y       = oparams.gfxpos_y[idx] + fntsz + 2;

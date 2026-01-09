@@ -30,6 +30,7 @@ class VHTree {
             tarch.setsymscount( find_minnode_id() );
             autoenumerate(0, 0);
             tarch.setsize(arrnodes[0].id+1); // Important
+            tarch.CalculateNodesDepth();
             tarch.CalculateMaxDepth();
 
             InternalAutorotation( iparams.param_rotints );
@@ -51,6 +52,7 @@ class VHTree {
             tarch.LinkTreeFromSpectrum( iparams.param_spcints.size());
             tarch.setsymscount( iparams.param_spcints.size() );
             arrnodes = CreateSCodeFromHuff( tarch.size() - 1);
+            tarch.CalculateNodesDepth();
             tarch.CalculateMaxDepth();
 
             InternalAutorotation( iparams.param_rotints );
