@@ -101,15 +101,18 @@ class VHTreeArch {
         // Leftroot oriented to left side, Rightroot oriented to right side
         // -----------------------------------------------------------------------------
         void Rotation() {
+
             for(int i=rootidx(); i>= cntsyms(); i--) {
+
                 int     lidx        = getleft(i);
+                uint8_t ldpt        = ooo[lidx].d;
                 int     ridx        = getrigh(i);
-                bool    swapflag    = false;
-                if(isLeftSideRoot(i))   { if(ooo[lidx].d < ooo[ridx].d) swapflag = true; }
-                else                    { if(ooo[lidx].d > ooo[ridx].d) swapflag = true; }
-                if(swapflag) { swaplr(i); ooo[i].w = 1; }
-            }
-        }
+                uint8_t rdpt        = ooo[ridx].d;
+
+                bool    rotleft     = (i==rootidx()) ? true : leftChildOfParent(i);
+                bool    swapflag    = rotleft ? ( ldpt < rdpt ) : (ldpt > rdpt);
+                
+                if(swapflag) { swaplr(i); ooo[i].w = 1; } } }
 
         // -----------------------------------------------------------------------------
         void recursedepth(int idx, uint8_t dpt) {
@@ -118,12 +121,21 @@ class VHTreeArch {
             recursedepth(getu(idx), dpt + 1); }
 
         // -----------------------------------------------------------------------------
-        bool isLeftSideRoot(int idx) {
-            if( isroot(idx)) return true; // Root is always left oriented
-            int parentidx = getu(idx);
-            if( isroot( parentidx) ) {
-                return getleft(parentidx) == idx; }
-            return isLeftSideRoot(parentidx); }
+        // прикреплен к родительскому звену слева ?
+        // -----------------------------------------------------------------------------
+        bool leftChildOfParent(int idx) { return getleft(ooo[idx].u) == idx; }
+
+        // -----------------------------------------------------------------------------
+        // прикреплен к родительскому звену справа ?
+        // -----------------------------------------------------------------------------
+        bool rightChildOfParent(int idx) { return getrigh(ooo[idx].u) == idx; }
+        // -----------------------------------------------------------------------------
+        // bool isLeftSideRoot(int idx) {
+        //     if( isroot(idx)) return true; // Root is always left oriented
+        //     int parentidx = getu(idx);
+        //     if( isroot( parentidx) ) {
+        //         return getleft(parentidx) == idx; }
+        //     return isLeftSideRoot(parentidx); }
 
     private:
 
