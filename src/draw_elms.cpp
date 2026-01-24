@@ -16,6 +16,11 @@ const sColor  arrcolors[3] = {
     { colors::dgreen    , colors::lgreen    , colors::mgreen    , "gray" },
     { colors::orangel   , colors::nyell     , colors::orangel   , "gray" } };
 
+static int gfx_offstxt_center( std::string txt, int fsize) {
+	int r = txt.size() * fsize * 3 / 10;
+	//  ((idx>9) ? (fontw * 3 / 5) : (fontw / 4));
+	return r; }
+
 // -------------------------------------------------------------------------------------------------
 static const sColor * elm_color(int idx) {
     if( tree.arch().isroot(idx) )  return & arrcolors[2];
@@ -82,11 +87,11 @@ static void draw_elm_value(int idx) {
 
     VHTreeArch::stobj * pooo    = tree[idx];
 
-    int             fntsz   = 6;
+    int             fntsz   = 5;
     string          str     = "S" + std::to_string(pooo->v) + ":" + std::to_string(pooo->d);
     int             mdx     = font_align_pixels(str, fntsz);
     int             x       = oparams.gfxpos_x[idx] - mdx;
-    int             y       = oparams.gfxpos_y[idx] + fntsz + 2;
+    int             y       = oparams.gfxpos_y[idx] + fntsz + 1;
     string          fnt     = iparams.fntSans;
 
     svg.text(x, y, str, fnt, fntsz, "gray" ); }
@@ -94,34 +99,37 @@ static void draw_elm_value(int idx) {
 // -------------------------------------------------------------------------------------------------
 void draw_elm(int idx) {
 
-    bool    flagroot    = tree.arch().isroot(idx);
-    bool    flagsym     = tree.arch().issym(idx);
-    int     cx          = oparams.gfxpos_x[idx];
-    int     cy          = oparams.gfxpos_y[idx];
-    int     qx          = oparams.gfxpos_x[idx] - iparams.svg_elm_width/2;
-    int     qy          = oparams.gfxpos_y[idx] - iparams.svg_elm_width/2;
-    int     fontw       = iparams.svg_elm_fntsz * 3 / 4;
-    int     fonth       = iparams.svg_elm_fntsz * 4 / 7;
-    string  fnt         = iparams.fntSans;
+	bool    flagroot    = tree.arch().isroot(idx);
+	bool    flagsym     = tree.arch().issym(idx);
+	int     cx          = oparams.gfxpos_x[idx];
+	int     cy          = oparams.gfxpos_y[idx];
+	int     qx          = oparams.gfxpos_x[idx] - iparams.svg_elm_width/2;
+	int     qy          = oparams.gfxpos_y[idx] - iparams.svg_elm_width/2;
+	int     fontw       = iparams.svg_elm_fntsz * 3 / 4;
+	int     fonth       = iparams.svg_elm_fntsz * 4 / 7;
+	string  fnt         = iparams.fntSans;
 
-    const sColor * colors = elm_color(idx);
+	const sColor * colors = elm_color(idx);
 
-    // Debug staff : Rectangle [WL|WR]
-    if( iparams.show_width_elmslr ) { draw_dbg_LW(idx); }
+	// Debug staff : Rectangle [WL|WR]
+	if( iparams.show_width_elmslr ) { draw_dbg_LW(idx); }
 
-    draw_elm_form(idx, cx, cy);
+	draw_elm_form(idx, cx, cy);
 
-    int     tx  = oparams.gfxpos_x[idx] - ((idx>9) ? (fontw * 3 / 5) : (fontw / 4));
-    int     ty  = oparams.gfxpos_y[idx] + (fonth / 2);
 
-    // Show counts ?
-    if(iparams.from_spectrum) { ty -= fonth*0.9; draw_elm_value(idx); }
 
-    // Index
-    svg.text(tx, ty, std::to_string(idx), fnt, fontw, colors::gray );
+	// Index
+	std::string		stridx	= std::to_string(idx);
+	int				tx		= oparams.gfxpos_x[idx] - gfx_offstxt_center( stridx, fontw );
+	int				ty		= oparams.gfxpos_y[idx] + (fonth / 2);
 
-    // Props print: gfx X L:R ( debug )
-    if(iparams.show_dbg_xwlwr) { draw_dbg_txt_LW(idx); }
+	// Show counts ?
+	if(iparams.from_spectrum) { ty -= fonth*0.9; draw_elm_value(idx); }
+
+	svg.text(tx, ty, stridx, fnt, fontw, colors::gray );
+
+	// Props print: gfx X L:R ( debug )
+	if(iparams.show_dbg_xwlwr) { draw_dbg_txt_LW(idx); }
 
 }
 

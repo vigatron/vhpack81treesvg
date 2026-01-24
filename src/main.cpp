@@ -9,6 +9,19 @@ using namespace std;
 // Ramka up
 // BPath rates %
 
+std::string genoutfname(bool tcd) {
+
+	std::string pfx = tcd ? "tcode_" : "spctr_";
+	if( iparams.param_partn.size () ) { pfx += "P" + iparams.param_partn  + "_"; }
+	if( iparams.param_blockn.size() ) { pfx += "B" + iparams.param_blockn + "_"; }
+
+	std::string r = pfx + (tcd ? iparams.param_tcode : "spc" ) + ".svg";
+
+	// // Spectrum string for outfname
+	// string strspfx = iparams.param_strspc;
+	// for( int i=0; i < strspfx.size(); i++ ) { if(strspfx[i] == '.') strspfx[i] = '_'; }
+	return r; }
+
 // -----------------------------------------------------------------------------
 // std::string strtcode, std::string blkn, std::vector<int> rotints
 verr build_from_tcode() {
@@ -23,12 +36,10 @@ verr build_from_tcode() {
     RenderTreeGfx();
 
     // Generate file name
-    string strout = "tcode_";
-    if( iparams.param_blockn.size()) { strout += "B" + iparams.param_blockn + "_"; }
-    strout += iparams.param_tcode;
+	std::string fname = genoutfname(true);
 
     // Save results
-    svg.savetosvg( strout + ".svg");
+    svg.savetosvg( fname );
 
     return vok; }
 
@@ -44,16 +55,10 @@ verr build_from_spc() {
     RenderTreeGfx();
 
     // Generate file name
-    string strout = "spectrum_";
-    if(iparams.param_blockn.size()) { strout += "B" + iparams.param_blockn + "_"; }
-    
-    // Spectrum string for outfname
-    string strspfx = iparams.param_strspc;
-    for( int i=0; i < strspfx.size(); i++ ) { if(strspfx[i] == '.') strspfx[i] = '_'; }
-    strout += strspfx;
+	std::string fname = genoutfname(false);
 
     // Save results
-    svg.savetosvg( strout + ".svg");
+    svg.savetosvg( fname );
 
     return vok; }
 
@@ -65,11 +70,12 @@ int main( int argc, char * argv[] ) {
 
     argsparser.setappname("pack81treesvg");
 
-    argsparser.addopt(  "t",    "Build from TCode");
-    argsparser.addopt(  "v",    "Build from spectrum values, for example '1.2.3'");
-    argsparser.addopt(  "w",    "Rotate nodes, for example '1^2^3'");
-    argsparser.addopt(  "z",    "Bind   nodes, for example '1.2,3.4'");
-    argsparser.addopt(  "blkn", "Block number ( optional)");
+	argsparser.addopt(  "t",    "Build from TCode");
+	argsparser.addopt(  "v",    "Build from spectrum values, for example '1.2.3'");
+	argsparser.addopt(  "w",    "Rotate nodes, for example '1^2^3'");
+	argsparser.addopt(  "z",    "Bind   nodes, for example '1.2,3.4'");
+	argsparser.addopt(	"prtn",	"Part  number ( optional )");
+	argsparser.addopt(  "blkn", "Block number ( optional )");
 
     if( vok != argsparser.ParseArgs(argc, argv)) {
         std::cout << "Parse args issue" << std::endl;
@@ -80,9 +86,11 @@ int main( int argc, char * argv[] ) {
 
     iparams.param_tcode     = argsparser.getopt("t");
     iparams.param_strspc    = argsparser.getopt("v");
-    iparams.param_blockn    = argsparser.getopt("blkn");
     iparams.param_strrot    = argsparser.getopt("w");
     iparams.param_strsvz    = argsparser.getopt("z");
+
+	iparams.param_partn		= argsparser.getopt("prtn");
+    iparams.param_blockn	= argsparser.getopt("blkn");
 
     iparams.param_spcints   = ParseSpectrum( iparams.param_strspc );
     iparams.param_rotints   = ParseRotation( iparams.param_strrot );

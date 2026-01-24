@@ -19,7 +19,12 @@ void draw_layers_back() {
         int x = gfxrect_ramka.sx;
         int y = svg_getlayer_posy(ll);
         std::string color = (ll & 1) ? colors::yellowll : colors::yellowl;
-        svg.rect(x, y, gfxrect_ramka.w, iparams.svg_layerh, 0, color, color ); }
+        svg.rect(x, y, gfxrect_ramka.w, iparams.svg_layerh, 0, color, color );
+
+		int ymid = y + iparams.svg_layerh/2;
+        std::string clrm = (ll & 1) ? "#F8F8C0" : "#F0E0A0";
+		svg.line(x, ymid, x + gfxrect_ramka.w, ymid, 1, clrm, "15,10");
+	}
 
     draw_layers_nrs(); }
 

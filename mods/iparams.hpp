@@ -7,17 +7,20 @@ class TreeGenParamsIn {
 
     public:
 
-        std::string         param_tcode;
-        std::string         param_strspc;
-        std::string         param_blockn;
-        std::string         param_strrot;
-        std::string         param_strsvz;
+		std::string         param_tcode;
+		std::string         param_strspc;
 
-        std::vector<int>    param_spcints;
-        std::vector<int>    param_rotints;
-        std::vector<int>    param_svzints;
+		std::string			param_partn;
+		std::string			param_blockn;
 
-        int     svg_spacer_h    = 16; // расстояние между сегментами
+		std::string         param_strrot;
+		std::string         param_strsvz;
+
+		std::vector<int>    param_spcints;
+		std::vector<int>    param_rotints;
+		std::vector<int>    param_svzints;
+
+		int     svg_spacer_h    = 16; // расстояние между сегментами
 
         // Vertical segments height
         int     svg_headerh     = 56;
