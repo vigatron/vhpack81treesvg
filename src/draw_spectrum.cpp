@@ -39,6 +39,32 @@ static void draw_axis( int x, int y, int xl, int yl) {
 
 }
 
+static void draw_figures( int xo, int yo, int ww, int hh ) {
+
+	int wx	= ww/2, hy = hh * 0.8;
+	int qcx	= xo + ww/4;
+	int qcy	= yo - hy/2;
+	int cx	= xo + ww/2;
+	int th	= 1;
+
+	std::string figcol = "#E0E0E0";
+	std::string strdot = "2,1";
+
+	svg.path(cx, yo-hy, wx, hy, xo, yo, 0, th, figcol, strdot );			// figure 1
+	svg.line(cx, yo-hy, xo, yo, th, figcol, "1,3");							// figure 2
+	svg.path(cx, yo-hy, wx, hy, xo, yo, 1, th, figcol, strdot );			// figure 3
+
+	svg.path(qcx, qcy, wx/2, hy/2, xo, yo, 1, th, figcol, strdot );			// figure S1
+	svg.path(qcx, qcy, wx/2, hy/2, cx, yo - hy, 1, th, figcol, strdot );
+
+	svg.path(qcx, qcy, wx/2, hy/2, xo, yo, 0, th, figcol, strdot );			// figure S2
+	svg.path(qcx, qcy, wx/2, hy/2, cx, yo - hy, 0, th, figcol, strdot );
+
+	int ymid = yo-hy/2;
+	svg.line(xo, ymid, cx, ymid, th, figcol, "1,3" );
+
+}
+
 static void draw_spc( int xo, int yo, int ww, int hh, std::vector<int> arr, int tp) {
 
     std::string     fname       = iparams.fntSans;
@@ -48,8 +74,6 @@ static void draw_spc( int xo, int yo, int ww, int hh, std::vector<int> arr, int 
     int             th = 1;
 
     draw_axis( xo, yo, ww, hh);
-
-    float dx = ww / arr.size();
 
     std::vector<int>::iterator minv_it = std::min_element(arr.begin(), arr.end());
     std::vector<int>::iterator maxv_it = std::max_element(arr.begin(), arr.end());
@@ -61,103 +85,76 @@ static void draw_spc( int xo, int yo, int ww, int hh, std::vector<int> arr, int 
     int ymax = yo - hh * 0.8;
     svg.line( xo, ymax, xo + ww, ymax, 1, col_sep, "3,3" );
 
-    if(tp == 1) {
-        int wx = ww/2, hy = hh * 0.8;
-        int qcx = xo + ww/4;
-        int qcy = yo - hy/2;
-        // quarter vertical separator
-        // svg.line(qcx, yo, qcx, yo - hy, th, col_sep, "1,5");
-        std::string colb = "#F4F4F4";
-        svg.rect(xo, yo - hy, ww/4, hy, th, colb, colb );
-    }
+	// quarter vertical separator
 
+	if(tp == 1) {
+		int wx = ww/2, hy = hh * 0.8;
+		int qcx = xo + ww/4;
+		int qcy = yo - hy/2;
+		// svg.line(qcx, yo, qcx, yo - hy, th, col_sep, "1,5");
+		std::string colb = "#F4F4F4";
+		svg.rect(xo + 1, yo - hy, ww/4 - 1, hy, th, colb, colb ); }
 
-    for(int i = 0; i < arr.size() ; i++ ) {
-        int     x           = xo + int(i * dx);
-        int     elmh        = hh * 0.8 * arr[i] / maxv;
-        int     sy          = yo - elmh;
-        bool    fhalf       = i < arr.size()/2;
-        bool    flagcolor   =  !tp ? false : ( fhalf ? true : false );
-        std::string colorf   = !flagcolor ? "#9090F0" : "#B0B0B0";
-        std::string colorb   = !flagcolor ? "#D0D0FF" : "#C0C0C0";
-        svg.rect( x, sy, int(dx), elmh, 1, colorf, colorb ); }
+	float dx = ww * 1.0f / arr.size();
 
+	for(int i = 0; i < arr.size() ; i++ ) {
+		int     x           = xo + int(i * dx);
+		int     elmh        = hh * 0.8 * arr[i] / maxv;
+		int     sy          = yo - elmh;
+		bool    fhalf       = i < arr.size() / 2;
+		bool    flagcolor   =  !tp ? false : ( fhalf ? true : false );
+		std::string colorf   = !flagcolor ? "#9090F0" : "#B0B0B0";
+		std::string colorb   = !flagcolor ? "#D0D0FF" : "#C0C0C0";
+		svg.rect( x, sy, int(dx), elmh, 1, colorf, colorb ); }
 
-    int centerx = xo + ww/2 - 1 - dx/2;
-    int yords   = yo + fsize * 1.5;
+	std::string minmax = "min: " + std::to_string(minv) + " / max: " + std::to_string(maxv);
+	svg.text( xo + 4, ymax - 4, minmax, fname, fsize*1.5, fcol );
 
+	// Show zero
+	int cx = xo + ww/2 - 1 - dx/2;
+	int yords   = yo + fsize * 1.5;
+	svg.text( (!tp ? xo: cx) , yords, "0", fname, fsize, fcol);
 
-    std::string minmax = "min: " + std::to_string(minv) + " / max: " + std::to_string(maxv);
-    svg.text( xo + 4, ymax - 4, minmax, fname, fsize*1.5, fcol );
+	// Show max
+	{   int xmax = xo + ww - fsize*1.5;
+		std::string txtmax = std::to_string( arr.size() / (!tp ? 1 : 2) );
+		svg.text( xmax , yords, txtmax, fname, fsize, fcol ); }
 
-    // Show zero
-    svg.text( (!tp ? xo: centerx) , yords, "0", fname, fsize, fcol);
-
-    // Show max
-    {   int xmax = xo + ww - fsize*1.5;
-        std::string txtmax = std::to_string( arr.size() / (!tp ? 1 : 2) );
-        svg.text( xmax , yords, txtmax, fname, fsize, fcol ); }
-
-    if(tp == 1) {
-
-        int wx = ww/2, hy = hh * 0.8;
-        int qcx = xo + ww/4;
-        int qcy = yo - hy/2;
-
-        std::string figcol = "#E0E0E0";
-        std::string strdot = "2,1";
-
-        // figure 1
-        svg.path(centerx, yo-hy, wx, hy, xo, yo, 0, th, figcol, strdot );
-        // figure 2
-        svg.line(centerx, yo-hy, xo, yo, th, figcol, "1,3");
-        // figure 3
-        svg.path(centerx, yo-hy, wx, hy, xo, yo, 1, th, figcol, strdot );
-        // figure S
-        svg.path(qcx, qcy, wx/2, hy/2, xo, yo, 1, th, figcol, strdot );
-        svg.path(qcx, qcy, wx/2, hy/2, centerx, yo - hy, 1, th, figcol, strdot );
-
-    }
-
+	if(tp == 1) { draw_figures( xo, yo, ww, hh ); }
 }
 
 
 void draw_spectrum() {
 
-    split_rects();
+	split_rects();
 
-    if(!iparams.param_spcints.size()) return;
+	if(!iparams.param_spcints.size()) return;
 
-    std::vector<int>    arr1 = iparams.param_spcints;
-    std::vector<int>    arrd = arr1;
-    std::vector<int>    arrg = arr1;
-    std::vector<int>    arrs;
+	std::vector<int>    arr1 = iparams.param_spcints;
+	std::vector<int>    arrd = arr1;	// descent
+	std::vector<int>    arrg = arr1;	// grow
+	std::vector<int>    arrs;			// combined
 
-    std::sort(arrd.begin(), arrd.end());
-    std::sort(arrg.begin(), arrg.end(), std::greater<int>());
+	std::sort(arrd.begin(), arrd.end());
+	std::sort(arrg.begin(), arrg.end(), std::greater<int>());
 
-    arrs.insert(arrs.end(), arrd.begin(), arrd.end());
-    arrs.insert(arrs.end(), arrg.begin(), arrg.end());
+	arrs.insert(arrs.end(), arrd.begin(), arrd.end());
+	arrs.insert(arrs.end(), arrg.begin(), arrg.end());
 
-    { VHRect * r = & rects [0]; draw_spc( r->sx, r->ey, r->w, r->h, arr1, 0 ); } // Draw original
-    { VHRect * r = & rects [1]; draw_spc( r->sx, r->ey, r->w, r->h, arrs, 1 ); } // Draw sorted
-    
-
-    // for(int i = 0; i < arr2.size() ; i++ ) {
-
-    //     int x   = gfxrect_spectrum.sx + X_OFFS + (64 + arr2.size() + i)*4;
-    //     int hh  = arr2[i];
-    //     int sy  = gfxrect_spectrum.ey - hh - 128;
-    //     svg.rect( x, sy, 2, hh, 1, "blue" );
-    // }
-
-    // // Draw sorted
-    // for(int i = 0; i < arr3.size() ; i++ ) {
-
-    //     int x   = gfxrect_spectrum.sx + X_OFFS + (64 + i)*4;
-    //     int hh  = arr3[i];
-    //     int sy  = gfxrect_spectrum.ey - hh - 128;
-    //     svg.rect( x, sy, 2, hh, 1, "gray" );
-    // }
+	{ VHRect * r = & rects [0]; draw_spc( r->sx, r->ey, r->w, r->h, arr1, 0 ); } // Draw original
+	{ VHRect * r = & rects [1]; draw_spc( r->sx, r->ey, r->w, r->h, arrs, 1 ); } // Draw sorted
 
 }
+
+	// for(int i = 0; i < arr2.size() ; i++ ) {
+	//     int x   = gfxrect_spectrum.sx + X_OFFS + (64 + arr2.size() + i)*4;
+	//     int hh  = arr2[i];
+	//     int sy  = gfxrect_spectrum.ey - hh - 128;
+	//     svg.rect( x, sy, 2, hh, 1, "blue" ); }
+
+	// // Draw sorted
+	// for(int i = 0; i < arr3.size() ; i++ ) {
+	//     int x   = gfxrect_spectrum.sx + X_OFFS + (64 + i)*4;
+	//     int hh  = arr3[i];
+	//     int sy  = gfxrect_spectrum.ey - hh - 128;
+	//     svg.rect( x, sy, 2, hh, 1, "gray" ); }

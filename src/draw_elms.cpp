@@ -116,8 +116,6 @@ void draw_elm(int idx) {
 
 	draw_elm_form(idx, cx, cy);
 
-
-
 	// Index
 	std::string		stridx	= std::to_string(idx);
 	int				tx		= oparams.gfxpos_x[idx] - gfx_offstxt_center( stridx, fontw );
