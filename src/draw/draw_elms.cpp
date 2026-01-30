@@ -4,10 +4,10 @@ using namespace std;
 
 
 struct sColor {
-    std::string colf;   // Front
-    std::string colb;   // Background
-    std::string cols;   // Separator
-    std::string colt;   // Text
+	std::string colf;			// Front
+	std::string colb;			// Background
+	std::string cols;			// Separator
+	std::string coltxt;			// Text
 	std::string color_shadow_b;
 	std::string color_shadow_s;
 };
@@ -19,8 +19,9 @@ const sColor  arrcolors[4] = {
 	{	colors::mblue,
 		colors::sblue,
 		colors::mblue,
-		"gray",
-		std::string( "#e6e6f3" ), std::string( "#ececf0" ) // shadow
+		"#5a72c6",
+		// shadow
+		std::string( "#e6e6f3" ), std::string( "#ececf0" )
 	},
 
 	// node
@@ -28,15 +29,17 @@ const sColor  arrcolors[4] = {
 		colors::lgreen,
 		colors::mgreen,
 		"gray",
-		"gray", "gray", // shadow
+		// shadow
+		"#BBFFBB", "gray",
 	},
 
 	// Root
 	{	colors::orangel,
 		colors::nyell,
 		colors::orangel,
-		"gray",
-		"gray", "gray",	// shadow
+		"#f19253",
+		// shadow
+		"#f9e77f", "gray",
 	 },
 
 	// Container
@@ -44,6 +47,7 @@ const sColor  arrcolors[4] = {
 		colors::magental,
 		colors::magenta,
 		"gray",
+		// shadow
 		std::string( "#f4e8f4" ), std::string( "#fde7ff" ),
 	 }
 
@@ -63,27 +67,67 @@ static const sColor * elm_color(int idx) {
 
 // -------------------------------------------------------------------------------------------------
 static void draw_dbg_LW (int idx) {
-    int     x           = oparams.gfxpos_x[idx]     - oparams.gfx_nodewl[idx];
-    int     y           = oparams.gfxpos_y[idx]     - iparams.svg_elm_width/2;
-    int     ww          = oparams.gfx_nodewl[idx]   + oparams.gfx_nodewr[idx];
-    int     th          = iparams.svg_elm_width;
-    svg.rect(x, y, ww, th, 1, "black", "orange" ); }
+	int     x           = oparams.gfxpos_x[idx]     - oparams.gfx_nodewl[idx];
+	int     y           = oparams.gfxpos_y[idx]     - iparams.svg_elm_width/2;
+	int     ww          = oparams.gfx_nodewl[idx]   + oparams.gfx_nodewr[idx];
+	int     th          = iparams.svg_elm_width;
+	svg.rect(x, y, ww, th, 1, "black", "orange" ); }
 
 // -------------------------------------------------------------------------------------------------
 static void draw_dbg_txt_LW(int idx) {
-    int     x           = oparams.gfxpos_x[idx];
-    int     y           = oparams.gfxpos_y[idx];
-    string  fnt         = iparams.fntSans;
+	int     x           = oparams.gfxpos_x[idx];
+	int     y           = oparams.gfxpos_y[idx];
+	string  fnt         = iparams.fntSans;
 
-    // X-Pos value
-    string str1 = std::to_string(oparams.gfxpos_x[idx]);
-    svg.text(x, y - 30, str1, fnt, 3, "black" );
+	// X-Pos value
+	string str1 = std::to_string(oparams.gfxpos_x[idx]);
+	svg.text(x, y - 30, str1, fnt, 3, "black" );
 
-    // WL WR values
-    string strl = std::to_string(oparams.gfx_nodewl[idx]);
-    string strr = std::to_string(oparams.gfx_nodewr[idx]);
-    string wlwr = strl + ":" + strr;
-    svg.text(x, y - 20, wlwr, fnt, 3, "black" ); }
+	// WL WR values
+	string strl = std::to_string(oparams.gfx_nodewl[idx]);
+	string strr = std::to_string(oparams.gfx_nodewr[idx]);
+	string wlwr = strl + ":" + strr;
+	svg.text(x, y - 20, wlwr, fnt, 3, "black" ); }
+
+// -------------------------------------------------------------------------------------------------
+static void draw_elmform_node( int idx, int x, int y, int elmsize, const sColor *  colors ) {
+
+	int		th				= 1;
+	int		ra				= iparams.svg_elm_width*5/8;
+	bool 	rotated			= tree.getswap(idx);
+	std::vector<int> arri	= iparams.param_injected;
+	bool		injected	= arri.size() ? ( std::find( arri.begin(), arri.end(), idx) != arri.end() ) : false;
+	std::string dot			= injected ? std::string("1,3") : std::string(""); 
+
+	svg.circ(x, y, ra, th, colors->colf, colors->color_shadow_b );
+
+	if(dot.size()) {
+		svg.circ(x, y, ra+2, th, colors->colf, "none", dot); }
+
+	if( rotated ) {
+		svg.arc(x, y, 14, 4, colors->colf); }
+
+	svg.circ(x, y, elmsize / 2, th, colors->colf, colors->colb);
+
+}
+
+// -------------------------------------------------------------------------------------------------
+static void draw_elmform_sym( int idx, int x, int y, int elmsize, const sColor *  colors ) {
+
+	int th = 1;
+	int rx = x - elmsize/2, ry = y - elmsize/2;
+
+	// Shadow
+	svg.rect( rx + 4, ry + 5,
+		elmsize, elmsize, th,
+		colors->color_shadow_s,
+		colors->color_shadow_b, elmsize * 0.2 );
+
+	// Form
+	svg.rect( rx, ry,
+		elmsize, elmsize, th,
+		colors->colf, colors->colb, elmsize * 0.2 );
+}
 
 // -------------------------------------------------------------------------------------------------
 static void draw_elm_form (int idx, int x, int y) {
@@ -93,33 +137,13 @@ static void draw_elm_form (int idx, int x, int y) {
 	int             r           = elmsize / 2;
 	int             th          = 1.5;
 	const sColor *  colors      = elm_color(idx);
+	bool			separator	= iparams.from_spectrum;
 
-	if(flagsym) {
+	if(flagsym) { draw_elmform_sym	( idx, x, y, elmsize, colors ); }
+	else		{ draw_elmform_node	( idx, x, y, elmsize, colors ); }
 
-		int rx = x - elmsize/2, ry = y - elmsize/2;
-
-		// Shadow
-		svg.rect(
-			rx + 4, ry + 5,
-			elmsize, elmsize, th,
-			colors->color_shadow_s,
-			colors->color_shadow_b, elmsize * 0.2 );
-
-		// Form
-		svg.rect(
-			rx, ry,
-			elmsize, elmsize, th,
-			colors->colf, colors->colb, elmsize * 0.2 );
-
-	} else {
-		int	ra = iparams.svg_elm_width*5/8;
-		svg.circ(x, y, ra, th*3/8, colors->colf, "white" );
-		if( tree.getswap(idx)) { svg.arc(x, y, 14, 4, colors->colf); }
-		svg.circ(x, y, elmsize / 2, th, colors->colf, colors->colb);
-	}
-
-	// Separator
-	if(iparams.from_spectrum) { svg.line( x - r, y, x + r, y, 1, colors->cols); }
+	if(separator) {
+		svg.line( x - r, y, x + r, y, 1, colors->cols); }
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -133,8 +157,9 @@ static void draw_elm_value(int idx) {
     int             x       = oparams.gfxpos_x[idx] - mdx;
     int             y       = oparams.gfxpos_y[idx] + fntsz + 1;
     string          fnt     = iparams.fntSans;
+	const sColor *  colors  = elm_color(idx);
 
-    svg.text(x, y, str, fnt, fntsz, "gray" ); }
+    svg.text(x, y, str, fnt, fntsz, colors->coltxt ); }
 
 // -------------------------------------------------------------------------------------------------
 void draw_elm(int idx) {

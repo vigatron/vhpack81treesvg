@@ -45,5 +45,10 @@ std::vector<int> ParseSvyazki( std::string strsvzk ) {
 // -----------------------------------------------------------------------------
 std::vector<int> ParseInjected( std::string txt ) {
 	std::vector<int> r;
-	return r;
-}
+	std::vector<std::string> spl = split(txt, '.');
+	for( std::string s : spl) {
+		if(!check_str_digit(s)) {
+			verrmsg(2, "Invalid injection values");
+			exit(1); }
+			r.push_back( std::stoi( s )); }
+	return r; }

@@ -86,12 +86,10 @@ verr ParseIParams( int argc, char * argv[], VHArgsParser & argsparser ) {
 		return 1; }
 
 	//
-
 	iparams.callparams		= argsparser.listparams();
 
 	iparams.param_tcode		= argsparser.getopt("t");
 	iparams.param_cntr		= argsparser.getopt("cntr");
-
 	iparams.param_partn		= argsparser.getopt("prtn");
 	iparams.param_blockn	= argsparser.getopt("blkn");
 

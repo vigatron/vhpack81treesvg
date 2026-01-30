@@ -14,6 +14,7 @@ include_directories(
 	misc
 	src/calc
 	src/draw
+	src/parser
 	src
 )
 
@@ -21,6 +22,7 @@ file( GLOB_RECURSE source_list_mods
     src/*.cpp  src/*.hpp
 	src/calc/*
 	src/draw/*
+	src/parser/*
 	src/*
     mods/*.cpp mods/*.hpp
     misc/*.cpp misc/*.hpp )

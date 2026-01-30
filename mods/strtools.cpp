@@ -58,7 +58,7 @@ std::vector<std::string> split(std::string str, char sym) {
 
     return r; }
 
-std::string join(const std::vector<std::string>& elements, const std::string& delimiter) {
+std::string join(const std::vector<std::string> & elements, const std::string & delimiter) {
     std::ostringstream os;
     for (size_t i = 0; i < elements.size(); ++i) {
         os << elements[i]; if (i < elements.size() - 1) { os << delimiter; } }

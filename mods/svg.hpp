@@ -58,16 +58,23 @@ class VHSVG {
             txt += svg_param("stroke-dasharray", dot); }
         append( svg_tline("line", txt) ); }
 
-    // -------------------------------------------------------------------------------------------------
-    void circ(int cx, int cy, int r, int wdt, std::string colf, std::string colb = "" ) {
-        std::string txt = "";
-        txt += svg_param("cx", cx);
-        txt += svg_param("cy", cy);
-        txt += svg_param( "r",  r);
-        if(wdt) txt += svg_param("stroke-width", wdt);
-        if(!colf.empty()) txt += svg_param("stroke", colf);
-        if(!colb.empty()) txt += svg_param("fill", colb);
-        append( svg_tline("circle", txt) ); }
+	// -------------------------------------------------------------------------------------------------
+	void circ(int cx, int cy, int r, int wdt,
+		std::string colf, std::string colb = "",
+		std::string dot = "" ) {
+
+		std::string txt = "";
+		txt += svg_param("cx", cx);
+		txt += svg_param("cy", cy);
+		txt += svg_param( "r",  r);
+		if(wdt) txt += svg_param("stroke-width", wdt);
+		if(colf.size()) txt += svg_param("stroke", colf);
+		if(colb.size()) txt += svg_param("fill", colb);
+		if(dot.size()) {
+			txt += svg_param("stroke-linecap", "round" );
+			txt += svg_param("stroke-dasharray", dot); }
+
+		append( svg_tline("circle", txt) ); }
 
     // -------------------------------------------------------------------------------------------------
     void arc(int x, int y, int rad, int wdt, std::string colf) {
