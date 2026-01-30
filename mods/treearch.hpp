@@ -101,7 +101,7 @@ class VHTreeArch {
         // Leftroot oriented to left side, Rightroot oriented to right side
         // -----------------------------------------------------------------------------
         void Rotation() {
-
+			return;
             for(int i=rootidx(); i>= cntsyms(); i--) {
 
                 int     lidx        = getleft(i);

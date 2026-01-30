@@ -27,7 +27,7 @@ std::vector<int> ParseRotation( std::string rotation ) {
     return r; }
 
 // -----------------------------------------------------------------------------
-std::vector<int> ParseSvyazki( std::string strsvzk) {
+std::vector<int> ParseSvyazki( std::string strsvzk ) {
     std::vector<int> r;
     std::vector<std::string> svzpairs = split(strsvzk, ',');
     for( std::string s : svzpairs ) {
@@ -42,3 +42,8 @@ std::vector<int> ParseSvyazki( std::string strsvzk) {
             r.push_back( v1 > v2 ? v1 : v2 ); } }
     return r; }
 
+// -----------------------------------------------------------------------------
+std::vector<int> ParseInjected( std::string txt ) {
+	std::vector<int> r;
+	return r;
+}

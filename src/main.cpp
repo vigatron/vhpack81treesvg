@@ -75,6 +75,7 @@ verr ParseIParams( int argc, char * argv[], VHArgsParser & argsparser ) {
 	argsparser.addopt(  "v",    "Build from spectrum values, for example '1.2.3'");
 	argsparser.addopt(  "w",    "Rotate nodes, for example '1^2^3'");
 	argsparser.addopt(  "z",    "Bind   nodes, for example '1.2,3.4'");
+	argsparser.addopt(	"injc",	"Injected nodes, for example '19.21'");
 	argsparser.addopt(	"cntr",	"Container number" );
 	argsparser.addopt(	"prtn",	"Part  number ( optional )");
 	argsparser.addopt(  "blkn", "Block number ( optional )");
@@ -85,20 +86,19 @@ verr ParseIParams( int argc, char * argv[], VHArgsParser & argsparser ) {
 		return 1; }
 
 	//
+
 	iparams.callparams		= argsparser.listparams();
 
 	iparams.param_tcode		= argsparser.getopt("t");
-	iparams.param_strspc	= argsparser.getopt("v");
-	iparams.param_strrot	= argsparser.getopt("w");
-	iparams.param_strsvz	= argsparser.getopt("z");
 	iparams.param_cntr		= argsparser.getopt("cntr");
 
 	iparams.param_partn		= argsparser.getopt("prtn");
 	iparams.param_blockn	= argsparser.getopt("blkn");
 
-	iparams.param_spcints	= ParseSpectrum( iparams.param_strspc );
-	iparams.param_rotints	= ParseRotation( iparams.param_strrot );
-	iparams.param_svzints	= ParseSvyazki ( iparams.param_strsvz );
+	iparams.param_spcints	= ParseSpectrum( argsparser.getopt("v") );
+	iparams.param_rotints	= ParseRotation( argsparser.getopt("w") );
+	iparams.param_svzints	= ParseSvyazki ( argsparser.getopt("z") );
+	iparams.param_injected	= ParseInjected( argsparser.getopt("injc") );
 	iparams.param_cntrint	= ParseInt( iparams.param_cntr );
 
 	return vok; }

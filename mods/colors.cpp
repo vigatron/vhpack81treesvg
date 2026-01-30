@@ -23,3 +23,6 @@ std::string colors::sgray       = "#E0E0E0";
 std::string colors::mgray       = "#C0C0C0";
 std::string colors::lgray       = "#A0A0A0";
 std::string colors::gray        = "#303030";
+
+std::string colors::magental	= "#ecc9ea";
+std::string colors::magenta		= "#e1a8de";

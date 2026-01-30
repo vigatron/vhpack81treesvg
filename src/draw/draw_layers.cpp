@@ -22,7 +22,7 @@ void draw_layers_back() {
         svg.rect(x, y, gfxrect_ramka.w, iparams.svg_layerh, 0, color, color );
 
 		int ymid = y + iparams.svg_layerh/2;
-        std::string clrm = (ll & 1) ? "#F8E8C0" : "#F0E0A0";
+        std::string clrm = (ll & 1) ? "#f8f0dd" : "#f4ebc3";
 		svg.line(x, ymid, x + gfxrect_ramka.w, ymid, 1, clrm, "15,10");
 	}
 

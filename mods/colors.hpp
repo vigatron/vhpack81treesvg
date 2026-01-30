@@ -29,5 +29,8 @@ class colors {
     static  std::string mgray;       // = "#C0C0C0";
     static  std::string lgray;       // = "#A0A0A0";
     static  std::string gray;        // = "#303030";
+
+	static std::string magental;
+	static std::string magenta;
 };
 
