@@ -34,3 +34,13 @@ class colors {
 	static std::string magenta;
 };
 
+struct sColor {
+	std::string colf;			// Front
+	std::string colb;			// Background
+	std::string cols;			// Separator
+	std::string coltxt;			// Text
+	std::string color_shadow_b;
+	std::string color_shadow_s;
+};
+
+const sColor * elm_color( bool issym, bool isroot, bool iscontr );

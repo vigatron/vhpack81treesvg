@@ -3,67 +3,11 @@
 using namespace std;
 
 
-struct sColor {
-	std::string colf;			// Front
-	std::string colb;			// Background
-	std::string cols;			// Separator
-	std::string coltxt;			// Text
-	std::string color_shadow_b;
-	std::string color_shadow_s;
-};
-
-// Sym Node Root Extra
-const sColor  arrcolors[4] = {
-
-	// Sym
-	{	colors::mblue,
-		colors::sblue,
-		colors::mblue,
-		"#5a72c6",
-		// shadow
-		std::string( "#e6e6f3" ), std::string( "#ececf0" )
-	},
-
-	// node
-	{	colors::dgreen,
-		colors::lgreen,
-		colors::mgreen,
-		"gray",
-		// shadow
-		"#BBFFBB", "gray",
-	},
-
-	// Root
-	{	colors::orangel,
-		colors::nyell,
-		colors::orangel,
-		"#f19253",
-		// shadow
-		"#f9e77f", "gray",
-	 },
-
-	// Container
-	{	colors::magenta,
-		colors::magental,
-		colors::magenta,
-		"gray",
-		// shadow
-		std::string( "#f4e8f4" ), std::string( "#fde7ff" ),
-	 }
-
-};
 
 static int gfx_offstxt_center( std::string txt, int fsize) {
 	int r = txt.size() * fsize * 3 / 10;
 	//  ((idx>9) ? (fontw * 3 / 5) : (fontw / 4));
 	return r; }
-
-// -------------------------------------------------------------------------------------------------
-static const sColor * elm_color(int idx) {
-	if( tree.arch().isroot(idx) )		return & arrcolors[2];
-	if( idx == iparams.param_cntrint )	return & arrcolors[3];	// Container
-	if( tree.arch().issym (idx) )		return & arrcolors[0];
-	return & arrcolors[1]; }
 
 // -------------------------------------------------------------------------------------------------
 static void draw_dbg_LW (int idx) {
@@ -132,14 +76,17 @@ static void draw_elmform_sym( int idx, int x, int y, int elmsize, const sColor *
 // -------------------------------------------------------------------------------------------------
 static void draw_elm_form (int idx, int x, int y) {
 
-	bool            flagsym     = tree.arch().issym(idx);
-	int             elmsize     = iparams.svg_elm_width;
-	int             r           = elmsize / 2;
-	int             th          = 1.5;
-	const sColor *  colors      = elm_color(idx);
+	bool			isroot		= tree.arch().isroot(idx);
+	bool			iscontr		= idx == iparams.param_cntrint;
+	bool			issym		= tree.arch().issym (idx);
+
+	int				elmsize     = iparams.svg_elm_width;
+	int				r           = elmsize / 2;
+	int				th          = 1.5;
+	const sColor *	colors      = elm_color( issym, isroot, iscontr );
 	bool			separator	= iparams.from_spectrum;
 
-	if(flagsym) { draw_elmform_sym	( idx, x, y, elmsize, colors ); }
+	if(issym)	{ draw_elmform_sym	( idx, x, y, elmsize, colors ); }
 	else		{ draw_elmform_node	( idx, x, y, elmsize, colors ); }
 
 	if(separator) {
@@ -149,23 +96,31 @@ static void draw_elm_form (int idx, int x, int y) {
 // -------------------------------------------------------------------------------------------------
 static void draw_elm_value(int idx) {
 
-    VHTreeArch::stobj * pooo    = tree[idx];
+	VHTreeArch::stobj * pooo    = tree[idx];
 
-    int             fntsz   = 5;
-    string          str     = "S" + std::to_string(pooo->v) + ":" + std::to_string(pooo->d);
-    int             mdx     = font_align_pixels(str, fntsz);
-    int             x       = oparams.gfxpos_x[idx] - mdx;
-    int             y       = oparams.gfxpos_y[idx] + fntsz + 1;
-    string          fnt     = iparams.fntSans;
-	const sColor *  colors  = elm_color(idx);
+	bool			isroot		= tree.arch().isroot(idx);
+	bool			iscontr		= idx == iparams.param_cntrint;
+	bool			issym		= tree.arch().issym (idx);
 
-    svg.text(x, y, str, fnt, fntsz, colors->coltxt ); }
+	int             fntsz   = 5;
+	string          str     = "S" + std::to_string(pooo->v) + ":" + std::to_string(pooo->d);
+	int             mdx     = font_align_pixels(str, fntsz);
+	int             x       = oparams.gfxpos_x[idx] - mdx;
+	int             y       = oparams.gfxpos_y[idx] + fntsz + 1;
+	string          fnt     = iparams.fntSans;
+	
+	
+	const sColor *  colors  = elm_color( issym, isroot, iscontr );
+
+	svg.text(x, y, str, fnt, fntsz, colors->coltxt ); }
 
 // -------------------------------------------------------------------------------------------------
 void draw_elm(int idx) {
 
-	bool    flagroot    = tree.arch().isroot(idx);
-	bool    flagsym     = tree.arch().issym(idx);
+	bool	isroot		= tree.arch().isroot(idx);
+	bool	iscontr		= idx == iparams.param_cntrint;
+	bool	issym		= tree.arch().issym (idx);
+
 	int     cx          = oparams.gfxpos_x[idx];
 	int     cy          = oparams.gfxpos_y[idx];
 	int     qx          = oparams.gfxpos_x[idx] - iparams.svg_elm_width/2;
@@ -174,7 +129,7 @@ void draw_elm(int idx) {
 	int     fonth       = iparams.svg_elm_fntsz * 4 / 7;
 	string  fnt         = iparams.fntSans;
 
-	const sColor * colors = elm_color(idx);
+	const sColor * colors = elm_color(issym, isroot, iscontr);
 
 	// Debug staff : Rectangle [WL|WR]
 	if( iparams.show_width_elmslr ) { draw_dbg_LW(idx); }

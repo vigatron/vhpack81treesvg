@@ -34,8 +34,6 @@ class VHTree {
             tarch.CalculateMaxDepth();
             tarch.Rotation();
 
-            // InternalAutorotation( iparams.param_rotints );
-
             dumplr();
             dumpnodes();
             return vok; }
@@ -56,8 +54,6 @@ class VHTree {
             tarch.CalculateNodesDepth();
             tarch.CalculateMaxDepth();
             tarch.Rotation();
-
-            // InternalAutorotation( iparams.param_rotints );
 
             dumplr();
             dumpnodes();
