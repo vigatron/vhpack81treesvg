@@ -26,86 +26,102 @@ std::string genoutfname(bool tcd) {
 // std::string strtcode, std::string blkn, std::vector<int> rotints
 verr build_from_tcode() {
 
-    if(! iparams.param_tcode.size() || !check_str_ishex(iparams.param_tcode)) { 
-        return verrmsg(1, "Invalid TCode"); }
+	if(! iparams.param_tcode.size() || !check_str_ishex(iparams.param_tcode)) { 
+		return verrmsg(1, "Invalid TCode"); }
 
-    if( vok != tree.buildFromTCode() )
-        return verrmsg(1, "Can't build tree from TCode");
+	if( vok != tree.buildFromTCode() )
+		return verrmsg(1, "Can't build tree from TCode");
 
-    CalculateTreeGfx();
-    RenderTreeGfx();
+	CalculateTreeGfx();
+	RenderTreeGfx();
 
-    // Generate file name
+	// Generate file name
 	std::string fname = genoutfname(true);
 
-    // Save results
-    svg.savetosvg( fname );
+	// Save results
+	svg.savetosvg( fname );
 
-    return vok; }
+	return vok; }
 
 // -----------------------------------------------------------------------------
 verr build_from_spc() {
 
-    if(vok != tree.buildFromSpectrum()) {
-        return verrmsg(2, "build tree from spectrum failed"); }
+	if(vok != tree.buildFromSpectrum()) {
+		return verrmsg(2, "build tree from spectrum failed"); }
 
-    iparams.from_spectrum = true;
+	iparams.from_spectrum = true;
 
-    CalculateTreeGfx();
-    RenderTreeGfx();
+	CalculateTreeGfx();
+	RenderTreeGfx();
 
-    // Generate file name
+	// Generate file name
 	std::string fname = genoutfname(false);
 
-    // Save results
-    svg.savetosvg( fname );
+	// Save results
+	svg.savetosvg( fname );
 
-    return vok; }
+	return vok; }
 
 // -----------------------------------------------------------------------------
-int main( int argc, char * argv[] ) {
+int ParseInt( std::string param) {
+	return param.size() ? std::stoi(param) : -1; }
 
-    // Parse args : input values or TCode
-    VHArgsParser argsparser;
+// -----------------------------------------------------------------------------
+verr ParseIParams( int argc, char * argv[], VHArgsParser & argsparser ) {
 
-    argsparser.setappname("pack81treesvg");
+	argsparser.setappname("pack81treesvg");
 
 	argsparser.addopt(  "t",    "Build from TCode");
 	argsparser.addopt(  "v",    "Build from spectrum values, for example '1.2.3'");
 	argsparser.addopt(  "w",    "Rotate nodes, for example '1^2^3'");
 	argsparser.addopt(  "z",    "Bind   nodes, for example '1.2,3.4'");
+	argsparser.addopt(	"cntr",	"Container number" );
 	argsparser.addopt(	"prtn",	"Part  number ( optional )");
 	argsparser.addopt(  "blkn", "Block number ( optional )");
 
-    if( vok != argsparser.ParseArgs(argc, argv)) {
-        std::cout << "Parse args issue" << std::endl;
-        argsparser.Usage();
-        return 1; }
+	if( vok != argsparser.ParseArgs(argc, argv)) {
+		std::cout << "Parse args issue" << std::endl;
+		argsparser.Usage();
+		return 1; }
 
-    iparams.callparams = argsparser.listparams();
+	//
+	iparams.callparams		= argsparser.listparams();
 
-    iparams.param_tcode     = argsparser.getopt("t");
-    iparams.param_strspc    = argsparser.getopt("v");
-    iparams.param_strrot    = argsparser.getopt("w");
-    iparams.param_strsvz    = argsparser.getopt("z");
+	iparams.param_tcode		= argsparser.getopt("t");
+	iparams.param_strspc	= argsparser.getopt("v");
+	iparams.param_strrot	= argsparser.getopt("w");
+	iparams.param_strsvz	= argsparser.getopt("z");
+	iparams.param_cntr		= argsparser.getopt("cntr");
 
 	iparams.param_partn		= argsparser.getopt("prtn");
-    iparams.param_blockn	= argsparser.getopt("blkn");
+	iparams.param_blockn	= argsparser.getopt("blkn");
 
-    iparams.param_spcints   = ParseSpectrum( iparams.param_strspc );
-    iparams.param_rotints   = ParseRotation( iparams.param_strrot );
-    iparams.param_svzints   = ParseSvyazki ( iparams.param_strsvz );
+	iparams.param_spcints	= ParseSpectrum( iparams.param_strspc );
+	iparams.param_rotints	= ParseRotation( iparams.param_strrot );
+	iparams.param_svzints	= ParseSvyazki ( iparams.param_strsvz );
+	iparams.param_cntrint	= ParseInt( iparams.param_cntr );
 
-    // Строим дерево по спектру либо по ТКоду
+	return vok; }
 
-    verr ret;
-    if(argsparser.checkopt("t"))        { ret = build_from_tcode();
-    } else if(argsparser.checkopt("v")) { ret = build_from_spc  ();
-    } else {
-        std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
-        argsparser.Usage(); ret = 1; }
+// -----------------------------------------------------------------------------
+int main( int argc, char * argv[] ) {
 
-    if(vok != ret) {
-        std::cout << "Final result: generation process failed !" << std::endl; }
+	// Parse args : input values or TCode
+	VHArgsParser argsparser;
 
-    return (vok == ret) ? 0 : 1; }
+	verr rparse = ParseIParams( argc, argv, argsparser );
+	if( vok != rparse)
+		return 1;
+
+	// Строим дерево по спектру либо по ТКоду
+	verr ret;
+	if(argsparser.checkopt("t"))        { ret = build_from_tcode();
+	} else if(argsparser.checkopt("v")) { ret = build_from_spc  ();
+	} else {
+		std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
+		argsparser.Usage(); ret = 1; }
+
+	if(vok != ret) {
+		std::cout << "Final result: generation process failed !" << std::endl; }
+
+	return (vok == ret) ? 0 : 1; }

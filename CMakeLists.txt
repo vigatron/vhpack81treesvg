@@ -7,10 +7,21 @@ project(MyQtProject CXX)
 #
 set(PRJNAME pack81treesvg)
 
-include_directories(. .. mods misc)
+include_directories(
+	.
+	..
+	mods
+	misc
+	src/calc
+	src/draw
+	src
+)
 
 file( GLOB_RECURSE source_list_mods 
     src/*.cpp  src/*.hpp
+	src/calc/*
+	src/draw/*
+	src/*
     mods/*.cpp mods/*.hpp
     misc/*.cpp misc/*.hpp )
 

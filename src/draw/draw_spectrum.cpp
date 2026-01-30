@@ -10,80 +10,52 @@ static VHRect rects[4];
 
 
 static void split_rects() {
-    
-    int x   = gfxrect_spectrum.sx;
-    int y   = gfxrect_spectrum.sy;
-    int w   = gfxrect_spectrum.w;
-    int h   = gfxrect_spectrum.h;
-    int dx  = w/4;
+	
+	int x   = gfxrect_spectrum.sx;
+	int y   = gfxrect_spectrum.sy;
+	int w   = gfxrect_spectrum.w;
+	int h   = gfxrect_spectrum.h;
+	int dx  = w/4;
 
-    for(int i=0; i<4; i++) {
-        VHRect * p = & rects[i];
-        p->set(x + i*dx, y, dx, h);
-        p->shrink(10, 10);
-        /* svg.rect( p->sx, p->sy, p->w, p->h, 1, "red" ); */ }
-
+	for(int i=0; i<4; i++) {
+		VHRect * p = & rects[i];
+		p->set(x + i*dx, y, dx, h);
+		p->shrink(10, 10);
+		/* svg.rect( p->sx, p->sy, p->w, p->h, 1, "red" ); */ }
 }
 
 
 static void draw_axis( int x, int y, int xl, int yl) {
 
-    std::string col_axis = "gray";
+	std::string col_axis = "gray";
 
-    // int x2  = x + xl;
-    // int y2  = y - yl;
-    // svg.line ( x, y, x2, y , 1, col_axis);  // X-Axis
-    // svg.line ( x, y, x , y2, 1, col_axis);  // Ys-Axis
+	// int x2  = x + xl;
+	// int y2  = y - yl;
+	// svg.line ( x, y, x2, y , 1, col_axis);  // X-Axis
+	// svg.line ( x, y, x , y2, 1, col_axis);  // Ys-Axis
 
-    svg.rect( x, y - yl, xl, yl, 1, "#E0E0E0");
-
-}
-
-static void draw_figures( int xo, int yo, int ww, int hh ) {
-
-	int wx	= ww/2, hy = hh * 0.8;
-	int qcx	= xo + ww/4;
-	int qcy	= yo - hy/2;
-	int cx	= xo + ww/2;
-	int th	= 1;
-
-	std::string figcol = "#E0E0E0";
-	std::string strdot = "2,1";
-
-	svg.path(cx, yo-hy, wx, hy, xo, yo, 0, th, figcol, strdot );			// figure 1
-	svg.line(cx, yo-hy, xo, yo, th, figcol, "1,3");							// figure 2
-	svg.path(cx, yo-hy, wx, hy, xo, yo, 1, th, figcol, strdot );			// figure 3
-
-	svg.path(qcx, qcy, wx/2, hy/2, xo, yo, 1, th, figcol, strdot );			// figure S1
-	svg.path(qcx, qcy, wx/2, hy/2, cx, yo - hy, 1, th, figcol, strdot );
-
-	svg.path(qcx, qcy, wx/2, hy/2, xo, yo, 0, th, figcol, strdot );			// figure S2
-	svg.path(qcx, qcy, wx/2, hy/2, cx, yo - hy, 0, th, figcol, strdot );
-
-	int ymid = yo-hy/2;
-	svg.line(xo, ymid, cx, ymid, th, figcol, "1,3" );
-
+	svg.rect( x, y - yl, xl, yl, 1, "#E0E0E0");
 }
 
 static void draw_spc( int xo, int yo, int ww, int hh, std::vector<int> arr, int tp) {
 
-    std::string     fname       = iparams.fntSans;
-    int             fsize       = 7;
-    std::string     fcol        = "gray";
-    std::string     col_sep     = "#B0B0B0";
-    int             th = 1;
+	std::string     fname       = iparams.fntSans;
+	int             fsize       = 7;
+	std::string     fcol        = "gray";
+	std::string     col_sep     = "#B0B0B0";
+	int             th = 1;
 
-    draw_axis( xo, yo, ww, hh);
+	draw_axis( xo, yo, ww, hh);
 
-    std::vector<int>::iterator minv_it = std::min_element(arr.begin(), arr.end());
-    std::vector<int>::iterator maxv_it = std::max_element(arr.begin(), arr.end());
+	std::vector<int>::iterator minv_it = std::min_element(arr.begin(), arr.end());
+	std::vector<int>::iterator maxv_it = std::max_element(arr.begin(), arr.end());
 
-    int minv = * minv_it;
-    int maxv = * maxv_it;
+	int minv = * minv_it;
+	int maxv = * maxv_it;
 
-    // Draw max marker
-    int ymax = yo - hh * 0.8;
-    svg.line( xo, ymax, xo + ww, ymax, 1, col_sep, "3,3" );
+	// Draw max marker
+	int ymax = yo - hh * 0.8;
+	svg.line( xo, ymax, xo + ww, ymax, 1, col_sep, "3,3" );
 
 	// quarter vertical separator
 
