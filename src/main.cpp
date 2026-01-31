@@ -79,9 +79,9 @@ int main( int argc, char * argv[] ) {
 
 	// Строим дерево по спектру либо по ТКоду
 	verr ret;
-	if(argsparser.checkopt("t"))        { ret = build_from_tcode();
-	} else if(argsparser.checkopt("v")) { ret = build_from_spc  ();
-	} else {
+	if(argsparser.checkopt("t"))		{ ret = build_from_tcode(); }
+	else if(argsparser.checkopt("v"))	{ ret = build_from_spc  (); }
+	else {
 		std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
 		argsparser.Usage(); ret = 1; }
 

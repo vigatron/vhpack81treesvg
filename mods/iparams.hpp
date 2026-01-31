@@ -22,11 +22,12 @@ class TreeGenParamsIn {
 		// расстояние между сегментами
 		int     svg_spacer_h    = 16;
 
-        // Vertical segments height
-        int     svg_headerh     = 56;
-        int     svg_layerh      = 36;
-        int     svg_shadowh     =  3;
-        int     svg_bitfieldh   = 14;
+		// Vertical segments height
+		int     svg_headerh     = 56;
+		int		svg_captionh	= 38;
+		int     svg_layerh      = 36;
+		int     svg_shadowh     =  3;
+		int     svg_bitfieldh   = 14;
 
         // Elms GFX props
         int     svg_elm_width   = 26;

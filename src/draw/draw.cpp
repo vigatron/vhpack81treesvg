@@ -73,46 +73,60 @@ void draw_callparams() {
 
 }
 
+// -------------------------------------------------------------------------------------------------
 static void svgrect( const VHRect & rect, int wdt, std::string color) {
 	svg.rect( rect.sx, rect.sy, rect.w, rect.h, wdt, color ); }
 
+
+// -------------------------------------------------------------------------------------------------
+void draw_caption( const VHRect & rect , std::string txt) {
+	svg.text(rect.sx +  24, rect.ey - 10, txt, iparams.fntSans, rect.h * 0.4, colors::lgray ); }
+
+// -------------------------------------------------------------------------------------------------
 void draw_debug() {
 
-	{ VHRect * prect = & gfxrect_header;    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+	// {	VHRect * prect = & gfxrect_header;
+	// 	svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
 
-	std::string color = "red";
+	std::string color = "#FFAAAA";
 	svgrect( layerarea1.rect(), 1, color );
 	svgrect( layerarea2.rect(), 1, color );
 	svgrect( layerarea3.rect(), 1, color );
 
-	{ VHRect * prect = & gfxrect_shadows;   svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
-	{ VHRect * prect = & gfxrect_bitfield;  svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+	svgrect( gfxrect_shadows1,	1, color );
+	svgrect( gfxrect_bitfield,	1, color );
 
 }
 
 // -------------------------------------------------------------------------------------------------
 void RenderTreeGfx() {
 
-    svg.begin( oparams.svg_width, oparams.svg_height );
+	svg.begin( oparams.svg_width, oparams.svg_height );
 
-    // Full Paper
-    svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
+	// Full Paper
+	svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
 
-    layerarea1.draw_layers_back();
-    layerarea2.draw_layers_back();
-    layerarea3.draw_layers_back();
 
-    draw_shadows();
-    draw_links( tree.cntall() ); // recurse
-    draw_elems( tree.cntall() ); // recurse
+	draw_caption( rectCaption1, "1. Сортировка входных данных");
+	layerarea1.draw_layers_back();
 
-    draw_scode();
-    draw_tstamp();
-    draw_callparams();
-    draw_bitpath_back();
-    draw_bitpaths();
-    draw_spectrum();
-    // draw_debug();
-    draw_ramka();
+	draw_caption( rectCaption2, "2. Трансформация");
+	layerarea2.draw_layers_back();
 
-    svg.end(); }
+	draw_caption( rectCaption3, "3. Префиксный формат дерева");
+	layerarea3.draw_layers_back();
+
+	draw_shadows();
+	draw_links( tree.cntall() ); // recurse
+	draw_elems( tree.cntall() ); // recurse
+
+	draw_scode();
+	draw_tstamp();
+	draw_callparams();
+	draw_bitpath_back();
+	draw_bitpaths();
+	draw_spectrum();
+	// draw_debug();
+	draw_ramka();
+
+	svg.end(); }

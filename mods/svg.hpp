@@ -167,3 +167,5 @@ class VHSVG {
         const std::string           spc = " ";
 
 };
+
+extern VHSVG svg;

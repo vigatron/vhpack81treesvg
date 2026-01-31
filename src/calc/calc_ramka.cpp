@@ -11,9 +11,10 @@ static int svgcalc_ramka_w() {
 
 static int svgcalc_ramka_h( int w ) {
 
-	int r       = iparams.svg_paper_border;
-	int x       = iparams.svg_paper_border;
-	int spcrh   = iparams.svg_spacer_h;
+	int r		= iparams.svg_paper_border;
+	int x		= iparams.svg_paper_border;
+	int capth	= iparams.svg_captionh;
+	int spcrh	= iparams.svg_spacer_h;
 
 	// высота заголовка
 	int hh_header = iparams.svg_headerh;
@@ -22,33 +23,63 @@ static int svgcalc_ramka_h( int w ) {
 	r += spcrh;
 
 	// высота слоев
-	int			layscount = tree.arch().depthmax() + 1;
-	int			hh_layers = layscount * iparams.svg_layerh;
+	int			layscount	= tree.arch().depthmax() + 1;
+	int			hh_layers	= layscount * iparams.svg_layerh;
+	int			hh_shadows	= iparams.svg_shadowh * layscount;
+
 	VHRect		arearect;
 
-	// Tree #1
+
+	// #1 Caption
+	rectCaption1.set(x, r, w, capth);
+	r += capth;
+	r += spcrh;
+
+	// #1 Tree
 	arearect.set(x, r, w, hh_layers);
 	layerarea1.set( arearect, layscount );
 	r += hh_layers;
 	r += spcrh * 2;
 
-	// высота теней
-	int hh_shadows  = iparams.svg_shadowh * (tree.arch().depthmax()+1);
-	gfxrect_shadows.set(x, r, w, hh_shadows);
+	// #1 высота теней
+	gfxrect_shadows1.set(x, r, w, hh_shadows);
 	r += hh_shadows;
 	r += spcrh;
 
-	// Tree #2
+
+	// #2 Caption
+	rectCaption2.set(x, r, w, capth);
+	r += capth;
+	r += spcrh;
+
+	// #2 Tree
 	arearect.set(x, r, w, hh_layers);
 	layerarea2.set( arearect, layscount );
 	r += hh_layers;
 	r += spcrh * 2;
 
-	// Tree #3
+	// #2 высота теней
+	gfxrect_shadows2.set(x, r, w, hh_shadows);
+	r += hh_shadows;
+	r += spcrh;
+
+
+	// #3 Caption
+	rectCaption3.set(x, r, w, capth);
+	r += capth;
+	r += spcrh;
+
+	// #3 Tree
 	arearect.set(x, r, w, hh_layers);
 	layerarea3.set( arearect, layscount );
 	r += hh_layers;
 	r += spcrh * 2;
+
+	// #3 высота теней
+	gfxrect_shadows3.set(x, r, w, hh_shadows);
+	r += hh_shadows;
+	r += spcrh;
+
 
 	// высота битовых полей
 	int hh_bitfield = iparams.svg_bitfieldh * 8;
@@ -70,15 +101,15 @@ static int svgcalc_ramka_h( int w ) {
 
 void svgcalc_ramka() {
 
-    int x = iparams.svg_paper_border;
-    int y = iparams.svg_paper_border;
-    int w = svgcalc_ramka_w();
-    int h = svgcalc_ramka_h( w );
-    gfxrect_ramka.set(x, y, w, h );
-    
-    // Setup final document size
-    oparams.svg_width   = gfxrect_ramka.w + (2 * iparams.svg_paper_border);
-    oparams.svg_height  = gfxrect_ramka.h + (2 * iparams.svg_paper_border);
+	int x = iparams.svg_paper_border;
+	int y = iparams.svg_paper_border;
+	int w = svgcalc_ramka_w();
+	int h = svgcalc_ramka_h( w );
+	gfxrect_ramka.set(x, y, w, h );
+	
+	// Setup final document size
+	oparams.svg_width   = gfxrect_ramka.w + (2 * iparams.svg_paper_border);
+	oparams.svg_height  = gfxrect_ramka.h + (2 * iparams.svg_paper_border);
 
 }
 

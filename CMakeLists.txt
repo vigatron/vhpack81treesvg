@@ -13,6 +13,7 @@ include_directories(
 	mods
 	mods/colors
 	mods/strtools
+	mods/layerarea
 	misc
 	src/calc
 	src/draw
@@ -28,6 +29,7 @@ file( GLOB_RECURSE source_list_mods
 	src/*
 	mods/colors/*
 	mods/strtools/*
+	mods/layerarea/*
     mods/*.cpp mods/*.hpp
     misc/*.cpp misc/*.hpp )
 
