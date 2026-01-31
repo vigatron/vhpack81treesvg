@@ -2,15 +2,13 @@
 #include "calc.hpp"
 
 
+// gfxrect_layers.sy
+// iparams.svg_layerh
+
 // -------------------------------------------------------------------------------------------------
 // SVG Calculations
 // -------------------------------------------------------------------------------------------------
 
-// int svg_getlayer_posy (int layn)    { return gfxrect_ramka.sy + (layn + 2) * iparams.svg_layerh; }
-
-int svg_getlayer_posy (int layn)    { return gfxrect_layers.sy + (layn * iparams.svg_layerh); }
-
-int svg_getlayer_posyc(int layn)    { return svg_getlayer_posy(layn) + iparams.svg_layerh / 2; }
 
 // -------------------------------------------------------------------------------------------------
 
@@ -46,7 +44,7 @@ void svgcalc_w(int idx, int * retwl, int * retwr) {
 void svgcalc_set_coords(int idx, int cx) {
 
     oparams.gfxpos_x[idx] = cx;
-    oparams.gfxpos_y[idx] = svg_getlayer_posyc( tree.getlay(idx));
+    oparams.gfxpos_y[idx] = layerarea1.layer_posyc( tree.getlay(idx));
 
     if( tree.arch().isnode( idx ) ) {
         int idxl = tree.getleft(idx);

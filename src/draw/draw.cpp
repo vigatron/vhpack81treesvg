@@ -73,14 +73,20 @@ void draw_callparams() {
 
 }
 
+static void svgrect( const VHRect & rect, int wdt, std::string color) {
+	svg.rect( rect.sx, rect.sy, rect.w, rect.h, wdt, color ); }
+
 void draw_debug() {
 
-    return;
+	{ VHRect * prect = & gfxrect_header;    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
 
-    { VHRect * prect = & gfxrect_header;    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
-    { VHRect * prect = & gfxrect_layers;    svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
-    { VHRect * prect = & gfxrect_shadows;   svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
-    { VHRect * prect = & gfxrect_bitfield;  svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+	std::string color = "red";
+	svgrect( layerarea1.rect(), 1, color );
+	svgrect( layerarea2.rect(), 1, color );
+	svgrect( layerarea3.rect(), 1, color );
+
+	{ VHRect * prect = & gfxrect_shadows;   svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
+	{ VHRect * prect = & gfxrect_bitfield;  svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
 
 }
 
@@ -92,7 +98,9 @@ void RenderTreeGfx() {
     // Full Paper
     svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
 
-    draw_layers_back();
+    layerarea1.draw_layers_back();
+    layerarea2.draw_layers_back();
+    layerarea3.draw_layers_back();
 
     draw_shadows();
     draw_links( tree.cntall() ); // recurse
@@ -104,7 +112,7 @@ void RenderTreeGfx() {
     draw_bitpath_back();
     draw_bitpaths();
     draw_spectrum();
-    draw_debug();
+    // draw_debug();
     draw_ramka();
 
     svg.end(); }

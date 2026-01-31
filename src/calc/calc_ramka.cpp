@@ -10,45 +10,62 @@ static int svgcalc_ramka_w() {
 
 
 static int svgcalc_ramka_h( int w ) {
-    
-    int r       = iparams.svg_paper_border;
-    int x       = iparams.svg_paper_border;
-    int spcrh   = iparams.svg_spacer_h;
 
-    int hh_header   = iparams.svg_headerh;                                  // высота заголовка
-    gfxrect_header.set(x, r, w, hh_header);
-    r += hh_header;
+	int r       = iparams.svg_paper_border;
+	int x       = iparams.svg_paper_border;
+	int spcrh   = iparams.svg_spacer_h;
 
-    r += spcrh;
+	// высота заголовка
+	int hh_header = iparams.svg_headerh;
+	gfxrect_header.set(x, r, w, hh_header);
+	r += hh_header;
+	r += spcrh;
 
-    int hh_layers   = (tree.arch().depthmax() + 1) * iparams.svg_layerh;    // высота слоев
-    gfxrect_layers.set(x, r, w, hh_layers);
-    r += hh_layers;
+	// высота слоев
+	int			layscount = tree.arch().depthmax() + 1;
+	int			hh_layers = layscount * iparams.svg_layerh;
+	VHRect		arearect;
 
-    r += spcrh * 2;
+	// Tree #1
+	arearect.set(x, r, w, hh_layers);
+	layerarea1.set( arearect, layscount );
+	r += hh_layers;
+	r += spcrh * 2;
 
-    int hh_shadows  = iparams.svg_shadowh * (tree.arch().depthmax()+1);     // высота теней
-    gfxrect_shadows.set(x, r, w, hh_shadows);
-    r += hh_shadows;
-    
-    r += spcrh;
+	// высота теней
+	int hh_shadows  = iparams.svg_shadowh * (tree.arch().depthmax()+1);
+	gfxrect_shadows.set(x, r, w, hh_shadows);
+	r += hh_shadows;
+	r += spcrh;
 
-    int hh_bitfield = iparams.svg_bitfieldh * 8;                            // высота битовых полей
-    gfxrect_bitfield.set(x, r, w, hh_bitfield );
-    r += hh_bitfield;
+	// Tree #2
+	arearect.set(x, r, w, hh_layers);
+	layerarea2.set( arearect, layscount );
+	r += hh_layers;
+	r += spcrh * 2;
 
-    r += spcrh;
+	// Tree #3
+	arearect.set(x, r, w, hh_layers);
+	layerarea3.set( arearect, layscount );
+	r += hh_layers;
+	r += spcrh * 2;
 
-    int hh_spectrum = 256/2;
-    gfxrect_spectrum.set(x, r, w, hh_spectrum);
-    gfxrect_spectrum.shrink(20, 0);
-    r += hh_spectrum;
+	// высота битовых полей
+	int hh_bitfield = iparams.svg_bitfieldh * 8;
+	gfxrect_bitfield.set(x, r, w, hh_bitfield );
+	r += hh_bitfield;
+	r += spcrh;
 
-    r += spcrh;
+	int hh_spectrum = 256/2;
+	gfxrect_spectrum.set(x, r, w, hh_spectrum);
+	gfxrect_spectrum.shrink(20, 0);
+	r += hh_spectrum;
 
-    r -= iparams.svg_paper_border;
+	r += spcrh;
 
-    return r; }
+	r -= iparams.svg_paper_border;
+
+	return r; }
 
 
 void svgcalc_ramka() {

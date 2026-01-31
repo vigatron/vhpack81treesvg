@@ -52,3 +52,45 @@ std::vector<int> ParseInjected( std::string txt ) {
 			exit(1); }
 			r.push_back( std::stoi( s )); }
 	return r; }
+
+
+// -----------------------------------------------------------------------------
+static int ParseInt( std::string param) {
+	return param.size() ? std::stoi(param) : -1; }
+
+// -----------------------------------------------------------------------------
+verr ParseIParams( int argc, char * argv[], VHArgsParser & argsparser ) {
+
+	argsparser.setappname("pack81treesvg");
+
+	argsparser.addopt(	"t",		"Build from TCode");
+	argsparser.addopt(	"v",		"Build from spectrum values, for example '1.2.3'");
+	argsparser.addopt(	"w",		"Rotate nodes, for example '1^2^3'");
+	argsparser.addopt(	"z",		"Bind   nodes, for example '1.2,3.4'");
+	argsparser.addopt(	"injc",		"Injected nodes, for example '19.21'");
+	argsparser.addopt(	"cntr",		"Container number" );
+	argsparser.addopt(	"prtn",		"Part  number ( optional )");
+	argsparser.addopt(	"blkn",		"Block number ( optional )");
+	argsparser.addopt(	"mix",		"Mixed mode");
+
+
+	if( vok != argsparser.ParseArgs(argc, argv)) {
+		std::cout << "Parse args issue" << std::endl;
+		argsparser.Usage();
+		return 1; }
+
+	//
+	iparams.callparams		= argsparser.listparams();
+
+	iparams.param_tcode		= argsparser.getopt("t");
+	iparams.param_partn		= argsparser.getopt("prtn");
+	iparams.param_blockn	= argsparser.getopt("blkn");
+
+	iparams.param_spcints	= ParseSpectrum( argsparser.getopt("v") );
+	iparams.param_rotints	= ParseRotation( argsparser.getopt("w") );
+	iparams.param_svzints	= ParseSvyazki ( argsparser.getopt("z") );
+	iparams.param_injected	= ParseInjected( argsparser.getopt("injc") );
+	iparams.param_cntrint	= ParseInt( argsparser.getopt("cntr") );
+	iparams.param_mix		= ParseInt( argsparser.getopt("mix") );
+
+	return vok; }

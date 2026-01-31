@@ -8,17 +8,16 @@ class TreeGenParamsIn {
 	public:
 
 		std::string			param_tcode;
-		// std::string			param_strspc;
 
 		std::string			param_partn;
 		std::string			param_blockn;
-		std::string			param_cntr;
 
-		std::vector<int>	param_spcints;
-		std::vector<int>	param_rotints;
-		std::vector<int>	param_svzints;
-		std::vector<int>	param_injected;
-		int					param_cntrint;	// Container idx
+		std::vector<int>	param_spcints;		//
+		std::vector<int>	param_rotints;		//
+		std::vector<int>	param_svzints;		//
+		std::vector<int>	param_injected;		//
+		int					param_cntrint;		// Container idx
+		int					param_mix;			// Mixed mode
 
 		// расстояние между сегментами
 		int     svg_spacer_h    = 16;
