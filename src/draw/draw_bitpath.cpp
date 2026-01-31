@@ -5,7 +5,6 @@ using namespace std;
 #define SYMSINCON 8
 
 static VHRect   rectrows[SYMSINCON];
-
 static int      symsincol    = SYMSINCON;
 
 static int get_line_y( const VHRect & rect, int i) {
@@ -19,19 +18,16 @@ static void draw_bitpath_sym(const VHRect & rect, int idx) {
 	if(!colsmin) colsmin++;
 
 	// ширина столбцов зависит от количества узлов дерева
-	int			ww          = gfxrect_ramka.w / colsmin; 
-
-	int			coln        = idx / symsincol;
-	int			rown        = idx % symsincol;
-
-	int			symx        = gfxrect_ramka.sx + 40 + (coln * ww);
+	int			ww			= gfxrect_ramka.w / colsmin; 
+	int			coln		= idx / symsincol;
+	int			rown		= idx % symsincol;
+	int			symx		= gfxrect_ramka.sx + 40 + (coln * ww);
 	int			yoffstxt	= iparams.svg_bitfieldh - iparams.svg_bitfieldh*0.25;
-	int			symy        = get_line_y( rect , rown) + yoffstxt;
+	int			symy		= get_line_y( rect , rown) + yoffstxt;
+	string		strsymn		= "#" + std::to_string(idx); // + ":";
+	string		bitpath		= tree.bitpath(idx);
+	string		color		= colors::gray;
 
-	string		strsymn     = "#" + std::to_string(idx); // + ":";
-	string		bitpath     = tree.bitpath(idx);
-
-	string color = colors::gray;
 	svg.text( symx      , symy, strsymn, iparams.fntSans,  9, color);
 	svg.text( symx + 50 , symy, bitpath, iparams.fntSans, 10, color);
 

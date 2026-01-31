@@ -7,10 +7,6 @@
 
 #include <charconv>
 
-#include "iparams.hpp"
-
-extern TreeGenParamsIn  iparams;
-
 
 class VHTree {
 
@@ -20,44 +16,45 @@ class VHTree {
 
         VHTree() { }
 
-        // -----------------------------------------------------------------------------
-        verr buildFromTCode ( ) {
+		// -----------------------------------------------------------------------------
+		verr buildFromTCode ( const std::string strtcode , bool rotation ) {
 
-            if(!tcode.initfromstr( iparams.param_tcode )) return verror(1);
+			if(!tcode.initfromstr( strtcode )) return verror(1);
 
-            arrnodes = CreateSCodeFromTCode(tcode);
-            tarch.ClearAllNodes();
-            tarch.setsymscount( find_minnode_id() );
-            autoenumerate(0, 0);
-            tarch.setsize(arrnodes[0].id+1); // Important
-            tarch.CalculateNodesDepth();
-            tarch.CalculateMaxDepth();
-            tarch.Rotation();
+			arrnodes = CreateSCodeFromTCode(tcode);
+			tarch.ClearAllNodes();
+			tarch.setsymscount( find_minnode_id() );
+			autoenumerate(0, 0);
+			tarch.setsize(arrnodes[0].id+1); // Important
+			tarch.CalculateNodesDepth();
+			tarch.CalculateMaxDepth();
+			
+			if(rotation) tarch.Rotation();
 
-            dumplr();
-            dumpnodes();
-            return vok; }
+			dumplr();
+			dumpnodes();
+			return vok; }
  
-        // -----------------------------------------------------------------------------
-        verr buildFromSpectrum() {
+		// -----------------------------------------------------------------------------
+		verr buildFromSpectrum( const std::vector<int> spcints , bool rotation ) {
 
-            if( iparams.param_spcints.size() < 2 )
-                return verrmsg(1,"Can't build tree with spectrum less than <2 elms");
+			if( spcints.size() < 2 )
+				return verrmsg(1,"Can't build tree with spectrum less than <2 elms");
 
-            tarch.ClearAllNodes();
-            for( int i=0 ; i < iparams.param_spcints.size() ; i++ ) {
-                tarch.SetCountVal(i, iparams.param_spcints[i]); }
+			tarch.ClearAllNodes();
+			for( int i=0 ; i < spcints.size() ; i++ ) {
+				tarch.SetCountVal(i, spcints[i]); }
 
-            tarch.LinkTreeFromSpectrum( iparams.param_spcints.size());
-            tarch.setsymscount( iparams.param_spcints.size() );
-            arrnodes = CreateSCodeFromHuff( tarch.size() - 1);
-            tarch.CalculateNodesDepth();
-            tarch.CalculateMaxDepth();
-            tarch.Rotation();
+			tarch.LinkTreeFromSpectrum( spcints.size());
+			tarch.setsymscount( spcints.size() );
+			arrnodes = CreateSCodeFromHuff( tarch.size() - 1);
+			tarch.CalculateNodesDepth();
+			tarch.CalculateMaxDepth();
+			if(rotation) tarch.Rotation();
 
-            dumplr();
-            dumpnodes();
-            return vok; }
+			dumplr();
+			dumpnodes();
+			return vok; }
 
         // -----------------------------------------------------------------------------
         void buildFromNodes ( std::string strscode) {
@@ -89,9 +86,6 @@ class VHTree {
                 r.push_back(nn); } }
 
         // -----------------------------------------------------------------------------
-
-        // void set ( const std::vector<stnode> & vect) { arrnodes = vect; }
-        // const std::vector<stnode> & nodes ( ) { return arrnodes; }
 
         int                             cntall      ()          { return arrnodes[0].id;    }
         int                             rootidx     ()          { return cntall();          }
@@ -146,13 +140,6 @@ class VHTree {
                 r.push_back(szhex()[ (s>>4) & 0xF ]); r.push_back(szhex()[ (s>>0) & 0xF ]); }
             return r; }
 
-        void rotatenodes() {
-            for(int i = 0; i <= arrnodes.size(); i++) {
-                if(arrnodes[i].tt == 2) {
-                    arrnodes[i].tt = 1;
-                    int swpidx = arrnodes[i].id;
-                    tarch.swaplr(swpidx); } } }
-
         void dumpSCode(std::vector<stnode> & scde) {
             printf("SCode: "); for( const stnode & n : scde) { printf("[%2d:%d]", n.id, n.tt); } printf("\n"); }
 
@@ -201,12 +188,11 @@ class VHTree {
         TCode                   tcode;              // TCode
         std::vector<stnode>     arrnodes;           // Scode
         std::vector<int>        seqlays[16];        // 2D array layers sequence
-        
+
         // -----------------------------------------------------------------------------
         // Huffman tree architecture
         // -----------------------------------------------------------------------------
         VHTreeArch              tarch;
-
 
         // -----------------------------------------------------------------------------
         std::vector<stnode> CreateSCodeFromTCode( const TCode & tcd) {
@@ -295,6 +281,18 @@ class VHTree {
 
         return idx; }
 };
+
+/*
+void rotatenodes() {
+	for(int i = 0; i <= arrnodes.size(); i++) {
+		if(arrnodes[i].tt == 2) {
+			arrnodes[i].tt = 1;
+			int swpidx = arrnodes[i].id;
+			tarch.swaplr(swpidx); } } }
+*/
+
+// void set ( const std::vector<stnode> & vect) { arrnodes = vect; }
+// const std::vector<stnode> & nodes ( ) { return arrnodes; }
 
 // void fromscd     ( std::vector<unsigned char> & arr )    { scode = fromscdi(arr); }
 // void fromtcd     ( std::vector<unsigned char> & arr )    { scode = fromtcdi(arr); }

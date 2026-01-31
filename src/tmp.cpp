@@ -1,3 +1,21 @@
+// std::string strtcode, std::string blkn, std::vector<int> rotints
+
+// extern TreeGenParamsIn  iparams;
+// #include "iparams.hpp"
+// iparams.param_tcode
+// iparams.param_spcints
+
+
+// // Spectrum string for outfname
+// string strspfx = iparams.param_strspc;
+// for( int i=0; i < strspfx.size(); i++ ) { if(strspfx[i] == '.') strspfx[i] = '_'; }
+
+
+// tree.arch().depthmax()
+// int depthmax = tree.arch().depthmax();
+// gfxrect_ramka
+
+
 // "05C640";
 
 // r.push_back( svg_rect( 0, 0, svg_elm_width,   svg_elm_width, 1, col_gray, "none" ));

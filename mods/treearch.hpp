@@ -50,9 +50,9 @@ class VHTreeArch {
         int             getlay      (int i) const    { return    ooo[i].y; }
         bool            getswap     (int i) const    { return    ooo[i].w; }
 
-        bool    issym       (int idx) const  { return idx < _cntlow;     }
-        bool    isnode      (int idx) const  { return idx >= _cntlow;    }
-        bool    isroot      (int idx) const  { return idx == rootidx();  }
+        bool			issym       (int idx) const  { return idx < _cntlow;     }
+        bool			isnode      (int idx) const  { return idx >= _cntlow;    }
+        bool			isroot      (int idx) const  { return idx == rootidx();  }
 
         void    setlay          ( int i, uint8_t y)     { ooo[i].y = y; }
         void    setsize         ( int cnt )             { huffcnt = cnt; }
@@ -87,32 +87,28 @@ class VHTreeArch {
             ooo[idx].u       = parent;
             printf("LinkRigh #%d L%d <- %d \n", idx, curlay, parent ); }
 
-        // -----------------------------------------------------------------------------
-        void CalculateMaxDepth() {
-            uint8_t r = 0;
-            for(int i=0;i < size();i++) { uint8_t lay = getlay(i); if( lay > r) r = lay; }
-            _depthmax = r; }
+		// -----------------------------------------------------------------------------
+		void CalculateMaxDepth() {
+			uint8_t r = 0;
+			for(int i=0;i < size();i++) { uint8_t lay = getlay(i); if( lay > r) r = lay; }
+			_depthmax = r; }
 
-        // -----------------------------------------------------------------------------
-        void CalculateNodesDepth() {
-            for(int i=0; i < cntsyms(); i++) { recursedepth(i, 0); } }
+		// -----------------------------------------------------------------------------
+		void CalculateNodesDepth() {
+			for(int i=0; i < cntsyms(); i++) { recursedepth(i, 0); } }
 
-        // -----------------------------------------------------------------------------
-        // Leftroot oriented to left side, Rightroot oriented to right side
-        // -----------------------------------------------------------------------------
-        void Rotation() {
-			return;
-            for(int i=rootidx(); i>= cntsyms(); i--) {
-
-                int     lidx        = getleft(i);
-                uint8_t ldpt        = ooo[lidx].d;
-                int     ridx        = getrigh(i);
-                uint8_t rdpt        = ooo[ridx].d;
-
-                bool    rotleft     = (i==rootidx()) ? true : leftChildOfParent(i);
-                bool    swapflag    = rotleft ? ( ldpt < rdpt ) : (ldpt > rdpt);
-                
-                if(swapflag) { swaplr(i); ooo[i].w = 1; } } }
+		// -----------------------------------------------------------------------------
+		// Leftroot oriented to left side, Rightroot oriented to right side
+		// -----------------------------------------------------------------------------
+		void Rotation() {
+			for(int i=rootidx(); i>= cntsyms(); i--) {
+				int     lidx        = getleft(i);
+				uint8_t ldpt        = ooo[lidx].d;
+				int     ridx        = getrigh(i);
+				uint8_t rdpt        = ooo[ridx].d;
+				bool    rotleft     = (i==rootidx()) ? true : leftChildOfParent(i);
+				bool    swapflag    = rotleft ? ( ldpt < rdpt ) : (ldpt > rdpt);
+				if(swapflag) { swaplr(i); ooo[i].w = 1; } } }
 
         // -----------------------------------------------------------------------------
         void recursedepth(int idx, uint8_t dpt) {
@@ -168,7 +164,6 @@ class VHTreeArch {
             ooo[idx1].m=1; ooo[idx2].m=1; ooo[huffcnt].v = ooo[idx1].v + ooo[idx2].v;
             dmpnlnk(idx1, idx2, huffcnt, ooo[huffcnt].v);
             NSLRU(huffcnt,idx1,idx2); ooo[huffcnt].m=0; huffcnt++; }
-
 
         void dmpnlnk(int il, int ir, int cnt, int v ) {
             printf("TArchLink #%2d & #%2d ", il, ir); printf(" vals[%3d]=%3d\n", cnt, v); }

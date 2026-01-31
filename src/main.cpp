@@ -4,10 +4,18 @@
 
 using namespace std;
 
+// >>> Done >>>
 // DATE : TIME
 // Call Params
 // Ramka up
 // BPath rates %
+
+// argsparser.checkopt("t")
+
+// else {
+// 	std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
+// 	argsparser.Usage(); ret = 1; }
+
 
 // -----------------------------------------------------------------------------
 std::string genoutfname(bool tcd) {
@@ -18,19 +26,15 @@ std::string genoutfname(bool tcd) {
 
 	std::string r = pfx + (tcd ? iparams.param_tcode : "spc" ) + ".svg";
 
-	// // Spectrum string for outfname
-	// string strspfx = iparams.param_strspc;
-	// for( int i=0; i < strspfx.size(); i++ ) { if(strspfx[i] == '.') strspfx[i] = '_'; }
 	return r; }
 
 // -----------------------------------------------------------------------------
-// std::string strtcode, std::string blkn, std::vector<int> rotints
 verr build_from_tcode() {
 
 	if(! iparams.param_tcode.size() || !check_str_ishex(iparams.param_tcode)) { 
 		return verrmsg(1, "Invalid TCode"); }
 
-	if( vok != tree.buildFromTCode() )
+	if( vok != tree.buildFromTCode( iparams.param_tcode , true ) )
 		return verrmsg(1, "Can't build tree from TCode");
 
 	CalculateTreeGfx();
@@ -47,7 +51,7 @@ verr build_from_tcode() {
 // -----------------------------------------------------------------------------
 verr build_from_spc() {
 
-	if(vok != tree.buildFromSpectrum()) {
+	if(vok != tree.buildFromSpectrum( iparams.param_spcints , true )) {
 		return verrmsg(2, "build tree from spectrum failed"); }
 
 	iparams.from_spectrum = true;
@@ -62,13 +66,6 @@ verr build_from_spc() {
 	svg.savetosvg( fname );
 
 	return vok; }
-
-
-// argsparser.checkopt("t")
-
-// else {
-// 	std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
-// 	argsparser.Usage(); ret = 1; }
 
 // -----------------------------------------------------------------------------
 verr GenerateMixMode() {

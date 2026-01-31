@@ -4,9 +4,6 @@
 #include "tree.hpp"
 #include "svg.hpp"
 
-// tree.arch().depthmax()
-// int depthmax = tree.arch().depthmax();
-// gfxrect_ramka
 
 class LayerArea {
 
@@ -31,8 +28,8 @@ class LayerArea {
 			for(int i=0; i < _layerscnt; i++) {
 				int cx = _rect.sx + 18;
 				int cy = layer_posyc(i);
-				svg.circ(cx + 4, cy-2, iparams.svg_elm_width/2, 1, colors::nyell, colors::myell );
-				svg.text(cx, cy, "L" + std::to_string(i), iparams.fntSans, 9, colors::lgray ); } }
+				svg.circ(cx + 4, cy, _layerhh *0.4, 1, colors::nyell, colors::myell );
+				svg.text(cx, cy, "L" + std::to_string(i), fntSans, 9, colors::lgray ); } }
 
 		// -------------------------------------------------------------------------------------------------
 		void draw_layers_back() {
@@ -42,9 +39,9 @@ class LayerArea {
 				int x = _rect.sx;
 				int y = layer_posy(ll);
 				std::string color = (ll & 1) ? colors::yellowll : colors::yellowl;
-				svg.rect(x, y, _rect.w, iparams.svg_layerh, 0, color, color );
+				svg.rect(x, y, _rect.w, _layerhh, 0, color, color );
 
-				int ymid = y + iparams.svg_layerh/2;
+				int ymid = y + _layerhh / 2;
 				std::string clrm = (ll & 1) ? "#f8f0dd" : "#f4ebc3";
 				svg.line(x, ymid, x + _rect.w, ymid, 1, clrm, "15,10");
 			}
@@ -57,4 +54,9 @@ class LayerArea {
 		int			_layerhh;
 		int			_layerscnt;
 
+		std::string fntSans = "sans-serif";
+
 };
+
+// iparams.svg_layerh
+// iparams.svg_elm_width/2
