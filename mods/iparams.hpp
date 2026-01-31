@@ -19,6 +19,8 @@ class TreeGenParamsIn {
 		int					param_cntrint;		// Container idx
 		int					param_mix;			// Mixed mode
 
+		int	optAutoRotate;
+
 		// расстояние между сегментами
 		int     svg_spacer_h	= 16;
 

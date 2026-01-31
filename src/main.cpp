@@ -9,6 +9,7 @@ using namespace std;
 // Ramka up
 // BPath rates %
 
+// -----------------------------------------------------------------------------
 std::string genoutfname(bool tcd) {
 
 	std::string pfx = tcd ? "tcode_" : "spctr_";
@@ -62,6 +63,52 @@ verr build_from_spc() {
 
 	return vok; }
 
+
+// argsparser.checkopt("t")
+
+// else {
+// 	std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
+// 	argsparser.Usage(); ret = 1; }
+
+// -----------------------------------------------------------------------------
+verr GenerateMixMode() {
+
+	verr ret;
+
+	iparams.optAutoRotate = 0;
+	ret = build_from_spc  ();
+
+	iparams.optAutoRotate = 1;
+
+	return ret;
+}
+
+// -----------------------------------------------------------------------------
+verr GenerateSpcMode() {
+
+	verr ret;
+
+	iparams.optAutoRotate = 1;
+
+	// Строим дерево по спектру
+	ret = build_from_spc  ();
+
+	return ret;
+}
+
+// -----------------------------------------------------------------------------
+verr GenerateTMode() {
+
+	verr ret;
+
+	iparams.optAutoRotate = 1;
+
+	// Строим дерево по ТКоду
+	ret = build_from_tcode();
+
+	return ret;
+}
+
 // -----------------------------------------------------------------------------
 int main( int argc, char * argv[] ) {
 
@@ -80,21 +127,11 @@ int main( int argc, char * argv[] ) {
 	verr ret = 1;
 
 	if( iparams.param_mix ) {
-
-		ret = build_from_spc  ();
-
+		ret = GenerateMixMode();
 	} else {
-
-		// Строим дерево по спектру либо по ТКоду
-		if(argsparser.checkopt("t"))		{ ret = build_from_tcode(); }
-		else if(argsparser.checkopt("v"))	{ ret = build_from_spc  (); }
-		else {
-			std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
-			argsparser.Usage(); ret = 1; }
-
-		if(vok != ret) {
-			std::cout << "Final result: generation process failed !" << std::endl; }
-
+		ret = argsparser.checkopt("v") ? GenerateSpcMode() : GenerateTMode();
 	}
+
+	if(vok != ret) { std::cout << "Final result: generation process failed !" << std::endl; }
 
 	return (vok == ret) ? 0 : 1; }
