@@ -26,6 +26,7 @@ static int svgcalc_ramka_h( int w ) {
 	int			layscount	= tree.arch().depthmax() + 1;
 	int			hh_layers	= layscount * iparams.svg_layerh;
 	int			hh_shadows	= iparams.svg_shadowh * layscount;
+	int			hh_bitfield	= iparams.svg_bitfieldh * 8;
 
 	VHRect		arearect;
 
@@ -46,6 +47,12 @@ static int svgcalc_ramka_h( int w ) {
 	r += hh_shadows;
 	r += spcrh;
 
+	// #1 высота битовых полей
+	gfxrect_bitfield1.set(x, r, w, hh_bitfield );
+	r += hh_bitfield;
+	r += spcrh;
+
+
 
 	// #2 Caption
 	rectCaption2.set(x, r, w, capth);
@@ -61,6 +68,11 @@ static int svgcalc_ramka_h( int w ) {
 	// #2 высота теней
 	gfxrect_shadows2.set(x, r, w, hh_shadows);
 	r += hh_shadows;
+	r += spcrh;
+
+	// #2 высота битовых полей
+	gfxrect_bitfield2.set(x, r, w, hh_bitfield );
+	r += hh_bitfield;
 	r += spcrh;
 
 
@@ -81,12 +93,7 @@ static int svgcalc_ramka_h( int w ) {
 	r += spcrh;
 
 
-	// высота битовых полей
-	int hh_bitfield = iparams.svg_bitfieldh * 8;
-	gfxrect_bitfield.set(x, r, w, hh_bitfield );
-	r += hh_bitfield;
-	r += spcrh;
-
+	// Spectrum
 	int hh_spectrum = 256/2;
 	gfxrect_spectrum.set(x, r, w, hh_spectrum);
 	gfxrect_spectrum.shrink(20, 0);

@@ -89,12 +89,16 @@ void draw_debug() {
 	// 	svg.rect( prect->sx, prect->sy, prect->w, prect->h, 1, "red" ); }
 
 	std::string color = "#FFAAAA";
-	svgrect( layerarea1.rect(), 1, color );
-	svgrect( layerarea2.rect(), 1, color );
-	svgrect( layerarea3.rect(), 1, color );
 
+	svgrect( layerarea1.rect(), 1, color );
 	svgrect( gfxrect_shadows1,	1, color );
-	svgrect( gfxrect_bitfield,	1, color );
+	svgrect( gfxrect_bitfield1,	1, color );
+
+	svgrect( layerarea2.rect(), 1, color );
+	svgrect( gfxrect_shadows2,	1, color );
+	svgrect( gfxrect_bitfield2,	1, color );
+
+	svgrect( layerarea3.rect(), 1, color );
 
 }
 
@@ -109,22 +113,26 @@ void RenderTreeGfx() {
 
 	draw_caption( rectCaption1, "1. Сортировка входных данных");
 	layerarea1.draw_layers_back();
+	draw_shadows();
+	draw_bitpath_back( gfxrect_bitfield1 );
+	draw_bitpaths( gfxrect_bitfield1 );
 
 	draw_caption( rectCaption2, "2. Трансформация");
 	layerarea2.draw_layers_back();
+	draw_bitpath_back( gfxrect_bitfield2 );
+	draw_bitpaths( gfxrect_bitfield2 );
 
 	draw_caption( rectCaption3, "3. Префиксный формат дерева");
 	layerarea3.draw_layers_back();
 
-	draw_shadows();
 	draw_links( tree.cntall() ); // recurse
 	draw_elems( tree.cntall() ); // recurse
 
 	draw_scode();
 	draw_tstamp();
 	draw_callparams();
-	draw_bitpath_back();
-	draw_bitpaths();
+
+
 	draw_spectrum();
 	// draw_debug();
 	draw_ramka();

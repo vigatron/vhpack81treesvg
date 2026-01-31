@@ -77,15 +77,24 @@ int main( int argc, char * argv[] ) {
 	// 2) By Spectrum + Autorotation
 	// 3) TCode
 
-	// Строим дерево по спектру либо по ТКоду
-	verr ret;
-	if(argsparser.checkopt("t"))		{ ret = build_from_tcode(); }
-	else if(argsparser.checkopt("v"))	{ ret = build_from_spc  (); }
-	else {
-		std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
-		argsparser.Usage(); ret = 1; }
+	verr ret = 1;
 
-	if(vok != ret) {
-		std::cout << "Final result: generation process failed !" << std::endl; }
+	if( iparams.param_mix ) {
+
+		ret = build_from_spc  ();
+
+	} else {
+
+		// Строим дерево по спектру либо по ТКоду
+		if(argsparser.checkopt("t"))		{ ret = build_from_tcode(); }
+		else if(argsparser.checkopt("v"))	{ ret = build_from_spc  (); }
+		else {
+			std::cout << "No valid input data : " << argsparser.listparams() << std::endl;
+			argsparser.Usage(); ret = 1; }
+
+		if(vok != ret) {
+			std::cout << "Final result: generation process failed !" << std::endl; }
+
+	}
 
 	return (vok == ret) ? 0 : 1; }
