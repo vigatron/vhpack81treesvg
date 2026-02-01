@@ -11,7 +11,7 @@ static int get_line_y( const VHRect & rect, int i) {
 	return rect.sy + (i * iparams.svg_bitfieldh); }
 
 // -------------------------------------------------------------------------------------------------
-static void draw_bitpath_sym(const VHRect & rect, int idx) {
+static void draw_bitpath_sym( VHTree & tree , const VHRect & rect, int idx , bool showrate) {
 
 	int colsmin = tree.arch().cntsyms() / 8;
 	if( tree.arch().cntsyms() % 8 ) colsmin++;
@@ -31,14 +31,16 @@ static void draw_bitpath_sym(const VHRect & rect, int idx) {
 	svg.text( symx      , symy, strsymn, iparams.fntSans,  9, color);
 	svg.text( symx + 50 , symy, bitpath, iparams.fntSans, 10, color);
 
-	if(iparams.from_spectrum) {
-	string      bitrate     = tree.symrate(idx);
-	svg.text( symx + 20 , symy, bitrate, iparams.fntSans, 7, "#A0A0A0"); }
+	if( showrate ) {
+	string bitrate     = tree.symrate(idx);
+	svg.text( symx + 20 , symy, bitrate, iparams.fntSans, 7, "#A0A0A0");
+	}
 }
 
 // -------------------------------------------------------------------------------------------------
-void draw_bitpaths( const VHRect & rect ) {
-	for(int i=0; i < tree.arch().cntsyms();i++) { draw_bitpath_sym( rect , i ); } }
+void draw_bitpaths( VHTree & tree , const VHRect & rect , bool showrate ) {
+	for(int i=0; i < tree.arch().cntsyms();i++) {
+		draw_bitpath_sym( tree , rect , i , showrate ); } }
 
 // -------------------------------------------------------------------------------------------------
 void draw_bitpath_backline(const VHRect & rect , int rown, std::string fcol) {

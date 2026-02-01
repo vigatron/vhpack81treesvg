@@ -1,15 +1,14 @@
 #include "global.hpp"
 
-static int svgcalc_ramka_w() {
-    int idx     = tree.rootidx();
-    int nodew   = oparams.gfx_nodewl[ idx ] + oparams.gfx_nodewr[ idx ];
-    int minw    = iparams.svg_ramka_min_w;
-    int dxbrd   = 2 * iparams.svg_ramka_border;             // отступ по бокам
-    int r       = dxbrd + (nodew < minw ? minw : nodew);    // с учетом минимальной ширины
-    return r; }
+
+static int svgcalc_ramka_w( int width ) {
+	int minw    = iparams.svg_ramka_min_w;
+	int dxbrd   = 2 * iparams.svg_ramka_border;             // отступ по бокам
+	int r       = dxbrd + (width < minw ? minw : width);    // с учетом минимальной ширины
+	return r; }
 
 
-static int svgcalc_ramka_h( int w ) {
+static int svgcalc_ramka_h( int w , int	layscount ) {
 
 	int r		= iparams.svg_paper_border;
 	int x		= iparams.svg_paper_border;
@@ -23,7 +22,6 @@ static int svgcalc_ramka_h( int w ) {
 	r += spcrh;
 
 	// высота слоев
-	int			layscount	= tree.arch().depthmax() + 1;
 	int			hh_layers	= layscount * iparams.svg_layerh;
 	int			hh_shadows	= iparams.svg_shadowh * layscount;
 	int			hh_bitfield	= iparams.svg_bitfieldh * 8;
@@ -106,19 +104,20 @@ static int svgcalc_ramka_h( int w ) {
 	return r; }
 
 
-void svgcalc_ramka() {
+void svgcalc_ramka( int width , int	layscount ) {
 
 	int x = iparams.svg_paper_border;
 	int y = iparams.svg_paper_border;
-	int w = svgcalc_ramka_w();
-	int h = svgcalc_ramka_h( w );
+	int w = svgcalc_ramka_w( width );
+	int h = svgcalc_ramka_h( w , layscount );
+
 	gfxrect_ramka.set(x, y, w, h );
 	
 	// Setup final document size
 	oparams.svg_width   = gfxrect_ramka.w + (2 * iparams.svg_paper_border);
 	oparams.svg_height  = gfxrect_ramka.h + (2 * iparams.svg_paper_border);
-
 }
+
 
 // return oparams.gfx_ramka_x2 - oparams.gfx_ramka_x1; 
 // return oparams.gfx_ramka_y2 - oparams.gfx_ramka_y1;

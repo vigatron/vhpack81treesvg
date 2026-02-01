@@ -19,7 +19,9 @@ class TreeGenParamsIn {
 		int					param_cntrint;		// Container idx
 		int					param_mix;			// Mixed mode
 
-		int	optAutoRotate;
+		// int	optAutoRotate;
+		// Mode : Tree created from Spectrum
+		// bool    from_spectrum     = false;
 
 		// расстояние между сегментами
 		int     svg_spacer_h	= 16;
@@ -35,8 +37,6 @@ class TreeGenParamsIn {
 		int		svg_elm_width	= 26;
 		int		svg_elm_fntsz	= 12;
 
-		int		svg_node_xdist	= svg_elm_width;
-		int		svg_node_spacr	= svg_node_xdist/2;
 		int		svg_lnkwidth	= 2;
 		int		svg_lnkwidth2	= 1;
 
@@ -56,9 +56,6 @@ class TreeGenParamsIn {
 		bool    show_cnt          = true;
 
 		bool    show_dbg_xwlwr    = false;
-
-		// Mode : Tree created from Spectrum
-		bool    from_spectrum     = false;
 
 		// 
 		std::string                 callparams;

@@ -6,9 +6,17 @@
 #include "svg.hpp"
 
 #include "layerarea.hpp"
+#include "treegfx.hpp"
 
 
-extern VHTree				tree;
+extern VHTree				tree1;
+extern VHTree				tree2;
+extern VHTree				tree3;
+
+extern VHTreeGfx			tree1gfx;
+extern VHTreeGfx			tree2gfx;
+extern VHTreeGfx			tree3gfx;
+
 
 extern TreeGenParamsIn		iparams;
 extern TreeGenParamsOut		oparams;
@@ -38,8 +46,4 @@ extern VHRect				gfxrect_shadows3;
 extern VHRect				gfxrect_spectrum;
 
 
-// int svg_getlayer_posy (int layn);
-// int svg_getlayer_posyc(int layn);
-
-void CalculateTreeGfx();
 void RenderTreeGfx();

@@ -29,7 +29,7 @@ class LayerArea {
 				int cx = _rect.sx + 18;
 				int cy = layer_posyc(i);
 				svg.circ(cx + 4, cy, _layerhh *0.4, 1, colors::nyell, colors::myell );
-				svg.text(cx, cy, "L" + std::to_string(i), fntSans, 9, colors::lgray ); } }
+				svg.text(cx, cy + 2, "L" + std::to_string(i), fntSans, 9, colors::lgray ); } }
 
 		// -------------------------------------------------------------------------------------------------
 		void draw_layers_back() {
@@ -58,5 +58,3 @@ class LayerArea {
 
 };
 
-// iparams.svg_layerh
-// iparams.svg_elm_width/2

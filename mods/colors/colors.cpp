@@ -50,12 +50,12 @@ const sColor  arrcolors[4] = {
 	},
 
 	// Root
-	{	colors::orangel,
+	{	"#fbab00e2", // colors::orangel,
 		colors::nyell,
-		colors::orangel,
-		"#f19253",
+		"#fb9b00b7", // colors::orangel,
+		"#f5a700",
 		// shadow
-		"#f9e77f", "gray",
+		"#ffee8e", "gray",
 	 },
 
 	// Container

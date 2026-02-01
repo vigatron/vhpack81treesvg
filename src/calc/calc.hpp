@@ -2,5 +2,4 @@
 
 #include "vhplatform.hpp"
 
-void svgcalc_ramka();
-void svgcalc_transform();
+void svgcalc_ramka	( int width , int	layscount );

@@ -10,11 +10,11 @@
 
 class VHTree {
 
-    public:
+	public:
 
-        struct stnode    { int id; int tt; };
+		struct stnode    { int id; int tt; };
 
-        VHTree() { }
+		VHTree() { }
 
 		// -----------------------------------------------------------------------------
 		verr buildFromTCode ( const std::string strtcode , bool rotation ) {
