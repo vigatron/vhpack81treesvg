@@ -10,8 +10,8 @@ using namespace std;
 
 // -------------------------------------------------------------------------------------------------
 void draw_scode( VHTree & tree ) {
-
-	std::string str = tree.SCodeToTCode() + " : " + tree.SCodeToText(); // TCode : SCode
+	auto scd = tree.scode();
+	std::string str = tree.SCodeToTCode( scd ) + " : " + tree.SCodeToText( scd ); // TCode : SCode
 	int w   = gfxrect_ramka.w/2;
 	int dd  = 4;
 	int x   = gfxrect_ramka.sx;

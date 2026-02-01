@@ -22,7 +22,7 @@ static verr BuildTrees() {
 	if(vok != ret) return verrmsg(22, "build tree from spectrum rotated failed");
 
 	std::vector<VHTree::stnode> scode = tree2.BuildSCodeFromHuffman();
-	std::string strtcode = tree2.SCodeToTCode();
+	std::string strtcode = tree2.SCodeToTCode( scode );
 
 	ret = tree3.buildFromTCode( strtcode , false );
 	if( vok != ret ) return verrmsg(1, "Can't build tree from TCode");

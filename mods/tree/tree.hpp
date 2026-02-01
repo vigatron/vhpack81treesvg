@@ -21,17 +21,17 @@ class VHTree {
 
 			if(!tcode.initfromstr( strtcode )) return verror(1);
 
-			arrnodes = CreateSCodeFromTCode(tcode);
+			_scode = CreateSCodeFromTCode(tcode);
 			tarch.ClearAllNodes();
 			tarch.setsymscount( find_minnode_id() );
 			autoenumerate(0, 0);
-			tarch.setsize(arrnodes[0].id+1); // Important
+			tarch.setsize(_scode[0].id+1); // Important
 			tarch.CalculateNodesDepth();
 			tarch.CalculateMaxDepth();
 			
 			if(rotation) tarch.Rotation();
 
-			dumplr();
+			dump_scode_lr( scode() );
 			dumpnodes();
 			return vok; }
  
@@ -47,12 +47,12 @@ class VHTree {
 
 			tarch.LinkTreeFromSpectrum( spcints.size());
 			tarch.setsymscount( spcints.size() );
-			arrnodes = BuildSCodeFromHuffman();
+			_scode = BuildSCodeFromHuffman();
 			tarch.CalculateNodesDepth();
 			tarch.CalculateMaxDepth();
 			if(rotation) tarch.Rotation();
 
-			dumplr();
+			dump_scode_lr( scode() );
 			dumpnodes();
 			return vok; }
 
@@ -87,41 +87,55 @@ class VHTree {
 
 		// -----------------------------------------------------------------------------
 		std::vector<stnode> BuildSCodeFromHuffman( ) {
+
 			_autoscode.clear();
-			_reidx = tarch.size() - 1;
-			_arrreidx.clear();
-			std::vector<stnode> scode = CreateSCodeFromHuff( tarch.size() - 1 );
-			return scode; }
+
+			_reidxnode = tarch.size() - 1;
+			_reidxnodes.clear();
+			
+			_reidxsym = 0;
+			_reidxsyms.clear();
+
+			int rootidx = tarch.size() - 1;
+			autopass(rootidx, 0);
+			std::vector<stnode> r = _autoscode;
+			dumpSCode("Direct SCode generated from Huffman : ", r);
+			for( int i = 1; i < r.size(); i++ ) { r[i].id = r[0].id - i; }
+			dumpSCode("Transf SCode generated from Huffman : ", r);
+
+			return r; }
 
 		// -----------------------------------------------------------------------------
 
-        int                             cntall      ()          { return arrnodes[0].id;    }
-        int                             rootidx     ()          { return cntall();          }
+		int                             cntall      ()          { return _scode[0].id;    }
+		int                             rootidx     ()          { return cntall();          }
 
-        const VHTreeArch  &             arch        ()          { return tarch; }
-        VHTreeArch::stobj *             operator[]  (int idx)   { return tarch[idx];        }
+		const VHTreeArch  &             arch        ()          { return tarch; }
+		VHTreeArch::stobj *             operator[]  (int idx)   { return tarch[idx];        }
 
-        int     getleft(int i) { return tarch.getleft(i); }
-        int     getrigh(int i) { return tarch.getrigh(i); }
-        int     getlay (int i) { return tarch.getlay (i); }
-        bool    getswap(int i) { return tarch.getswap(i); }
+		int     getleft(int i) { return tarch.getleft(i); }
+		int     getrigh(int i) { return tarch.getrigh(i); }
+		int     getlay (int i) { return tarch.getlay (i); }
+		bool    getswap(int i) { return tarch.getswap(i); }
 
-        std::string SCodeToText() {
+		std::vector<stnode> scode() { return _scode; }
+
+        std::string SCodeToText( std::vector<stnode> arr ) {
             std::string r;
-            int ss = arrnodes.size();
-            r += szhex()[ ((arrnodes.size() - 1) >> 4) & 0xF ];
-            r += szhex()[ ((arrnodes.size() - 1) >> 0) & 0xF ];
-            for(const stnode & item :arrnodes) { r += '0' + item.tt; }
+            int ss = arr.size();
+            r += szhex()[ ((arr.size() - 1) >> 4) & 0xF ];
+            r += szhex()[ ((arr.size() - 1) >> 0) & 0xF ];
+            for(const stnode & item :arr) { r += '0' + item.tt; }
             return r; }
 
-        std::string SCodeToTCode() {
+        std::string SCodeToTCode( std::vector<stnode> arr ) {
             std::vector<unsigned char> r;
-            r.push_back( arrnodes.size() - 1 );
+            r.push_back( arr.size() - 1 );
             unsigned char v   = 0;
             unsigned char msk = 0x80;
 
-            for(int i=0; i< arrnodes.size(); i++ ) {
-                const stnode & item = arrnodes[i];
+            for(int i=0; i< arr.size(); i++ ) {
+                const stnode & item = arr[i];
                 unsigned char b = item.tt;
 
                 switch(msk) {
@@ -148,11 +162,13 @@ class VHTree {
                 r.push_back(szhex()[ (s>>4) & 0xF ]); r.push_back(szhex()[ (s>>0) & 0xF ]); }
             return r; }
 
-        void dumpSCode(std::vector<stnode> & scde) {
-            printf("SCode: "); for( const stnode & n : scde) { printf("[%2d:%d]", n.id, n.tt); } printf("\n"); }
+		void dumpSCode( std::string msg, std::vector<stnode> & scde) {
+			printf("%s SCode: ", msg.c_str() );
+			for( const stnode & n : scde) {
+				printf("[%2d:%d]", n.id, n.tt); } printf("\n"); }
 
-        void dumplr() {
-            for( const stnode & n : arrnodes) {
+        void dump_scode_lr( std::vector<stnode> arr ) {
+            for( const stnode & n : arr) {
                 printf("%2d:%d L=%2d R=%2d\n", n.id, n.tt, getleft(n.id), getrigh(n.id)); } }
 
         void dumpnodes() {
@@ -194,50 +210,48 @@ class VHTree {
     private:
 
 		TCode                   tcode;              // TCode
-		std::vector<stnode>     arrnodes;           // Scode
+		std::vector<stnode>     _scode;				// Scode
 		std::vector<int>        seqlays[16];        // 2D array layers sequence
 
 		// Auto-enumeration related
+		int						_autoenumcnt;
 		std::vector<stnode>		_autoscode;
-		int						_reidx;
-		std::vector<int>		_arrreidx;
 
-        // -----------------------------------------------------------------------------
-        // Huffman tree architecture
-        // -----------------------------------------------------------------------------
-        VHTreeArch              tarch;
+		// Re-indexation vars
+		int						_reidxnode;
+		std::vector<int>		_reidxnodes;
 
-        // -----------------------------------------------------------------------------
-        std::vector<stnode> CreateSCodeFromTCode( const TCode & tcd) {
-            std::vector<stnode> r;
-            for(int i=0; i < tcd.sizenodes(); i++) {
-                stnode nn = { .id = tcd.sizeall() - 1 - i, .tt = tcd[i] };
-                r.push_back(nn); }
-            printf("SCode generated from TCode : "); dumpSCode(r);
-            return r; }
+		int						_reidxsym;
+		std::vector<int>		_reidxsyms;
 
-        // -----------------------------------------------------------------------------
-        std::vector<stnode> CreateSCodeFromHuff(int rootidx) {
-            autopass(rootidx, 0);
-            std::vector<stnode> r = _autoscode;
-            printf("SCode generated from Huffman : "); dumpSCode(r); return r; }
+		// -----------------------------------------------------------------------------
+		// Huffman tree architecture
+		// -----------------------------------------------------------------------------
+		VHTreeArch              tarch;
 
-        // -----------------------------------------------------------------------------
-        int find_minnode_id() {
-            int minval    = arrnodes[0].id;
-            for( int i=1; i < arrnodes.size();i++) {
-                if(arrnodes[i].id < minval) minval = arrnodes[i].id; }
-            return minval; }
+		// -----------------------------------------------------------------------------
+		std::vector<stnode> CreateSCodeFromTCode( const TCode & tcd) {
+			std::vector<stnode> r;
+			for(int i=0; i < tcd.sizenodes(); i++) {
+				stnode nn = { .id = tcd.sizeall() - 1 - i, .tt = tcd[i] };
+				r.push_back(nn); }
+			dumpSCode( "SCode generated from TCode : " , r);
+			return r; }
 
-        int _autoenumcnt;
+		// -----------------------------------------------------------------------------
+		int find_minnode_id() {
+			int minval    = _scode[0].id;
+			for( int i=1; i < _scode.size();i++) {
+				if(_scode[i].id < minval) minval = _scode[i].id; }
+			return minval; }
 
         // -----------------------------------------------------------------------------
 		// Used when building tree from TCode
         // -----------------------------------------------------------------------------
         int autoenumerate(int scodeidx, int lay) {
 
-            int tid     = arrnodes[scodeidx].id;
-            int tt      = arrnodes[scodeidx].tt;
+            int tid     = _scode[scodeidx].id;
+            int tt      = _scode[scodeidx].tt;
             int r       = scodeidx;
             int layn    = lay + 1;
 
@@ -247,19 +261,19 @@ class VHTree {
 
             switch(tt) {
                 case VHTreeArch::eNodeL: {
-                    tarch.LinkLeft(arrnodes[r+1].id,  tid, layn);
+                    tarch.LinkLeft(_scode[r+1].id,  tid, layn);
                     tarch.LinkRigh(_autoenumcnt++, tid, layn);
                     r = autoenumerate(r+1, layn);
                     } break;
                 case VHTreeArch::eNodeR: {
                     tarch.LinkLeft(_autoenumcnt++, tid, layn);
-                    tarch.LinkRigh(arrnodes[r+1].id,  tid, layn);
+                    tarch.LinkRigh(_scode[r+1].id,  tid, layn);
                     r = autoenumerate(r+1, layn);
                 } break;
                 case VHTreeArch::eNodeB: {
-                    tarch.LinkLeft(arrnodes[r+1].id, tid, layn);
+                    tarch.LinkLeft(_scode[r+1].id, tid, layn);
                     r = autoenumerate(r+1, layn);
-                    tarch.LinkRigh(arrnodes[r+1].id, tid, layn);
+                    tarch.LinkRigh(_scode[r+1].id, tid, layn);
                     r = autoenumerate(r+1, layn);
                     } break;
                 default: {
@@ -280,7 +294,7 @@ class VHTree {
 			uint8_t                     layn    = lay + 1;
 
 			_autoscode.push_back(nn);
-			_arrreidx.push_back(_reidx--);
+			_reidxnodes.push_back(_reidxnode--);
 
 			int lidx = getleft(idx);
 			int ridx = getrigh(idx);
@@ -290,11 +304,24 @@ class VHTree {
 			tarch.setlay(ridx,layn);
 
 			switch(tt) {
-				case VHTreeArch::eNodeL: {      autopass(lidx, layn); } break;
-				case VHTreeArch::eNodeR: {      autopass(ridx, layn); } break;
-				case VHTreeArch::eNodeB: {      autopass(lidx, layn);
-												autopass(ridx, layn); } break;
-				default: { } break; }
+				case VHTreeArch::eNodeL: {
+					autopass(lidx, layn);
+					_reidxsyms.push_back(ridx);
+				} break;
+				case VHTreeArch::eNodeR: {
+					autopass(ridx, layn);
+					_reidxsyms.push_back(lidx);
+				} break;
+
+				case VHTreeArch::eNodeB: {
+					autopass(lidx, layn);
+					autopass(ridx, layn);
+				} break;
+
+				default: { 
+					_reidxsyms.push_back( lidx );
+					_reidxsyms.push_back( ridx );
+				} break; }
 
 		return idx; }
 };
