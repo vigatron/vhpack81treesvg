@@ -37,5 +37,5 @@ VHRect				gfxrect_shadows3;
 VHRect				gfxrect_spectrum;
 
 verr verrmsg(int x, std::string strerr) {
-	std::cout << strerr << std::endl;
+	std::cout << "Err code : " << x << " ErrMsg: " << strerr << std::endl;
 	return x; }

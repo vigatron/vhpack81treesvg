@@ -79,7 +79,7 @@ void draw_debug() {
 }
 
 // -------------------------------------------------------------------------------------------------
-void RenderTreeGfx() {
+void RenderFinalDocument() {
 
 	svg.begin( oparams.svg_width, oparams.svg_height );
 

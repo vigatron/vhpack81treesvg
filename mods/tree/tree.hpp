@@ -47,7 +47,7 @@ class VHTree {
 
 			tarch.LinkTreeFromSpectrum( spcints.size());
 			tarch.setsymscount( spcints.size() );
-			arrnodes = CreateSCodeFromHuff( tarch.size() - 1);
+			arrnodes = BuildSCodeFromHuffman();
 			tarch.CalculateNodesDepth();
 			tarch.CalculateMaxDepth();
 			if(rotation) tarch.Rotation();
@@ -85,7 +85,15 @@ class VHTree {
                 stnode nn = { .id = std::stoi(sid), .tt = std::stoi(sit) };
                 r.push_back(nn); } }
 
-        // -----------------------------------------------------------------------------
+		// -----------------------------------------------------------------------------
+		std::vector<stnode> BuildSCodeFromHuffman( ) {
+			_autoscode.clear();
+			_reidx = tarch.size() - 1;
+			_arrreidx.clear();
+			std::vector<stnode> scode = CreateSCodeFromHuff( tarch.size() - 1 );
+			return scode; }
+
+		// -----------------------------------------------------------------------------
 
         int                             cntall      ()          { return arrnodes[0].id;    }
         int                             rootidx     ()          { return cntall();          }
@@ -185,9 +193,14 @@ class VHTree {
 
     private:
 
-        TCode                   tcode;              // TCode
-        std::vector<stnode>     arrnodes;           // Scode
-        std::vector<int>        seqlays[16];        // 2D array layers sequence
+		TCode                   tcode;              // TCode
+		std::vector<stnode>     arrnodes;           // Scode
+		std::vector<int>        seqlays[16];        // 2D array layers sequence
+
+		// Auto-enumeration related
+		std::vector<stnode>		_autoscode;
+		int						_reidx;
+		std::vector<int>		_arrreidx;
 
         // -----------------------------------------------------------------------------
         // Huffman tree architecture
@@ -218,6 +231,8 @@ class VHTree {
 
         int _autoenumcnt;
 
+        // -----------------------------------------------------------------------------
+		// Used when building tree from TCode
         // -----------------------------------------------------------------------------
         int autoenumerate(int scodeidx, int lay) {
 
@@ -255,31 +270,33 @@ class VHTree {
             printf("AUTOENUM Exit  <   #%2d LAY=%2d [%d:%d] )\n", tid, lay, tid, tt);
             return r; }
 
-        std::vector<stnode> _autoscode;
+		// -----------------------------------------------------------------------------
+		// Collect and assemble TCode record from Huffman tree
+		// -----------------------------------------------------------------------------
+		int autopass(int idx, int lay) {
 
-        // -----------------------------------------------------------------------------
-        int autopass(int idx, int lay) {
+			VHTreeArch::enNodeType      tt      = tarch.nodetype(idx);
+			stnode                      nn      = { .id = idx, .tt = tt };
+			uint8_t                     layn    = lay + 1;
 
-            VHTreeArch::enNodeType      tt      = tarch.nodetype(idx);
-            stnode                      nn      = { .id = idx, .tt = tt };
-            uint8_t                     layn    = lay + 1;
+			_autoscode.push_back(nn);
+			_arrreidx.push_back(_reidx--);
 
-            _autoscode.push_back(nn);
-    
-            int lidx = getleft(idx);
-            int ridx = getrigh(idx);
+			int lidx = getleft(idx);
+			int ridx = getrigh(idx);
 
-            tarch.setlay(lidx,layn);
-            tarch.setlay(ridx,layn);
+			// Update layern attribute
+			tarch.setlay(lidx,layn);
+			tarch.setlay(ridx,layn);
 
-            switch(tt) {
-                case VHTreeArch::eNodeL: {      autopass(lidx, layn); } break;
-                case VHTreeArch::eNodeR: {      autopass(ridx, layn); } break;
-                case VHTreeArch::eNodeB: {      autopass(lidx, layn);
-                                                autopass(ridx, layn); } break;
-                default: { } break; }
+			switch(tt) {
+				case VHTreeArch::eNodeL: {      autopass(lidx, layn); } break;
+				case VHTreeArch::eNodeR: {      autopass(ridx, layn); } break;
+				case VHTreeArch::eNodeB: {      autopass(lidx, layn);
+												autopass(ridx, layn); } break;
+				default: { } break; }
 
-        return idx; }
+		return idx; }
 };
 
 /*

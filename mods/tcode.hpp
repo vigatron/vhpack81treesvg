@@ -16,7 +16,7 @@ class TCode {
         bool initfrombin(const std::vector<uint8_t> & src) {
             packedcode = src;
             unpacknodes();
-            calcsyms();
+            calcsymscount();
             dmpinfo();
             return true; }
 
@@ -66,7 +66,10 @@ class TCode {
                 if(pos < _sizenodes) { addnode(bv>>2); pos++; }
                 if(pos < _sizenodes) { addnode(bv>>0); pos++; } } }
 
-        void calcsyms() { _sizesyms = 0; for(int i=0;i<nodes.size();i++) { _sizesyms += nodeweight[ nodes[i] & 3 ]; } }
+        void calcsymscount() {
+			_sizesyms = 0;
+			for(int i=0;i<nodes.size();i++) {
+				_sizesyms += nodeweight[ nodes[i] & 3 ]; } }
 };
 
 /* int minid = find_minnode_id(); printf("cnt = %d\n", minid); */

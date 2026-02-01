@@ -12,7 +12,7 @@
 // verr build_from_tcode() {
 // 	return verror(1);
 // 	CalculateTreeGfx();
-// 	RenderTreeGfx();
+// 	RenderFinalDocument();
 
 
 // -----------------------------------------------------------------------------

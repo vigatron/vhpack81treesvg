@@ -46,4 +46,4 @@ extern VHRect				gfxrect_shadows3;
 extern VHRect				gfxrect_spectrum;
 
 
-void RenderTreeGfx();
+void RenderFinalDocument();
