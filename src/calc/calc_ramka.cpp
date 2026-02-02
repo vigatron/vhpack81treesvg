@@ -12,23 +12,17 @@ static void splitrecth( const VHRect r, VHRect & r1, VHRect & r2 , int dx = 0 ) 
 	r1.set	( r.sx + dx, r.sy, r.w/2 - dx*2, r.h );
 	r2.set	( r.sx + r.w/2 + dx, r.sy, r.w/2 - dx*2, r.h); }
 
+
 // -----------------------------------------------------------------------------
-static int svgcalc_ramka_h( int w , int	layscount ) {
+static int svgcalc_treearea( TreeArea & treearea , int r , int w , int	layscount ) {
 
-	int		r		= iparams.svg_paper_border;
-	int		x		= iparams.svg_paper_border;
-	int		spcrh	= iparams.svg_spacer_h;
-
+	int		x			= iparams.svg_paper_border;
+	int		spcrh		= iparams.svg_spacer_h;
 	int		hh_capth	= iparams.svg_captionh;				// высота заголовка
 	int		hh_layers	= layscount * iparams.svg_layerh;	// высота слоев
+	int		xdx			= 12;
 	int		hh_shadows	= iparams.svg_shadowh * layscount;
 	int		hh_bitfield	= iparams.svg_bitfieldh * 8;
-
-	int		xdx = 12;
-
-
-	r += spcrh;
-
 
 	// VHRect		arearect;
 	// layerarea1.set( arearect, layscount );
@@ -38,75 +32,40 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	// -----------------------------------------------------------------------------
 
 	// #1 Header + Caption
-	{	VHRect rect( x, r, w, hh_capth ); splitrecth( rect , rectHeader1 , rectCaption1, xdx ); }
-	r += hh_capth; r += spcrh * 2;
+	{	VHRect rect( x, r, w, hh_capth );
+		splitrecth( rect , treearea.rectHeader , treearea.rectCaption, xdx ); }
+		r += hh_capth; r += spcrh * 2;
 
 	// #1 Tree
-	rectTree1.set(x, r, w, hh_layers);
-	r += hh_layers;
-	r += spcrh * 2;
+	treearea.rectTree.set(x, r, w, hh_layers);
+	r += hh_layers; r += spcrh * 2;
 
 	// #1 высота теней
-	gfxrect_shadows1.set(x, r, w, hh_shadows);
-	r += hh_shadows;
-	r += spcrh;
+	treearea.rectShadows.set(x, r, w, hh_shadows);
+	r += hh_shadows; r += spcrh;
 
 	// #1 высота битовых полей
-	gfxrect_bitfield1.set(x + xdx, r, w / 2 - xdx*2, hh_bitfield );
-	r += hh_bitfield;
-	r += spcrh;
-
-	gfxrect_sep1.set( x, r, w , spcrh );
-	r += spcrh*2;
-
-
-	// -----------------------------------------------------------------------------
-
-	// #2 Caption
-	{	VHRect rect( x, r, w, hh_capth ); splitrecth( rect , rectHeader2 , rectCaption2, 12 ); }
-	r += hh_capth; r += spcrh * 2;
-
-	// #2 Tree
-	rectTree2.set(x, r, w, hh_layers);
-	r += hh_layers;
-	r += spcrh * 2;
-
-	// #2 высота теней
-	gfxrect_shadows2.set(x, r, w, hh_shadows);
-	r += hh_shadows;
-	r += spcrh;
-
-	// #2 высота битовых полей
-	gfxrect_bitfield2.set(x + xdx, r, w / 2 - xdx * 2, hh_bitfield );
+	treearea.rectBitfield.set(x + xdx, r, w / 2 - xdx*2, hh_bitfield );
 	r += hh_bitfield; r += spcrh;
 
-	gfxrect_sep2.set( x, r, w , spcrh );
+	treearea.rectSeparator.set( x, r, w , spcrh );
 	r += spcrh*2;
 
+	return r;
+}
 
-	// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+static int svgcalc_ramka_h( int w , int	layscount ) {
 
-	// #3 Caption
-	{	VHRect rect( x, r, w, hh_capth ); splitrecth( rect , rectHeader3 , rectCaption3, 12 ); }
-	r += hh_capth; r += spcrh * 2;
+	int		r		= iparams.svg_paper_border;
+	int		x		= iparams.svg_paper_border;
+	int		spcrh	= iparams.svg_spacer_h;
 
-	// #3 Tree
-	rectTree3.set(x, r, w, hh_layers);
-	r += hh_layers;
-	r += spcrh * 2;
-
-	// #3 высота теней
-	gfxrect_shadows3.set(x, r, w, hh_shadows);
-	r += hh_shadows;
 	r += spcrh;
 
-	// #3 высота битовых полей
-	gfxrect_bitfield3.set(x + xdx, r, w / 2 - xdx * 2, hh_bitfield );
-	r += hh_bitfield; r += spcrh;
-
-	gfxrect_sep3.set( x, r, w , spcrh );
-	r += spcrh*2;
-
+	r = svgcalc_treearea( treearea[0] , r , w , layscount );
+	r = svgcalc_treearea( treearea[1] , r , w , layscount );
+	r = svgcalc_treearea( treearea[2] , r , w , layscount );
 
 	// -----------------------------------------------------------------------------
 

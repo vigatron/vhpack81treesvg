@@ -70,9 +70,9 @@ verr GenerateMixMode() {
 	svgcalc_ramka( width, layscount ); 
 
 	// Calc tree nodes coords
-	CalcTreeGfx( rectTree1, tree1 , tree1gfx , layerarea1 , layscount );
-	CalcTreeGfx( rectTree2, tree2 , tree2gfx , layerarea2 , layscount );
-	CalcTreeGfx( rectTree3, tree3 , tree3gfx , layerarea3 , layscount );
+	CalcTreeGfx( treearea[0].rectTree, tree1 , tree1gfx , layerarea1 , layscount );
+	CalcTreeGfx( treearea[1].rectTree, tree2 , tree2gfx , layerarea2 , layscount );
+	CalcTreeGfx( treearea[2].rectTree, tree3 , tree3gfx , layerarea3 , layscount );
 
 	RenderFinalDocument( layscount );
 

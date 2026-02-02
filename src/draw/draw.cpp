@@ -80,15 +80,10 @@ void draw_debug() {
 
 	std::string color = "#FFAAAA";
 
-	svgrect( rectTree1, 1, color );
-	svgrect( gfxrect_shadows1,	1, color );
-	svgrect( gfxrect_bitfield1,	1, color );
+	svgrect( treearea[0].rectTree, 1, color );
+	svgrect( treearea[0].rectShadows, 1, color );
+	svgrect( treearea[0].rectBitfield,	1, color );
 
-	svgrect( rectTree2, 1, color );
-	svgrect( gfxrect_shadows2,	1, color );
-	svgrect( gfxrect_bitfield2,	1, color );
-
-	svgrect( rectTree3, 1, color );
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -103,39 +98,47 @@ void RenderFinalDocument( int layscount ) {
 	// Full Paper
 	svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
 
-	layerarea1.draw_layers_back( rectTree1, layscount );
+	{
+		TreeArea & a = treearea[0];
+		layerarea1.draw_layers_back( a.rectTree, layscount );
 
-	draw_scode			( tree1 , rectHeader1 );
-	draw_caption		( rectCaption1, "1) Сортировка входных данных");
-	draw_links			( tree1 , tree1gfx , tree1.cntall() );
-	draw_shadows		( tree1 , tree1gfx , gfxrect_shadows1 );
-	draw_elems			( tree1 , tree1gfx , tree1.cntall() , true );
-	draw_bitpath_back	( gfxrect_bitfield1 );
-	draw_bitpaths		( tree1 , gfxrect_bitfield1 , true );
-	draw_separator		( gfxrect_sep1 );
+		draw_scode			( tree1 , a.rectHeader );
+		draw_caption		( a.rectCaption, "1) Сортировка входных данных");
+		draw_links			( tree1 , tree1gfx , tree1.cntall() );
+		draw_shadows		( tree1 , tree1gfx , a.rectShadows );
+		draw_elems			( tree1 , tree1gfx , tree1.cntall() , true );
+		draw_bitpath_back	( a.rectBitfield );
+		draw_bitpaths		( tree1 , a.rectBitfield , true );
+		draw_separator		( a.rectSeparator );
+	}
 
-	layerarea2.draw_layers_back( rectTree2, layscount );
+	{
+		TreeArea & a = treearea[1];
+		layerarea2.draw_layers_back( a.rectTree, layscount );
 
-	draw_scode			( tree2 , rectHeader2 );
-	draw_caption		( rectCaption2, "2) Трансформация");
-	draw_links			( tree2 , tree2gfx , tree2.cntall() );
-	draw_shadows		( tree2 , tree2gfx , gfxrect_shadows2 );
-	draw_elems			( tree2 , tree2gfx , tree2.cntall() , true );
-	draw_bitpath_back	( gfxrect_bitfield2 );
-	draw_bitpaths		( tree2, gfxrect_bitfield2 , true );
-	draw_separator		( gfxrect_sep2 );
+		draw_scode			( tree2 , a.rectHeader );
+		draw_caption		( a.rectCaption, "2) Трансформация");
+		draw_links			( tree2 , tree2gfx , tree2.cntall() );
+		draw_shadows		( tree2 , tree2gfx , a.rectShadows );
+		draw_elems			( tree2 , tree2gfx , tree2.cntall() , true );
+		draw_bitpath_back	( a.rectBitfield );
+		draw_bitpaths		( tree2, a.rectBitfield , true );
+		draw_separator		( a.rectSeparator );
+	}
 
-	layerarea3.draw_layers_back( rectTree3, layscount );
+	{
+		TreeArea & a = treearea[2];
+		layerarea3.draw_layers_back( a.rectTree, layscount );
 
-	draw_scode			( tree3 , rectHeader3 );
-	draw_caption		( rectCaption3, "3) Префиксный формат дерева");
-	draw_links			( tree3 , tree3gfx , tree3.cntall() );
-	draw_shadows		( tree3 , tree3gfx , gfxrect_shadows3 );
-	draw_elems			( tree3 , tree3gfx , tree3.cntall() , false );
-	draw_bitpath_back	( gfxrect_bitfield3 );
-	draw_bitpaths		( tree3, gfxrect_bitfield3 , false );
-	draw_separator		( gfxrect_sep3 );
-
+		draw_scode			( tree3 , a.rectHeader );
+		draw_caption		( a.rectCaption, "3) Префиксный формат дерева");
+		draw_links			( tree3 , tree3gfx , tree3.cntall() );
+		draw_shadows		( tree3 , tree3gfx , a.rectShadows );
+		draw_elems			( tree3 , tree3gfx , tree3.cntall() , false );
+		draw_bitpath_back	( a.rectBitfield );
+		draw_bitpaths		( tree3, a.rectBitfield , false );
+		draw_separator		( a.rectSeparator );
+	}
 
 	draw_tstamp();
 	draw_callparams();
