@@ -80,15 +80,15 @@ void draw_debug() {
 
 	std::string color = "#FFAAAA";
 
-	svgrect( layerarea1.rect(), 1, color );
+	svgrect( rectTree1, 1, color );
 	svgrect( gfxrect_shadows1,	1, color );
 	svgrect( gfxrect_bitfield1,	1, color );
 
-	svgrect( layerarea2.rect(), 1, color );
+	svgrect( rectTree2, 1, color );
 	svgrect( gfxrect_shadows2,	1, color );
 	svgrect( gfxrect_bitfield2,	1, color );
 
-	svgrect( layerarea3.rect(), 1, color );
+	svgrect( rectTree3, 1, color );
 }
 
 // -------------------------------------------------------------------------------------------------
@@ -96,16 +96,17 @@ void draw_separator( const VHRect & r) {
 	svg.line( r.sx, r.midy(), r.ex, r.midy(), 2, colors::mgray, "5,5" ); }
 
 // -------------------------------------------------------------------------------------------------
-void RenderFinalDocument() {
+void RenderFinalDocument( int layscount ) {
 
 	svg.begin( oparams.svg_width, oparams.svg_height );
 
 	// Full Paper
 	svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
 
+	layerarea1.draw_layers_back( rectTree1, layscount );
+
 	draw_scode			( tree1 , rectHeader1 );
 	draw_caption		( rectCaption1, "1) Сортировка входных данных");
-	layerarea1.draw_layers_back();
 	draw_links			( tree1 , tree1gfx , tree1.cntall() );
 	draw_shadows		( tree1 , tree1gfx , gfxrect_shadows1 );
 	draw_elems			( tree1 , tree1gfx , tree1.cntall() , true );
@@ -113,9 +114,10 @@ void RenderFinalDocument() {
 	draw_bitpaths		( tree1 , gfxrect_bitfield1 , true );
 	draw_separator		( gfxrect_sep1 );
 
+	layerarea2.draw_layers_back( rectTree2, layscount );
+
 	draw_scode			( tree2 , rectHeader2 );
 	draw_caption		( rectCaption2, "2) Трансформация");
-	layerarea2.draw_layers_back();
 	draw_links			( tree2 , tree2gfx , tree2.cntall() );
 	draw_shadows		( tree2 , tree2gfx , gfxrect_shadows2 );
 	draw_elems			( tree2 , tree2gfx , tree2.cntall() , true );
@@ -123,9 +125,10 @@ void RenderFinalDocument() {
 	draw_bitpaths		( tree2, gfxrect_bitfield2 , true );
 	draw_separator		( gfxrect_sep2 );
 
+	layerarea3.draw_layers_back( rectTree3, layscount );
+
 	draw_scode			( tree3 , rectHeader3 );
 	draw_caption		( rectCaption3, "3) Префиксный формат дерева");
-	layerarea3.draw_layers_back();
 	draw_links			( tree3 , tree3gfx , tree3.cntall() );
 	draw_shadows		( tree3 , tree3gfx , gfxrect_shadows3 );
 	draw_elems			( tree3 , tree3gfx , tree3.cntall() , false );

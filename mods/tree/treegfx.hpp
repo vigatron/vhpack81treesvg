@@ -26,19 +26,23 @@ class VHTreeGfx {
 		int nodewr(int idx) { return gfx_nodewr[idx]; }
 
 		// -------------------------------------------------------------------------------------------------
-		void svgcalc_set_coords( VHTree & tree, LayerArea & layerarea, int idx, int cx) {
+		void svgcalc_set_coords(
+			const VHRect & rect,
+			VHTree & tree,
+			LayerArea & layerarea,
+			int idx, int cx, int layscnt) {
 
 			gfxpos_x[idx] = cx;
-			gfxpos_y[idx] = layerarea.layer_posyc( tree.getlay(idx));
+			gfxpos_y[idx] = layerarea.layer_posyc( rect, tree.getlay(idx), layscnt);
 
 			if( tree.arch().isnode( idx ) ) {
 				int idxl = tree.getleft(idx);
 				int lnodex = cx - gfx_nodewr[ idxl ];
-				svgcalc_set_coords( tree, layerarea, idxl, lnodex );
+				svgcalc_set_coords( rect, tree, layerarea, idxl, lnodex, layscnt );
 
 				int idxr = tree.getrigh(idx);
 				int rnodex = cx + gfx_nodewl[ idxr ];
-				svgcalc_set_coords( tree, layerarea, idxr, rnodex ); } }
+				svgcalc_set_coords( rect, tree, layerarea, idxr, rnodex, layscnt ); } }
 
 	private:
 

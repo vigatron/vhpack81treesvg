@@ -49,7 +49,9 @@ std::string genOutFNameMix() {
 	return r; }
 
 // -----------------------------------------------------------------------------
-void CalcTreeGfx	( VHTree & tree , VHTreeGfx & tgfx , LayerArea & larea );
+void CalcTreeGfx (
+	const VHRect & rect,
+	VHTree & tree , VHTreeGfx & tgfx , LayerArea & larea , int layscount );
 
 // -----------------------------------------------------------------------------
 verr GenerateMixMode() {
@@ -68,11 +70,11 @@ verr GenerateMixMode() {
 	svgcalc_ramka( width, layscount ); 
 
 	// Calc tree nodes coords
-	CalcTreeGfx( tree1 , tree1gfx , layerarea1 );
-	CalcTreeGfx( tree2 , tree2gfx , layerarea2 );
-	CalcTreeGfx( tree3 , tree3gfx , layerarea3 );
+	CalcTreeGfx( rectTree1, tree1 , tree1gfx , layerarea1 , layscount );
+	CalcTreeGfx( rectTree2, tree2 , tree2gfx , layerarea2 , layscount );
+	CalcTreeGfx( rectTree3, tree3 , tree3gfx , layerarea3 , layscount );
 
-	RenderFinalDocument();
+	RenderFinalDocument( layscount );
 
 	oparams.outfname = genOutFNameMix();
 	return ret; }

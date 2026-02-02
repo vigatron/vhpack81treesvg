@@ -26,9 +26,14 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 
 	int		xdx = 12;
 
-	VHRect		arearect;
 
 	r += spcrh;
+
+
+	// VHRect		arearect;
+	// layerarea1.set( arearect, layscount );
+	// layerarea2.set( arearect, layscount );
+	// layerarea3.set( arearect, layscount );
 
 	// -----------------------------------------------------------------------------
 
@@ -37,8 +42,7 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	r += hh_capth; r += spcrh * 2;
 
 	// #1 Tree
-	arearect.set(x, r, w, hh_layers);
-	layerarea1.set( arearect, layscount );
+	rectTree1.set(x, r, w, hh_layers);
 	r += hh_layers;
 	r += spcrh * 2;
 
@@ -56,7 +60,6 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	r += spcrh*2;
 
 
-
 	// -----------------------------------------------------------------------------
 
 	// #2 Caption
@@ -64,8 +67,7 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	r += hh_capth; r += spcrh * 2;
 
 	// #2 Tree
-	arearect.set(x, r, w, hh_layers);
-	layerarea2.set( arearect, layscount );
+	rectTree2.set(x, r, w, hh_layers);
 	r += hh_layers;
 	r += spcrh * 2;
 
@@ -88,10 +90,8 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	{	VHRect rect( x, r, w, hh_capth ); splitrecth( rect , rectHeader3 , rectCaption3, 12 ); }
 	r += hh_capth; r += spcrh * 2;
 
-
 	// #3 Tree
-	arearect.set(x, r, w, hh_layers);
-	layerarea3.set( arearect, layscount );
+	rectTree3.set(x, r, w, hh_layers);
 	r += hh_layers;
 	r += spcrh * 2;
 
