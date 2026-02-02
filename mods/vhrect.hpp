@@ -21,6 +21,8 @@ class VHRect {
     void operator=(const VHRect & rect)     { set(rect.sx, rect.sy, rect.w, rect.h); }
     void shrink(int dx, int dy)             { set( sx + dx, sy + dy, w - dx*2, h - dy*2 ); }
 
+	int midy() const { return sy + h/2; }
+
     int16_t     sx; int16_t     sy;
     uint16_t    w;  uint16_t    h;
     int16_t     ex; int16_t     ey;

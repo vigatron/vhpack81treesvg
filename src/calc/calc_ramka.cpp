@@ -52,6 +52,10 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	r += hh_bitfield;
 	r += spcrh;
 
+	gfxrect_sep1.set( x, r, w , spcrh );
+	r += spcrh*2;
+
+
 
 	// -----------------------------------------------------------------------------
 
@@ -73,6 +77,9 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	// #2 высота битовых полей
 	gfxrect_bitfield2.set(x + xdx, r, w / 2 - xdx * 2, hh_bitfield );
 	r += hh_bitfield; r += spcrh;
+
+	gfxrect_sep2.set( x, r, w , spcrh );
+	r += spcrh*2;
 
 
 	// -----------------------------------------------------------------------------
@@ -97,6 +104,11 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	gfxrect_bitfield3.set(x + xdx, r, w / 2 - xdx * 2, hh_bitfield );
 	r += hh_bitfield; r += spcrh;
 
+	gfxrect_sep3.set( x, r, w , spcrh );
+	r += spcrh*2;
+
+
+	// -----------------------------------------------------------------------------
 
 	// Spectrum
 	int hh_spectrum = 256/2;
