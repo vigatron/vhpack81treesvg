@@ -16,7 +16,7 @@ void draw_shadows( VHTree & tree , VHTreeGfx & tgfx , VHRect & rect ) {
 		int     wr          = tgfx.nodewr(idx) - iparams.svg_elm_width/2;
 
 		svg.line( x, y, x, yy, 1, "#D0E0D0", "1,8");
-		svg.line( x - wl, yy, x + wr, yy, 1, "#E8E8E8" );
+		svg.line( x - wl, yy, x + wr, yy, 2, "#E8E8E8" );
 		svg.circ( x, yy, 1, 1, "#E0E0E0", "none");
 		idx--;
 	}

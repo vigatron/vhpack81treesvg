@@ -34,7 +34,8 @@ static int svgcalc_treearea( TreeArea & treearea , int r , int w , int	layscount
 	// #1 Header + Caption
 	{	VHRect rect( x, r, w, hh_capth );
 		splitrecth( rect , treearea.rectHeader , treearea.rectCaption, xdx ); }
-		r += hh_capth; r += spcrh * 2;
+
+	r += hh_capth; r += spcrh * 2;
 
 	// #1 Tree
 	treearea.rectTree.set(x, r, w, hh_layers);
@@ -45,7 +46,12 @@ static int svgcalc_treearea( TreeArea & treearea , int r , int w , int	layscount
 	r += hh_shadows; r += spcrh;
 
 	// #1 высота битовых полей
-	treearea.rectBitfield.set(x + xdx, r, w / 2 - xdx*2, hh_bitfield );
+	{
+		VHRect rect( x, r, w, hh_bitfield );
+		splitrecth( rect, treearea.rectBitfield , treearea.rectDescript, xdx );
+		// .set(x + xdx, r, w / 2 - xdx*2, hh_bitfield );
+	}
+
 	r += hh_bitfield; r += spcrh;
 
 	treearea.rectSeparator.set( x, r, w , spcrh );

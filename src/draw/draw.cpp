@@ -80,9 +80,10 @@ void draw_debug() {
 
 	std::string color = "#FFAAAA";
 
-	svgrect( treearea[0].rectTree, 1, color );
-	svgrect( treearea[0].rectShadows, 1, color );
-	svgrect( treearea[0].rectBitfield,	1, color );
+	svgrect( treearea[2].rectTree, 1, color );
+	svgrect( treearea[2].rectShadows, 1, color );
+	svgrect( treearea[2].rectBitfield,	1, color );
+	svgrect( treearea[2].rectDescript,	1, color );
 
 }
 
