@@ -42,15 +42,14 @@ static int svgcalc_treearea( TreeArea & treearea , int r , int w , int	layscount
 	r += hh_layers; r += spcrh * 2;
 
 	// #1 высота теней
+	r += 3 * spcrh;
 	treearea.rectShadows.set(x, r, w, hh_shadows);
-	r += hh_shadows; r += spcrh;
+	r += hh_shadows;
+	r += spcrh;
 
 	// #1 высота битовых полей
-	{
-		VHRect rect( x, r, w, hh_bitfield );
-		splitrecth( rect, treearea.rectBitfield , treearea.rectDescript, xdx );
-		// .set(x + xdx, r, w / 2 - xdx*2, hh_bitfield );
-	}
+	{	VHRect rect( x, r, w, hh_bitfield );
+		splitrecth( rect, treearea.rectBitfield , treearea.rectDescript, xdx ); }
 
 	r += hh_bitfield; r += spcrh;
 
