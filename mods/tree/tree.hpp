@@ -92,12 +92,13 @@ class VHTree {
 
 			_reidxnode = tarch.size() - 1;
 			_reidxnodes.clear();
-			
+
 			_reidxsym = 0;
 			_reidxsyms.clear();
 
 			int rootidx = tarch.size() - 1;
 			autopass(rootidx, 0);
+
 			std::vector<stnode> r = _autoscode;
 			dumpSCode("Direct SCode generated from Huffman : ", r);
 			for( int i = 1; i < r.size(); i++ ) { r[i].id = r[0].id - i; }
@@ -305,12 +306,12 @@ class VHTree {
 
 			switch(tt) {
 				case VHTreeArch::eNodeL: {
-					autopass(lidx, layn);
 					_reidxsyms.push_back(ridx);
+					autopass(lidx, layn);
 				} break;
 				case VHTreeArch::eNodeR: {
-					autopass(ridx, layn);
 					_reidxsyms.push_back(lidx);
+					autopass(ridx, layn);
 				} break;
 
 				case VHTreeArch::eNodeB: {
