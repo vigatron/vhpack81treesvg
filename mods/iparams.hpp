@@ -27,8 +27,7 @@ class TreeGenParamsIn {
 		int     svg_spacer_h	= 16;
 
 		// Vertical segments height
-		int		svg_headerh		= 56;
-		int		svg_captionh	= 38;
+		int		svg_captionh	= 48;
 		int		svg_layerh		= 36;
 		int		svg_shadowh		=  3;
 		int		svg_bitfieldh	= 14;

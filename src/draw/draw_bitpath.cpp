@@ -18,10 +18,10 @@ static void draw_bitpath_sym( VHTree & tree , const VHRect & rect, int idx , boo
 	if(!colsmin) colsmin++;
 
 	// ширина столбцов зависит от количества узлов дерева
-	int			ww			= gfxrect_ramka.w / colsmin; 
+	int			ww			= rect.w / colsmin; 
 	int			coln		= idx / symsincol;
 	int			rown		= idx % symsincol;
-	int			symx		= gfxrect_ramka.sx + 40 + (coln * ww);
+	int			symx		= rect.sx + 20 + (coln * ww);
 	int			yoffstxt	= iparams.svg_bitfieldh - iparams.svg_bitfieldh*0.25;
 	int			symy		= get_line_y( rect , rown) + yoffstxt;
 	string		strsymn		= "#" + std::to_string(idx); // + ":";
@@ -45,9 +45,9 @@ void draw_bitpaths( VHTree & tree , const VHRect & rect , bool showrate ) {
 // -------------------------------------------------------------------------------------------------
 void draw_bitpath_backline(const VHRect & rect , int rown, std::string fcol) {
 	int dx = 2;
-	int x = gfxrect_ramka.sx + dx;
+	int x = rect.sx + dx;
 	int y = get_line_y(rect, rown);
-	svg.rect( x, y, gfxrect_ramka.w - dx*2, iparams.svg_bitfieldh, 1, fcol, fcol ); }
+	svg.rect( x, y, rect.w - dx*2, iparams.svg_bitfieldh, 1, fcol, fcol ); }
 
 // -------------------------------------------------------------------------------------------------
 void draw_bitpath_back( const VHRect & rect ) {

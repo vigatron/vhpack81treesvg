@@ -4,7 +4,7 @@ project(MyQtProject CXX)
 # set(CMAKE_BUILD_TYPE "Release")
 # set(CMAKE_BUILD_TYPE "MinSizeRel")
 
-#
+
 set(PRJNAME pack81treesvg)
 
 include_directories(
@@ -15,8 +15,8 @@ include_directories(
 	mods/strtools
 	mods/layerarea
 	mods/tree
-	
-	misc
+	mods/svg
+
 	src/calc
 	src/draw
 	src/parser
@@ -33,12 +33,14 @@ file( GLOB_RECURSE source_list_mods
 	src/global/*
 	src/generate/*
 	src/*
+
 	mods/tree/*
 	mods/colors/*
 	mods/strtools/*
 	mods/layerarea/*
-    mods/*.cpp mods/*.hpp
-    misc/*.cpp misc/*.hpp )
+	mods/svg/*
+	mods/*.cpp mods/*.hpp
+)
 
 add_executable(${PRJNAME} src/main.cpp ${source_list_mods} )
 add_custom_command(TARGET ${PRJNAME} POST_BUILD COMMAND cp "${PROJECT_BINARY_DIR}/${PRJNAME}"     "$ENV{HOME}/bin/${PRJNAME}"        )

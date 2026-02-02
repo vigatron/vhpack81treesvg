@@ -9,15 +9,23 @@ using namespace std;
 // -------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------
-void draw_scode( VHTree & tree ) {
+void draw_scode( VHTree & tree , const VHRect & rect ) {
+
 	auto scd = tree.scode();
-	std::string str = tree.SCodeToTCode( scd ) + " : " + tree.SCodeToText( scd ); // TCode : SCode
-	int w   = gfxrect_ramka.w/2;
+	std::string str = tree.SCodeToTCode( scd );
+	str += " : " + tree.SCodeToText( scd );
+
 	int dd  = 4;
-	int x   = gfxrect_ramka.sx;
-	int y   = gfxrect_ramka.sy;
-	svg.rect(x + dd, y + dd, w - dd*2, 46, 1, colors::lblue, colors::lblue, 8);
-	svg.text(x + 18, y + 32, str, iparams.fntSans, 16, colors::nblue ); }
+
+	int w   = rect.w;	// gfxrect_ramka.w/2;
+	int x   = rect.sx;	// gfxrect_ramka.sx;
+	int y   = rect.sy;	// gfxrect_ramka.sy;
+
+	std::string clrfont = colors::mgray; // colors::nblue;
+	std::string clrfone = "#F0F0F0";
+
+	svg.rect(x + dd, y + dd, w - dd*2, rect.h, 1, clrfone, clrfone, 8);
+	svg.text(x + 18, y + 32, str, iparams.fntSans, 16, clrfont ); }
 
 
 // -------------------------------------------------------------------------------------------------
@@ -60,7 +68,10 @@ static void svgrect( const VHRect & rect, int wdt, std::string color) {
 
 // -------------------------------------------------------------------------------------------------
 void draw_caption( const VHRect & rect , std::string txt) {
-	svg.text(rect.sx +  24, rect.ey - 10, txt, iparams.fntSans, rect.h * 0.4, colors::lgray ); }
+	int x = rect.sx +  24;
+	int y = rect.ey - rect.h * 0.3;
+	int fnsize = rect.h * 0.3;
+	svg.text(x, y, txt, iparams.fntSans, fnsize, colors::lgray ); }
 
 // -------------------------------------------------------------------------------------------------
 void draw_debug() {
@@ -86,7 +97,8 @@ void RenderFinalDocument() {
 	// Full Paper
 	svg.rect(0, 0, oparams.svg_width, oparams.svg_height, 0, colors::white, colors::white );
 
-	draw_caption( rectCaption1, "1. Сортировка входных данных");
+	draw_scode			( tree1 , rectHeader1 );
+	draw_caption		( rectCaption1, "1) Сортировка входных данных");
 	layerarea1.draw_layers_back();
 	draw_links			( tree1 , tree1gfx , tree1.cntall() );
 	draw_shadows		( tree1 , tree1gfx , gfxrect_shadows1 );
@@ -94,7 +106,8 @@ void RenderFinalDocument() {
 	draw_bitpath_back	( gfxrect_bitfield1 );
 	draw_bitpaths		( tree1 , gfxrect_bitfield1 , true );
 
-	draw_caption( rectCaption2, "2. Трансформация");
+	draw_scode			( tree2 , rectHeader2 );
+	draw_caption		( rectCaption2, "2) Трансформация");
 	layerarea2.draw_layers_back();
 	draw_links			( tree2 , tree2gfx , tree2.cntall() );
 	draw_shadows		( tree2 , tree2gfx , gfxrect_shadows2 );
@@ -102,14 +115,16 @@ void RenderFinalDocument() {
 	draw_bitpath_back	( gfxrect_bitfield2 );
 	draw_bitpaths		( tree2, gfxrect_bitfield2 , true );
 
-	draw_caption( rectCaption3, "3. Префиксный формат дерева");
+	draw_scode			( tree3 , rectHeader3 );
+	draw_caption		( rectCaption3, "3) Префиксный формат дерева");
 	layerarea3.draw_layers_back();
 	draw_links			( tree3 , tree3gfx , tree3.cntall() );
 	draw_shadows		( tree3 , tree3gfx , gfxrect_shadows3 );
 	draw_elems			( tree3 , tree3gfx , tree3.cntall() , false );
-	// no bitpath
+	draw_bitpath_back	( gfxrect_bitfield3 );
+	draw_bitpaths		( tree3, gfxrect_bitfield3 , false );
 
-	draw_scode( tree1 );
+
 	draw_tstamp();
 	draw_callparams();
 

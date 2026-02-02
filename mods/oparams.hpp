@@ -7,8 +7,9 @@ class TreeGenParamsOut {
 
 	public:
 
-		int		svg_width;
-		int		svg_height;
+		int					svg_width;
+		int					svg_height;
 
-		std::string outfname;
+		std::string			outfname;
+		std::vector<int>	tblreidx;
 };

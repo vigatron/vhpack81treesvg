@@ -1,38 +1,40 @@
 #include "global.hpp"
 
-
+// -----------------------------------------------------------------------------
 static int svgcalc_ramka_w( int width ) {
 	int minw    = iparams.svg_ramka_min_w;
 	int dxbrd   = 2 * iparams.svg_ramka_border;             // отступ по бокам
 	int r       = dxbrd + (width < minw ? minw : width);    // с учетом минимальной ширины
 	return r; }
 
+// -----------------------------------------------------------------------------
+static void splitrecth( const VHRect r, VHRect & r1, VHRect & r2 , int dx = 0 ) {
+	r1.set	( r.sx + dx, r.sy, r.w/2 - dx*2, r.h );
+	r2.set	( r.sx + r.w/2 + dx, r.sy, r.w/2 - dx*2, r.h); }
 
+// -----------------------------------------------------------------------------
 static int svgcalc_ramka_h( int w , int	layscount ) {
 
-	int r		= iparams.svg_paper_border;
-	int x		= iparams.svg_paper_border;
-	int capth	= iparams.svg_captionh;
-	int spcrh	= iparams.svg_spacer_h;
+	int		r		= iparams.svg_paper_border;
+	int		x		= iparams.svg_paper_border;
+	int		spcrh	= iparams.svg_spacer_h;
 
-	// высота заголовка
-	int hh_header = iparams.svg_headerh;
-	gfxrect_header.set(x, r, w, hh_header);
-	r += hh_header;
-	r += spcrh;
+	int		hh_capth	= iparams.svg_captionh;				// высота заголовка
+	int		hh_layers	= layscount * iparams.svg_layerh;	// высота слоев
+	int		hh_shadows	= iparams.svg_shadowh * layscount;
+	int		hh_bitfield	= iparams.svg_bitfieldh * 8;
 
-	// высота слоев
-	int			hh_layers	= layscount * iparams.svg_layerh;
-	int			hh_shadows	= iparams.svg_shadowh * layscount;
-	int			hh_bitfield	= iparams.svg_bitfieldh * 8;
+	int		xdx = 12;
 
 	VHRect		arearect;
 
-
-	// #1 Caption
-	rectCaption1.set(x, r, w, capth);
-	r += capth;
 	r += spcrh;
+
+	// -----------------------------------------------------------------------------
+
+	// #1 Header + Caption
+	{	VHRect rect( x, r, w, hh_capth ); splitrecth( rect , rectHeader1 , rectCaption1, xdx ); }
+	r += hh_capth; r += spcrh * 2;
 
 	// #1 Tree
 	arearect.set(x, r, w, hh_layers);
@@ -46,16 +48,16 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	r += spcrh;
 
 	// #1 высота битовых полей
-	gfxrect_bitfield1.set(x, r, w, hh_bitfield );
+	gfxrect_bitfield1.set(x + xdx, r, w / 2 - xdx*2, hh_bitfield );
 	r += hh_bitfield;
 	r += spcrh;
 
 
+	// -----------------------------------------------------------------------------
 
 	// #2 Caption
-	rectCaption2.set(x, r, w, capth);
-	r += capth;
-	r += spcrh;
+	{	VHRect rect( x, r, w, hh_capth ); splitrecth( rect , rectHeader2 , rectCaption2, 12 ); }
+	r += hh_capth; r += spcrh * 2;
 
 	// #2 Tree
 	arearect.set(x, r, w, hh_layers);
@@ -69,15 +71,16 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	r += spcrh;
 
 	// #2 высота битовых полей
-	gfxrect_bitfield2.set(x, r, w, hh_bitfield );
-	r += hh_bitfield;
-	r += spcrh;
+	gfxrect_bitfield2.set(x + xdx, r, w / 2 - xdx * 2, hh_bitfield );
+	r += hh_bitfield; r += spcrh;
 
+
+	// -----------------------------------------------------------------------------
 
 	// #3 Caption
-	rectCaption3.set(x, r, w, capth);
-	r += capth;
-	r += spcrh;
+	{	VHRect rect( x, r, w, hh_capth ); splitrecth( rect , rectHeader3 , rectCaption3, 12 ); }
+	r += hh_capth; r += spcrh * 2;
+
 
 	// #3 Tree
 	arearect.set(x, r, w, hh_layers);
@@ -89,6 +92,10 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 	gfxrect_shadows3.set(x, r, w, hh_shadows);
 	r += hh_shadows;
 	r += spcrh;
+
+	// #3 высота битовых полей
+	gfxrect_bitfield3.set(x + xdx, r, w / 2 - xdx * 2, hh_bitfield );
+	r += hh_bitfield; r += spcrh;
 
 
 	// Spectrum
@@ -103,7 +110,7 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 
 	return r; }
 
-
+// -----------------------------------------------------------------------------
 void svgcalc_ramka( int width , int	layscount ) {
 
 	int x = iparams.svg_paper_border;

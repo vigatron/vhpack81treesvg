@@ -23,7 +23,6 @@ static verr BuildTrees() {
 
 	std::vector<VHTree::stnode> scode = tree2.BuildSCodeFromHuffman();
 	std::string strtcode = tree2.SCodeToTCode( scode );
-
 	ret = tree3.buildFromTCode( strtcode , false );
 	if( vok != ret ) return verrmsg(1, "Can't build tree from TCode");
 
@@ -49,7 +48,7 @@ std::string genOutFNameMix() {
 	std::string r = pfx + ".svg";
 	return r; }
 
-
+// -----------------------------------------------------------------------------
 void CalcTreeGfx	( VHTree & tree , VHTreeGfx & tgfx , LayerArea & larea );
 
 // -----------------------------------------------------------------------------

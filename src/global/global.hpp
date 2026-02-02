@@ -22,25 +22,26 @@ extern TreeGenParamsIn		iparams;
 extern TreeGenParamsOut		oparams;
 
 extern VHRect				gfxrect_ramka;
-extern VHRect				gfxrect_header;
 
 // x3 Layers
 
+extern VHRect				rectHeader1;
 extern VHRect				rectCaption1;
 extern LayerArea			layerarea1;
 extern VHRect				gfxrect_shadows1;
 extern VHRect				gfxrect_bitfield1;
 
-
+extern VHRect				rectHeader2;
 extern VHRect				rectCaption2;
 extern LayerArea			layerarea2;
 extern VHRect				gfxrect_shadows2;
 extern VHRect				gfxrect_bitfield2;
 
-
+extern VHRect				rectHeader3;
 extern VHRect				rectCaption3;
 extern LayerArea			layerarea3;
 extern VHRect				gfxrect_shadows3;
+extern VHRect				gfxrect_bitfield3;
 
 
 extern VHRect				gfxrect_spectrum;
