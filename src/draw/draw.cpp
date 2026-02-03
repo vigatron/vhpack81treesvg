@@ -9,8 +9,9 @@ using namespace std;
 // -------------------------------------------------------------------------------------------------
 
 // -------------------------------------------------------------------------------------------------
-static void svgrect( const VHRect & rect, int wdt, std::string color) {
+void svgrect( const VHRect & rect, int wdt, std::string color) {
 	svg.rect( rect.sx, rect.sy, rect.w, rect.h, wdt, color ); }
+
 
 // -------------------------------------------------------------------------------------------------
 int font_align_pixels(std::string str, int fntsize) {
@@ -44,6 +45,7 @@ void draw_caption( const VHRect & rect , std::string txt) {
 	int fnsize = rect.h * 0.3;
 	svg.text(x, y, txt, iparams.fntSans, fnsize, colors::lgray ); }
 
+
 // -------------------------------------------------------------------------------------------------
 void draw_tstamp() {
 
@@ -61,8 +63,8 @@ void draw_tstamp() {
 	string fnt = iparams.fntSans;
 	int x2 = gfxrect_ramka.ex - 170;
 	int y  = gfxrect_ramka.sy - 7;
-	svg.text(x2, y, buffer, fnt, 10, colors::lgray);
-}
+	svg.text(x2, y, buffer, fnt, 10, colors::lgray); }
+
 
 // -------------------------------------------------------------------------------------------------
 void draw_callparams() {
@@ -83,13 +85,24 @@ void draw_debug() {
 	svgrect( treearea[2].rectTree, 1, color );
 	svgrect( treearea[2].rectShadows, 1, color );
 	svgrect( treearea[2].rectBitfield,	1, color );
-	svgrect( treearea[2].rectDescript,	1, color );
+	svgrect( treearea[2].rectDescript,	1, color ); }
 
-}
 
 // -------------------------------------------------------------------------------------------------
 void draw_separator( const VHRect & r) {
 	svg.line( r.sx, r.midy(), r.ex, r.midy(), 2, colors::mgray, "5,5" ); }
+
+
+int  reidx(int idx) {
+	std::vector<int> arrrot = oparams.tblreidx;
+	for( int i=0; i < arrrot.size() ; i++ ) {
+		if( arrrot[i] == idx ) { return i; } }
+	return -1; }
+
+void replaceidxs() {
+	iparams.param_svzints.clear();
+	iparams.param_injected.clear();
+	iparams.param_cntrint = reidx(iparams.param_cntrint); }
 
 // -------------------------------------------------------------------------------------------------
 void RenderFinalDocument( int layscount ) {
@@ -127,6 +140,8 @@ void RenderFinalDocument( int layscount ) {
 		draw_separator		( a.rectSeparator );
 	}
 
+		replaceidxs();
+
 	{
 		TreeArea & a = treearea[2];
 		layerarea3.draw_layers_back( a.rectTree, layscount );
@@ -136,8 +151,13 @@ void RenderFinalDocument( int layscount ) {
 		draw_links			( tree3 , tree3gfx , tree3.cntall() );
 		draw_shadows		( tree3 , tree3gfx , a.rectShadows );
 		draw_elems			( tree3 , tree3gfx , tree3.cntall() , false );
+
 		draw_bitpath_back	( a.rectBitfield );
 		draw_bitpaths		( tree3, a.rectBitfield , false );
+
+		draw_bitpath_back	( a.rectDescript );
+		draw_reidxtbl		( a.rectDescript );
+
 		draw_separator		( a.rectSeparator );
 	}
 

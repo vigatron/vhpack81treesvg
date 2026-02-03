@@ -101,6 +101,7 @@ class VHTree {
 
 			std::vector<stnode> r = _autoscode;
 			dumpSCode("Direct SCode generated from Huffman : ", r);
+
 			for( int i = 1; i < r.size(); i++ ) { r[i].id = r[0].id - i; }
 			dumpSCode("Transf SCode generated from Huffman : ", r);
 
@@ -119,7 +120,8 @@ class VHTree {
 		int     getlay (int i) { return tarch.getlay (i); }
 		bool    getswap(int i) { return tarch.getswap(i); }
 
-		std::vector<stnode> scode() { return _scode; }
+		std::vector<stnode> scode() const { return _scode; }
+		std::vector<int> reidxtbl() const { return _reidxsyms; }
 
         std::string SCodeToText( std::vector<stnode> arr ) {
             std::string r;

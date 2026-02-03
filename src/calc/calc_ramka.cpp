@@ -42,7 +42,7 @@ static int svgcalc_treearea( TreeArea & treearea , int r , int w , int	layscount
 	r += hh_layers; r += spcrh * 2;
 
 	// #1 высота теней
-	r += 3 * spcrh;
+	r += 2 * spcrh;
 	treearea.rectShadows.set(x, r, w, hh_shadows);
 	r += hh_shadows;
 	r += spcrh;

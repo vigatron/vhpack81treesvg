@@ -2,6 +2,23 @@
 
 using namespace std;
 
+
+// -----------------------------------------------------------------------------
+
+static void draw_prop ( const VHRect & rect, VHTree & tree , VHTreeGfx & tgfx, int idx ) {
+
+	// Text props
+	int fntsz	= 10;
+	std::string props = "0:0";
+	int fdx		= font_align_pixels(props, fntsz);
+	int tx		= rect.sx + rect.w/2 - fdx + 1; //  - fdx;
+	int ty		= rect.sy + fntsz + 1;
+
+	svg.text( tx, ty, props, iparams.fntSans, fntsz, "#C0C0C0" );
+}
+
+// -----------------------------------------------------------------------------
+
 void draw_shadows( VHTree & tree , VHTreeGfx & tgfx , VHRect & rect ) {
 
 	int idx = tree.rootidx();
@@ -26,11 +43,13 @@ void draw_shadows( VHTree & tree , VHTreeGfx & tgfx , VHRect & rect ) {
 
 		//
 		int qw = 30;
-		int yq = rect.sy - 1.6f * qw;
-
 		std::string strk = colors::sgray; // "gray"
+		int qx = x - qw/2;
+		int qy = rect.sy - 1.3f * qw;
+		svg.rect( qx, qy, qw, qw/2, 1, strk, "white" , 4 );
 
-		svg.rect( x - qw/2, yq, qw, qw, 1, strk, "white" , 4 );
-		
+		VHRect proprect( qx, qy, qw, qw/2 );
+		draw_prop( proprect , tree , tgfx, idx );
+
 		idx--; }
 }

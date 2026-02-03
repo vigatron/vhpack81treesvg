@@ -52,5 +52,5 @@ void draw_bitpath_backline(const VHRect & rect , int rown, std::string fcol) {
 // -------------------------------------------------------------------------------------------------
 void draw_bitpath_back( const VHRect & rect ) {
 	for(int i=0; i<SYMSINCON; i++) {
-		std::string bcol = (i%2)? "#FAFAFA" : "#F4F4F4";
+		std::string bcol = (i%2)? "#F8F8F8" : "#F4F4F4";
 		draw_bitpath_backline(rect , i, bcol); } }
