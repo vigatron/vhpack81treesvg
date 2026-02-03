@@ -120,6 +120,18 @@ class VHTree {
 		int     getlay (int i) { return tarch.getlay (i); }
 		bool    getswap(int i) { return tarch.getswap(i); }
 
+		// Shadow proportions related
+		int		cnt_from_left(int idx) const {
+			int r = 0, curidx = idx;
+			while( tarch.isnode(curidx) ) { curidx = tarch.getleft(curidx); r++; }
+			return r; }
+
+		int		cnt_from_righ(int idx) const {
+			int r = 0, curidx = idx;
+			while( tarch.isnode(curidx) ) { curidx = tarch.getrigh(curidx); r++; }
+			return r; }
+
+
 		std::vector<stnode> scode() const { return _scode; }
 		std::vector<int> reidxtbl() const { return _reidxsyms; }
 

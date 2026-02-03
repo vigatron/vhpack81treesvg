@@ -5,11 +5,21 @@ using namespace std;
 
 // -----------------------------------------------------------------------------
 
+static std::string getprops( VHTree & tree , int idx) {
+	char buffer[32];
+	snprintf(buffer, sizeof(buffer), "%d:%d",
+		tree.cnt_from_left(idx) ,
+		tree.cnt_from_righ(idx) );
+	std::string ret = buffer;
+	return ret; }
+
+// -----------------------------------------------------------------------------
+
 static void draw_prop ( const VHRect & rect, VHTree & tree , VHTreeGfx & tgfx, int idx ) {
 
 	// Text props
 	int fntsz	= 10;
-	std::string props = "0:0";
+	std::string props = getprops( tree, idx);
 	int fdx		= font_align_pixels(props, fntsz);
 	int tx		= rect.sx + rect.w/2 - fdx + 1; //  - fdx;
 	int ty		= rect.sy + fntsz + 1;
