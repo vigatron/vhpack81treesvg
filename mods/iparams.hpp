@@ -19,6 +19,11 @@ class TreeGenParamsIn {
 		int					param_cntrint;		// Container idx
 		int					param_mix;			// Mixed mode
 
+		// 1 - TCode
+		// 2 - SPC
+		// 3 - Mix mode
+		int					genmode;
+
 		// int	optAutoRotate;
 		// Mode : Tree created from Spectrum
 		// bool    from_spectrum     = false;

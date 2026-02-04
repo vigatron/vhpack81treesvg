@@ -53,9 +53,6 @@ static int svgcalc_treearea( TreeArea & treearea , int r , int w , int	layscount
 
 	r += hh_bitfield; r += spcrh;
 
-	treearea.rectSeparator.set( x, r, w , spcrh );
-	r += spcrh*2;
-
 	return r;
 }
 
@@ -68,17 +65,23 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 
 	r += spcrh;
 
-	r = svgcalc_treearea( treearea[0] , r , w , layscount );
-	r = svgcalc_treearea( treearea[1] , r , w , layscount );
-	r = svgcalc_treearea( treearea[2] , r , w , layscount );
-
 	// -----------------------------------------------------------------------------
+	r = svgcalc_treearea( treearea[0] , r , w , layscount );
+
+	if( iparams.genmode == 3 ) {
+		r = svgcalc_treearea( treearea[1] , r , w , layscount );
+		treearea[1].rectSeparator.set( x, r, w , spcrh ); r += spcrh*2;
+
+		r = svgcalc_treearea( treearea[2] , r , w , layscount );
+		treearea[2].rectSeparator.set( x, r, w , spcrh ); r += spcrh*2;
+	}
 
 	// Spectrum
-	int hh_spectrum = 256/2;
-	gfxrect_spectrum.set(x, r, w, hh_spectrum);
-	gfxrect_spectrum.shrink(20, 0);
-	r += hh_spectrum;
+	if( iparams.genmode > 1 ) {	
+		int hh_spectrum = 256/2;
+		gfxrect_spectrum.set(x, r, w, hh_spectrum);
+		gfxrect_spectrum.shrink(20, 0);
+		r += hh_spectrum; }
 
 	r += spcrh;
 

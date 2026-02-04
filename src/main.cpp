@@ -27,28 +27,48 @@ verr check_s( VHArgsParser & argsparser ) {
 	return verror(1); }
 
 // -----------------------------------------------------------------------------
+verr SetRunMode() {
+
+	int sztcode = iparams.param_tcode.size();
+	int szspc	= iparams.param_spcints.size();
+
+	if( !sztcode && !szspc )
+			return verrmsg(100, "Need TCode or SPC array to process");
+
+	// Default mode : tcode or spcmode ?
+	if(iparams.param_mix == -1) {
+		if( sztcode )			{ iparams.genmode = 1; }
+		else if( szspc )		{ iparams.genmode = 2; }
+	} else { // Mix mode
+		iparams.genmode = 3;
+		if(!szspc)
+			return verrmsg(100, "Need SPC array to process"); }
+
+	return vok; }
+
+// -----------------------------------------------------------------------------
 int main( int argc, char * argv[] ) {
 
-	// Parse args : input values or TCode
 	VHArgsParser argsparser;
 
+	// Parse command line params
 	verr rparse = ParseIParams( argc, argv, argsparser );
-	if( vok != rparse) return 1;
+	if( vok != rparse ) return 1;
 
-	//
+	// Recognize mode and check params
+	verr rmode = SetRunMode();
+	if( vok != rmode )
+		return verrmsg(80, "RunMode issue, input parameters maybe");
+
 	verr ret = 1;
-
-	//
-	if( iparams.param_mix ) {
-		ret = GenerateMixMode();
-	} else {
-		// ret = argsparser.checkopt("v") ? GenerateSpcMode() : GenerateTMode();
-		// if(! iparams.param_tcode.size() || !check_str_ishex(iparams.param_tcode)) { 
-		// 	return verrmsg(1, "Invalid TCode"); }
-		ret = verror(100);
+	switch( iparams.genmode ) {
+		case 1 : { ret = GenerateTcdMode(); } break;
+		case 2 : { ret = GenerateSpcMode(); } break;
+		case 3 : { ret = GenerateMixMode(); } break;
+		default: { }
 	}
 
-	//
+	// Save results
 	if(vok == ret) {
 		svg.savetosvg( oparams.outfname ); }
 	else {
@@ -65,4 +85,29 @@ int main( int argc, char * argv[] ) {
 // Ramka up
 // BPath rates %
 
+// -----------------------------------------------------------------------------
+// verr GenerateTMode() { verr ret = build_from_tcode(); return ret; }
 
+// -----------------------------------------------------------------------------
+// verr build_from_tcode() { return verror(1); CalculateTreeGfx(); RenderFinalDocument(); }
+
+// -----------------------------------------------------------------------------
+// verr GenerateSpcMode() { verr ret = build_from_spc (); return ret; }
+
+// -----------------------------------------------------------------------------
+// verr build_from_spc() {
+// 	// Generate file name
+// 	std::string fname = genoutfname(false);
+// 	// Save results
+// 	svg.savetosvg( fname );
+// 	return vok; }
+
+// ret = argsparser.checkopt("v") ? GenerateSpcMode() : GenerateTMode();
+// if(! iparams.param_tcode.size() || !check_str_ishex(iparams.param_tcode)) { 
+// 	return  }
+
+// iparams.svg_layerh
+// iparams.svg_elm_width/2
+
+// int	idx			= tree.rootidx();
+// int	nodew		= oparams.gfx_nodewl[ idx ] + oparams.gfx_nodewr[ idx ];

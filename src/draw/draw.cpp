@@ -114,51 +114,55 @@ void RenderFinalDocument( int layscount ) {
 
 	{
 		TreeArea & a = treearea[0];
+		bool statflag = iparams.genmode != 1;
+
 		layerarea1.draw_layers_back( a.rectTree, layscount );
 
 		draw_scode			( tree1 , a.rectHeader );
 		draw_caption		( a.rectCaption, "1) Сортировка входных данных");
 		draw_links			( tree1 , tree1gfx , tree1.cntall() );
 		draw_shadows		( tree1 , tree1gfx , a.rectShadows );
-		draw_elems			( tree1 , tree1gfx , tree1.cntall() , true );
+		draw_elems			( tree1 , tree1gfx , tree1.cntall() , statflag );
 		draw_bitpath_back	( a.rectBitfield );
-		draw_bitpaths		( tree1 , a.rectBitfield , true );
+		draw_bitpaths		( tree1 , a.rectBitfield , statflag );
 		draw_separator		( a.rectSeparator );
 	}
 
-	{
-		TreeArea & a = treearea[1];
-		layerarea2.draw_layers_back( a.rectTree, layscount );
+	if( iparams.genmode == 3 ) {
 
-		draw_scode			( tree2 , a.rectHeader );
-		draw_caption		( a.rectCaption, "2) Трансформация");
-		draw_links			( tree2 , tree2gfx , tree2.cntall() );
-		draw_shadows		( tree2 , tree2gfx , a.rectShadows );
-		draw_elems			( tree2 , tree2gfx , tree2.cntall() , true );
-		draw_bitpath_back	( a.rectBitfield );
-		draw_bitpaths		( tree2, a.rectBitfield , true );
-		draw_separator		( a.rectSeparator );
-	}
+		{
+			TreeArea & a = treearea[1];
+			layerarea2.draw_layers_back( a.rectTree, layscount );
 
-		replaceidxs();
+			draw_scode			( tree2 , a.rectHeader );
+			draw_caption		( a.rectCaption, "2) Трансформация");
+			draw_links			( tree2 , tree2gfx , tree2.cntall() );
+			draw_shadows		( tree2 , tree2gfx , a.rectShadows );
+			draw_elems			( tree2 , tree2gfx , tree2.cntall() , true );
+			draw_bitpath_back	( a.rectBitfield );
+			draw_bitpaths		( tree2, a.rectBitfield , true );
+			draw_separator		( a.rectSeparator );
+		}
+			replaceidxs();
+		{
+			TreeArea & a = treearea[2];
+			layerarea3.draw_layers_back( a.rectTree, layscount );
 
-	{
-		TreeArea & a = treearea[2];
-		layerarea3.draw_layers_back( a.rectTree, layscount );
+			draw_scode			( tree3 , a.rectHeader );
+			draw_caption		( a.rectCaption, "3) Префиксный формат дерева");
+			draw_links			( tree3 , tree3gfx , tree3.cntall() );
+			draw_shadows		( tree3 , tree3gfx , a.rectShadows );
+			draw_elems			( tree3 , tree3gfx , tree3.cntall() , false );
 
-		draw_scode			( tree3 , a.rectHeader );
-		draw_caption		( a.rectCaption, "3) Префиксный формат дерева");
-		draw_links			( tree3 , tree3gfx , tree3.cntall() );
-		draw_shadows		( tree3 , tree3gfx , a.rectShadows );
-		draw_elems			( tree3 , tree3gfx , tree3.cntall() , false );
+			draw_bitpath_back	( a.rectBitfield );
+			draw_bitpaths		( tree3, a.rectBitfield , false );
 
-		draw_bitpath_back	( a.rectBitfield );
-		draw_bitpaths		( tree3, a.rectBitfield , false );
+			draw_bitpath_back	( a.rectDescript );
+			draw_reidxtbl		( a.rectDescript );
 
-		draw_bitpath_back	( a.rectDescript );
-		draw_reidxtbl		( a.rectDescript );
+			draw_separator		( a.rectSeparator );
+		}
 
-		draw_separator		( a.rectSeparator );
 	}
 
 	draw_tstamp();
