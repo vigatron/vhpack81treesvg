@@ -12,6 +12,10 @@ static void splitrecth( const VHRect r, VHRect & r1, VHRect & r2 , int dx = 0 ) 
 	r1.set	( r.sx + dx, r.sy, r.w/2 - dx*2, r.h );
 	r2.set	( r.sx + r.w/2 + dx, r.sy, r.w/2 - dx*2, r.h); }
 
+// -----------------------------------------------------------------------------
+static void splitrectv( const VHRect r, VHRect & r1, VHRect & r2 , int dy = 0 ) {
+	r1.set	( r.sx, r.sy + dy, r.w, r.h / 2 - 2*dy );
+	r2.set	( r.sx, r.sy + r.h / 2 + dy, r.w, r.h / 2 - 2 * dy ); }
 
 // -----------------------------------------------------------------------------
 static int svgcalc_treearea( TreeArea & treearea , int r , int w , int	layscount ) {
@@ -24,27 +28,26 @@ static int svgcalc_treearea( TreeArea & treearea , int r , int w , int	layscount
 	int		hh_shadows	= iparams.svg_shadowh * layscount;
 	int		hh_bitfield	= iparams.svg_bitfieldh * 8;
 
-	// VHRect		arearect;
-	// layerarea1.set( arearect, layscount );
-	// layerarea2.set( arearect, layscount );
-	// layerarea3.set( arearect, layscount );
-
 	// -----------------------------------------------------------------------------
 
 	// #1 Header + Caption
-	{	VHRect rect( x, r, w, hh_capth );
-		splitrecth( rect , treearea.rectHeader , treearea.rectCaption, xdx ); }
+	{
+		VHRect srcrect( x, r, w, hh_capth );
+		VHRect rightrect;
+
+		splitrecth ( srcrect , treearea.rectHeader , rightrect, xdx );
+		splitrectv ( rightrect , treearea.rectCaptionLine1 , treearea.rectCaptionLine2 );
+	}
 
 	r += hh_capth; r += spcrh * 2;
 
 	// #1 Tree
-	treearea.rectTree.set(x, r, w, hh_layers);
-	r += hh_layers; r += spcrh * 2;
+	treearea.rectTree.set(x, r, w, hh_layers); r += hh_layers;
+	r += spcrh * 2;
 
 	// #1 высота теней
 	r += 2 * spcrh;
-	treearea.rectShadows.set(x, r, w, hh_shadows);
-	r += hh_shadows;
+	treearea.rectShadows.set(x, r, w, hh_shadows); r += hh_shadows;
 	r += spcrh;
 
 	// #1 высота битовых полей
@@ -67,17 +70,17 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 
 	// -----------------------------------------------------------------------------
 	r = svgcalc_treearea( treearea[0] , r , w , layscount );
+	treearea[0].rectSeparator.set( x, r, w , spcrh ); r += spcrh*2;
+
+	r = svgcalc_treearea( treearea[1] , r , w , layscount );
 
 	if( iparams.genmode == 3 ) {
-		r = svgcalc_treearea( treearea[1] , r , w , layscount );
 		treearea[1].rectSeparator.set( x, r, w , spcrh ); r += spcrh*2;
-
 		r = svgcalc_treearea( treearea[2] , r , w , layscount );
-		treearea[2].rectSeparator.set( x, r, w , spcrh ); r += spcrh*2;
-	}
+		treearea[2].rectSeparator.set( x, r, w , spcrh ); r += spcrh*2; }
 
 	// Spectrum
-	if( iparams.genmode > 1 ) {	
+	if( iparams.genmode > 1 ) {
 		int hh_spectrum = 256/2;
 		gfxrect_spectrum.set(x, r, w, hh_spectrum);
 		gfxrect_spectrum.shrink(20, 0);

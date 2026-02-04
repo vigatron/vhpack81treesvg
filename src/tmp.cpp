@@ -1,3 +1,31 @@
+// -----------------------------------------------------------------------------
+// verr GenerateTMode() { verr ret = build_from_tcode(); return ret; }
+
+// -----------------------------------------------------------------------------
+// verr build_from_tcode() { return verror(1); CalculateTreeGfx(); RenderFinalDocument(); }
+
+// -----------------------------------------------------------------------------
+// verr GenerateSpcMode() { verr ret = build_from_spc (); return ret; }
+
+// -----------------------------------------------------------------------------
+// verr build_from_spc() {
+// 	// Generate file name
+// 	std::string fname = genoutfname(false);
+// 	// Save results
+// 	svg.savetosvg( fname );
+// 	return vok; }
+
+// ret = argsparser.checkopt("v") ? GenerateSpcMode() : GenerateTMode();
+// if(! iparams.param_tcode.size() || !check_str_ishex(iparams.param_tcode)) { 
+// 	return  }
+
+// iparams.svg_layerh
+// iparams.svg_elm_width/2
+
+// int	idx			= tree.rootidx();
+// int	nodew		= oparams.gfx_nodewl[ idx ] + oparams.gfx_nodewr[ idx ];
+
+
 // std::string strtcode, std::string blkn, std::vector<int> rotints
 
 // extern TreeGenParamsIn  iparams;

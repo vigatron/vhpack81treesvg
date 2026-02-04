@@ -6,35 +6,39 @@
 verr GenerateBuildTrees() {
 
 	verr ret;
+	bool rotation = false;
 
 	if( iparams.genmode == 1 ) {
 
-		ret = tree1.buildFromTCode( iparams.param_tcode , false );
-		if( vok != ret )
-			return verrmsg(91, "Can't build tree from TCode");
+		ret = tree1.buildFromTCode( iparams.param_tcode , rotation );
+		if( vok != ret ) return verrmsg(91, "Can't build tree from TCode");
+		rotation = true;
+		ret = tree2.buildFromTCode( iparams.param_tcode , rotation );
+		if( vok != ret ) return verrmsg(92, "Can't build tree from TCode");
 
 	} else if( iparams.genmode == 2 ) { 
 
-		ret = tree1.buildFromSpectrum( iparams.param_spcints , false );
-		if(vok != ret)
-			return verrmsg(92, "build tree from spectrum failed");
+		ret = tree1.buildFromSpectrum( iparams.param_spcints , rotation );
+		if(vok != ret) return verrmsg(93, "build tree from spectrum failed");
+		rotation = true;
+		ret = tree2.buildFromSpectrum( iparams.param_spcints , rotation );
+		if(vok != ret) return verrmsg(94, "build tree from spectrum failed");
 
 	} 
 	else if( iparams.genmode == 3 ) {
 
-		ret = tree1.buildFromSpectrum( iparams.param_spcints , false );
-		if(vok != ret) return verrmsg(21, "build tree from spectrum failed");
-
-		ret = tree2.buildFromSpectrum( iparams.param_spcints, true );
-		if(vok != ret) return verrmsg(22, "build tree from spectrum rotated failed");
+		ret = tree1.buildFromSpectrum( iparams.param_spcints , rotation );
+		if(vok != ret) return verrmsg(96, "build tree from spectrum failed");
+		rotation = true;
+		ret = tree2.buildFromSpectrum( iparams.param_spcints, rotation );
+		if(vok != ret) return verrmsg(97, "build tree from spectrum rotated failed");
 
 		std::vector<VHTree::stnode> scode = tree2.BuildSCodeFromHuffman();
 		std::string strtcode = tree2.SCodeToTCode( scode );
 		oparams.tblreidx = tree2.reidxtbl();
-
-		ret = tree3.buildFromTCode( strtcode , false );
-		if( vok != ret )
-			return verrmsg(93, "Can't build tree from TCode");
+		rotation = false;
+		ret = tree3.buildFromTCode( strtcode , rotation );
+		if( vok != ret ) return verrmsg(98, "Can't build tree from TCode");
 
 	} else {
 		return verrmsg(110, "Invalid genmode"); }
@@ -49,12 +53,9 @@ verr GenerateCalculateSizes() {
 	int	node_spacr	= node_xdist / 2;
 
 	tree1gfx.CalculateTreeGfx( tree1 , node_xdist , node_spacr );
-
+	tree2gfx.CalculateTreeGfx( tree2 , node_xdist , node_spacr );
 	if( iparams.genmode == 3 ) {
-		tree2gfx.CalculateTreeGfx( tree2 , node_xdist , node_spacr );
-		tree3gfx.CalculateTreeGfx( tree3 , node_xdist , node_spacr );
-	}
-
+		tree3gfx.CalculateTreeGfx( tree3 , node_xdist , node_spacr ); }
 	return vok; }
 
 // -----------------------------------------------------------------------------
@@ -64,11 +65,9 @@ verr GenerateCalculateTreesGfx() {
 
 	// Calc tree nodes coords 
 	CalcTreeGfx( treearea[0].rectTree, tree1 , tree1gfx , layerarea1 , layscount );
-
+	CalcTreeGfx( treearea[1].rectTree, tree2 , tree2gfx , layerarea2 , layscount );
 	if( iparams.genmode == 3 ) {
-		CalcTreeGfx( treearea[1].rectTree, tree2 , tree2gfx , layerarea2 , layscount );
-		CalcTreeGfx( treearea[2].rectTree, tree3 , tree3gfx , layerarea3 , layscount );
-	}
+		CalcTreeGfx( treearea[2].rectTree, tree3 , tree3gfx , layerarea3 , layscount ); }
 
 	return vok; }
 

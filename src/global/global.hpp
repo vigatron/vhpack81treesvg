@@ -1,12 +1,12 @@
 #pragma once
 
 #include "strtools.hpp"
-#include "vhrect.hpp"
 #include "tree.hpp"
 #include "svg.hpp"
 
 #include "layerarea.hpp"
 #include "treegfx.hpp"
+#include "treearea.hpp"
 
 
 extern VHTree				tree1;
@@ -23,16 +23,6 @@ extern TreeGenParamsOut		oparams;
 
 extern VHRect				gfxrect_ramka;
 
-class TreeArea {
-	public:
-		VHRect				rectHeader;
-		VHRect				rectCaption;
-		VHRect				rectTree;
-		VHRect				rectShadows;
-		VHRect				rectBitfield;
-		VHRect				rectDescript;
-		VHRect				rectSeparator;
-};
 
 extern LayerArea			layerarea1;
 extern LayerArea			layerarea2;
