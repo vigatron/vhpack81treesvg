@@ -74,8 +74,10 @@ static int svgcalc_ramka_h( int w , int	layscount ) {
 
 	r = svgcalc_treearea( treearea[1] , r , w , layscount );
 
-	if( iparams.genmode == 3 ) {
+	if( iparams.genmode > 1 )
 		treearea[1].rectSeparator.set( x, r, w , spcrh ); r += spcrh*2;
+
+	if( iparams.genmode == 3 ) {
 		r = svgcalc_treearea( treearea[2] , r , w , layscount );
 		treearea[2].rectSeparator.set( x, r, w , spcrh ); r += spcrh*2; }
 
