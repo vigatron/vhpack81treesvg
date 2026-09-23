@@ -1,21 +1,19 @@
-cmake_minimum_required(VERSION 3.5)
-project(MyQtProject CXX)
+cmake_minimum_required(VERSION 3.16)
 
-# set(CMAKE_BUILD_TYPE "Release")
-# set(CMAKE_BUILD_TYPE "MinSizeRel")
+project(vhpack81treesvg VERSION 0.0.1 LANGUAGES CXX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(PRJNAME pack81treesvg)
 
 include_directories(
-	.
-	..
-	mods
-	mods/colors
-	mods/strtools
-	mods/layerarea
-	mods/tree
-	mods/svg
+	src/mods
+	src/mods/colors
+	src/mods/strtools
+	src/mods/layerarea
+	src/mods/tree
+	src/mods/svg
 
 	src/calc
 	src/draw
@@ -34,13 +32,13 @@ file( GLOB_RECURSE source_list_mods
 	src/generate/*
 	src/*
 
-	mods/tree/*
-	mods/colors/*
-	mods/strtools/*
-	mods/layerarea/*
-	mods/svg/*
-	mods/*.cpp mods/*.hpp
+	src/mods/tree/*
+	src/mods/colors/*
+	src/mods/strtools/*
+	src/mods/layerarea/*
+	src/mods/svg/*
+	src/mods/*.cpp
+    src/mods/*.hpp
 )
 
-add_executable(${PRJNAME} src/main.cpp ${source_list_mods} )
-add_custom_command(TARGET ${PRJNAME} POST_BUILD COMMAND cp "${PROJECT_BINARY_DIR}/${PRJNAME}"     "$ENV{HOME}/bin/${PRJNAME}"        )
+add_executable(${PROJECT_NAME} src/main.cpp ${source_list_mods} )
