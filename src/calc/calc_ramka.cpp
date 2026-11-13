@@ -1,5 +1,8 @@
 #include "global.hpp"
 
+extern TreeGenParamsIn		iparams;
+
+
 // -----------------------------------------------------------------------------
 static int svgcalc_ramka_w( int width ) {
 	int minw    = iparams.svg_ramka_min_w;

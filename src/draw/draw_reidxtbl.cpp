@@ -1,5 +1,8 @@
 #include "draw.hpp"
 
+extern TreeGenParamsIn		iparams;
+
+
 void draw_reidxtbl( const VHRect & rect ) {
 	
 	// svgrect( rect, 1, "red");

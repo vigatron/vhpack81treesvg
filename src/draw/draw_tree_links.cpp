@@ -1,5 +1,7 @@
 #include "draw.hpp"
 
+extern TreeGenParamsIn		iparams;
+
 
 // -------------------------------------------------------------------------------------------------
 static bool isbind( int idx1, int idx2 ) {

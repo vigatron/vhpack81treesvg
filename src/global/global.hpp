@@ -18,7 +18,6 @@ extern VHTreeGfx			tree2gfx;
 extern VHTreeGfx			tree3gfx;
 
 
-extern TreeGenParamsIn		iparams;
 extern TreeGenParamsOut		oparams;
 
 extern VHRect				gfxrect_ramka;

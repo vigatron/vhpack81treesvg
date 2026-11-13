@@ -1,5 +1,8 @@
 #include "draw.hpp"
 
+extern TreeGenParamsIn		iparams;
+
+
 // -------------------------------------------------------------------------------------------------
 void draw_ramka() {
 

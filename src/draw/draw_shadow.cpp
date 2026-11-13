@@ -2,6 +2,8 @@
 
 using namespace std;
 
+extern TreeGenParamsIn		iparams;
+
 
 // -----------------------------------------------------------------------------
 

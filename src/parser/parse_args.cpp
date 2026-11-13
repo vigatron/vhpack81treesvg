@@ -2,6 +2,8 @@
 #include "args.hpp"
 #include "parse_args.hpp"
 
+#include <filesystem>
+
 using namespace std;
 
 // -----------------------------------------------------------------------------
@@ -88,7 +90,6 @@ int VHParseArgs::ParseInt(std::string param)
 // -----------------------------------------------------------------------------
 verr VHParseArgs::ParseIParams(int argc, char *argv[], VHArgsParser &argsparser)
 {
-
     argsparser.setappname("pack81treesvg");
 
     argsparser.addopt("t", "Build from TCode");
@@ -100,7 +101,7 @@ verr VHParseArgs::ParseIParams(int argc, char *argv[], VHArgsParser &argsparser)
     argsparser.addopt("prtn", "Part  number ( optional )");
     argsparser.addopt("blkn", "Block number ( optional )");
     argsparser.addopt("mix", "Mixed mode");
-    argsparser.addopt("-outfolder", "Output Folder");
+    argsparser.addopt("outfolder", "Output Folder");
 
     if (vok != argsparser.ParseArgs(argc, argv))
     {
@@ -108,20 +109,6 @@ verr VHParseArgs::ParseIParams(int argc, char *argv[], VHArgsParser &argsparser)
         argsparser.Usage();
         return 1;
     }
-
-    //
-    iparams.callparams = argsparser.listparams();
-
-    iparams.param_tcode = argsparser.getopt("t");
-    iparams.param_partn = argsparser.getopt("prtn");
-    iparams.param_blockn = argsparser.getopt("blkn");
-
-    iparams.param_spcints = ParseSpectrum(argsparser.getopt("v"));
-    iparams.param_rotints = ParseRotation(argsparser.getopt("w"));
-    iparams.param_svzints = ParseSvyazki(argsparser.getopt("z"));
-    iparams.param_injected = ParseInjected(argsparser.getopt("injc"));
-    iparams.param_cntrint = ParseInt(argsparser.getopt("cntr"));
-    iparams.param_mix = ParseInt(argsparser.getopt("mix"));
 
     return vok;
 }

@@ -2,6 +2,9 @@
 #include "calc.hpp"
 #include "generate.hpp"
 
+extern TreeGenParamsIn		iparams;
+
+
 // -----------------------------------------------------------------------------
 verr GenerateBuildTrees() {
 

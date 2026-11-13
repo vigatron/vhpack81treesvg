@@ -12,9 +12,10 @@ public:
 
     verr ParseIParams(int argc, char *argv[], VHArgsParser &argsparser);
 
-private:
-
     /** @brief Безопасное преобразование строки в int (-1 для пустой). */
     int ParseInt(std::string param);
+
+private:
+
 
 };

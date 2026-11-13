@@ -5,7 +5,11 @@
 
 #include "app_version.hpp"
 
+#include <filesystem>
+
 using namespace std;
+
+extern TreeGenParamsIn		iparams;
 
 
 verr GenerateMixMode();
@@ -13,7 +17,7 @@ verr GenerateSpcMode();
 verr GenerateTcdMode();
 
 // -----------------------------------------------------------------------------
-verr check_t( VHArgsParser & argsparser ) {
+static verr check_t( VHArgsParser & argsparser ) {
 	if( !argsparser.checkopt("t") ) {
 		std::cout << "No valid tcode data : "
 			<< argsparser.listparams() << std::endl;
@@ -21,7 +25,7 @@ verr check_t( VHArgsParser & argsparser ) {
 	return verror(1); }
 
 // -----------------------------------------------------------------------------
-verr check_s( VHArgsParser & argsparser ) {
+static verr check_s( VHArgsParser & argsparser ) {
 	if( !argsparser.checkopt("s") ) {
 		std::cout << "No valid spectrum data : "
 			<< argsparser.listparams() << std::endl;
@@ -29,7 +33,7 @@ verr check_s( VHArgsParser & argsparser ) {
 	return verror(1); }
 
 // -----------------------------------------------------------------------------
-verr SetRunMode() {
+static verr SetRunMode() {
 
 	int sztcode = iparams.param_tcode.size();
 	int szspc	= iparams.param_spcints.size();
@@ -49,6 +53,47 @@ verr SetRunMode() {
 	return vok; }
 
 // -----------------------------------------------------------------------------
+static std::string CheckOutFolder(const std::string & folder)
+{
+    std::string r;
+
+   // Пустая строка - сразу ошибка
+    if (folder.empty())
+        return std::string();
+
+    std::error_code ec;
+    std::filesystem::path p(folder);
+
+    // 1. Если папка уже существует - возвращаем путь
+    if (std::filesystem::is_directory(p, ec))
+    {
+        if (ec)
+            return std::string();
+        return folder;
+    }
+
+    // 2. Если путь существует, но это не папка (файл/симлинк на файл и т.п.) - ошибка
+    if (std::filesystem::exists(p, ec))
+        return std::string();
+    if (ec)
+        return std::string();
+
+    // 3. Папки нет - пробуем создать её вместе со всеми родительскими
+    ec.clear();
+    std::filesystem::create_directories(p, ec);
+    if (ec)
+        return std::string();
+
+    // Дополнительная проверка, что после создания это действительно директория
+    if (!std::filesystem::is_directory(p, ec) || ec)
+        return std::string();
+
+    // 4. Успех
+    return folder;
+
+}
+
+// -----------------------------------------------------------------------------
 int main( int argc, char * argv[] ) {
 
     if(argc == 2)
@@ -63,6 +108,30 @@ int main( int argc, char * argv[] ) {
 	VHParseArgs pargs;
 	verr rparse = pargs.ParseIParams( argc, argv, argsparser );
 	if( vok != rparse ) return 1;
+
+    //
+    iparams.callparams = argsparser.listparams();
+
+    iparams.param_tcode = argsparser.getopt("t");
+    iparams.param_partn = argsparser.getopt("prtn");
+    iparams.param_blockn = argsparser.getopt("blkn");
+
+    iparams.param_spcints = pargs.ParseSpectrum(argsparser.getopt("v"));
+    iparams.param_rotints = pargs.ParseRotation(argsparser.getopt("w"));
+    iparams.param_svzints = pargs.ParseSvyazki(argsparser.getopt("z"));
+    iparams.param_injected = pargs.ParseInjected(argsparser.getopt("injc"));
+    iparams.param_cntrint = pargs.ParseInt(argsparser.getopt("cntr"));
+    iparams.param_mix = pargs.ParseInt(argsparser.getopt("mix"));
+
+    //
+    {
+        iparams.param_outfolder = argsparser.getopt("outfolder");
+        if(iparams.param_outfolder.size()) {
+            std::string strCheck = CheckOutFolder(iparams.param_outfolder);
+            if(!strCheck.size())
+                return 100;
+        }
+    }
 
 	// Recognize mode and check params
 	verr rmode = SetRunMode();
