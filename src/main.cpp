@@ -60,7 +60,8 @@ int main( int argc, char * argv[] ) {
 	VHArgsParser argsparser;
 
 	// Parse command line params
-	verr rparse = ParseIParams( argc, argv, argsparser );
+	VHParseArgs pargs;
+	verr rparse = pargs.ParseIParams( argc, argv, argsparser );
 	if( vok != rparse ) return 1;
 
 	// Recognize mode and check params
