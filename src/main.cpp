@@ -3,6 +3,8 @@
 #include "parse_args.hpp"
 #include "calc.hpp"
 
+#include "app_version.hpp"
+
 using namespace std;
 
 
@@ -48,6 +50,12 @@ verr SetRunMode() {
 
 // -----------------------------------------------------------------------------
 int main( int argc, char * argv[] ) {
+
+    if(argc == 2)
+        if( std::string(argv[1]) == "--version") {
+            std::cout << APP_VERSION << std::endl;
+            std::exit(0);
+        }
 
 	VHArgsParser argsparser;
 

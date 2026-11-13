@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 3.16)
 
-project(vhpack81treesvg VERSION 0.0.1 LANGUAGES CXX)
+project(vhpack81treesvg VERSION 0.0.2 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/app_version.hpp.in
+    ${CMAKE_CURRENT_BINARY_DIR}/generated/app_version.hpp
+    @ONLY
+)
 
 
 include_directories(
@@ -41,4 +47,10 @@ file( GLOB_RECURSE source_list_mods
     src/mods/*.hpp
 )
 
+
 add_executable(${PROJECT_NAME} src/main.cpp ${source_list_mods} )
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}/generated
+)
+
