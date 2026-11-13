@@ -4,6 +4,9 @@ using namespace std;
 
 #define SYMSINCON 8
 
+extern TreeGenParamsIn		iparams;
+
+
 static VHRect   rectrows[SYMSINCON];
 static int      symsincol    = SYMSINCON;
 

@@ -4,6 +4,8 @@
 
 `vhpack81treesvg` is a small C++17 experimental tool for building, transforming and visualizing binary coding trees.
 
+Revision: 0.0.2
+
 The project was created as a development and analysis utility around the `VHPack81` / `VHPack` data representation and related tree structures.
 
 The main idea is simple:
@@ -31,6 +33,63 @@ The main idea is simple:
 The program does not try to be a general-purpose graph drawing framework.
 
 It is a specialized engineering tool where the **internal tree representation is more important than the final picture**.
+
+---
+
+## Command line usage
+
+The `vhpack81treesvg` executable is controlled through a compact command-line interface.
+
+The built-in parser prints its own usage reference:
+
+```text
+USAGE : pack81treesvg [... params ...]
+	-t	Build from TCode
+	-v	Build from spectrum values, for example '1.2.3'
+	-w	Rotate nodes, for example '1^2^3'
+	-z	Bind nodes, for example '1.2,3.4'
+	-injc	Injected nodes, for example '19.21'
+	-cntr	Container number
+	-prtn	Part number ( optional )
+	-blkn	Block number ( optional )
+	-mix	Mixed mode
+```
+
+### Available options
+
+* `-t` — Build from TCode.
+* `-v` — Build from spectrum values, for example `1.2.3`.
+* `-w` — Rotate nodes, for example `1^2^3`.
+* `-z` — Bind nodes, for example `1.2,3.4`.
+* `-injc` — Injected nodes, for example `19.21`.
+* `-cntr` — Container number.
+* `-prtn` — Part number (optional).
+* `-blkn` — Block number (optional).
+* `-mix` — Mixed mode.
+
+### Examples
+
+A mixed-mode run driven by a spectrum array together with TCode / rotation / bind parameters:
+
+```bash
+vhpack81treesvg -v 1.2.3.4.5.10.22.1.3.20.36.4.4.5 -t 28DF894BB454B2358574D200 -blkn 25 -w 22^24^18 -z 14.15,22.20 -cntr 5 -injc 19.21 -mix 1
+```
+
+A long-spectrum debugging run:
+
+```bash
+vhpack81treesvg -v 1364.32.1986.1120.14.273.78.1474.30.24.22.501.75.658.1216.556.341.402.176.52.300.146.144.182.272.216.188.108.150.30.48.36.44.33.56.320.56.40.144.30.136.24.78.132.48.64.15.12.63.62.48.50.40.86.28.56.84.15.30.52.40.44.160.48.56.18.30.20.15.54.56.39.16.42.168.8.44.56.36.44.42.54.110.12.48.42.16.42.48.51.88.16.40.14.14.28.32.90.45.30.26.71.18.31.15.21.78.36.9.18.2.18.12.20.2.20.14.45.12 -prtn 0 -blkn 0
+```
+
+Small test tree structures:
+
+```bash
+vhpack81treesvg -t 05C640
+vhpack81treesvg -t 09F70300
+vhpack81treesvg -t 1ECEDD528C4B54B920 -blkn 12345 -w 56^59^62
+```
+
+If the command line cannot be parsed, the parser reports the issue and prints the usage text before exiting with an error.
 
 ---
 

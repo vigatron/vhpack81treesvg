@@ -2,6 +2,7 @@
 
 using namespace std;
 
+extern TreeGenParamsIn		iparams;
 
 // -------------------------------------------------------------------------------------------------
 static int gfx_offstxt_center( std::string txt, int fsize) {

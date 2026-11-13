@@ -42,7 +42,8 @@ class VHArgsParser {
             else {
                 arg++;
                 int oidx = FindValidOpt(arg);
-                if( -1 == oidx ) return verrmsg(1, "Invalid key : " + std::string(argv[i]));
+                if( -1 == oidx )
+                    return verrmsg(1, "Invalid key : " + std::string(argv[i]));
                 optdefined = true; curopt = arg; }
         }
 

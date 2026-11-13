@@ -5,6 +5,8 @@
 
 #define X_OFFS  40
 
+extern TreeGenParamsIn		iparams;
+
 
 static VHRect rects[4];
 
