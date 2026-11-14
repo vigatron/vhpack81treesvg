@@ -4,7 +4,7 @@
 
 `vhpack81treesvg` is a small C++17 experimental tool for building, transforming and visualizing binary coding trees.
 
-Revision: 0.0.2
+Revision: 0.0.3
 
 The project was created as a development and analysis utility around the `VHPack81` / `VHPack` data representation and related tree structures.
 
@@ -33,6 +33,11 @@ The main idea is simple:
 The program does not try to be a general-purpose graph drawing framework.
 
 It is a specialized engineering tool where the **internal tree representation is more important than the final picture**.
+
+---
+
+![img](docs/mix_.png)
+
 
 ---
 
@@ -90,6 +95,7 @@ vhpack81treesvg -t 1ECEDD528C4B54B920 -blkn 12345 -w 56^59^62
 ```
 
 If the command line cannot be parsed, the parser reports the issue and prints the usage text before exiting with an error.
+
 
 ---
 
