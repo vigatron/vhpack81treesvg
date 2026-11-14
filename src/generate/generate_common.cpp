@@ -84,11 +84,11 @@ verr GenerateCalculateTreesGfx()
     int layscount = tree1.arch().depthmax() + 1;
 
     // Calc tree nodes coords
-    CalcTreeGfx(treearea[0].rectTree, tree1, tree1gfx, layerarea1, layscount);
-    CalcTreeGfx(treearea[1].rectTree, tree2, tree2gfx, layerarea2, layscount);
+    VHCalcHelper::CalcTreeGfx(treearea[0].rectTree, tree1, tree1gfx, layerarea1, layscount);
+    VHCalcHelper::CalcTreeGfx(treearea[1].rectTree, tree2, tree2gfx, layerarea2, layscount);
     if (iparams.genmode == 3)
     {
-        CalcTreeGfx(treearea[2].rectTree, tree3, tree3gfx, layerarea3, layscount);
+        VHCalcHelper::CalcTreeGfx(treearea[2].rectTree, tree3, tree3gfx, layerarea3, layscount);
     }
 
     return vok;
@@ -112,7 +112,7 @@ verr GenerateCommon()
     // Calculate final document size
     int width = (iparams.genmode == 3) ? tree2gfx.wdt() : tree1gfx.wdt();
     int layscount = tree1.arch().depthmax() + 1;
-    svgcalc_ramka(width, layscount);
+    VHCalcHelper::svgcalc_ramka(width, layscount);
 
     ret = GenerateCalculateTreesGfx();
     if (vok != ret)
